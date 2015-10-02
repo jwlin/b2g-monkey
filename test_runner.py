@@ -59,7 +59,7 @@ class B2gTestRunner(TestRunner):
                 #--cs.remove_candidate_clickable(clickable)
 
                 # prefetch image of the clickable
-                img_name = cs.get_id() + '-' + clickable.get_xpath().replace('/', '') + '.png'
+                img_name = cs.get_id() + '-' + clickable.get_id() + '.png'
                 img_data = self.executor.get_screenshot(clickable)
 
                 # fire the clickable

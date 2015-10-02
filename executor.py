@@ -11,6 +11,7 @@ from marionette import Marionette
 from marionette_driver.errors import ElementNotVisibleException, InvalidElementStateException, NoSuchElementException
 from marionette_driver import Wait, By
 from gaiatest.gaia_test import GaiaApps, GaiaDevice
+from dom_analyzer import DomAnalyzer
 
 
 class Executor():
@@ -80,7 +81,8 @@ class B2gExecutor(Executor):
     def fire_event(self, clickable):
         print 'fire_event: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
         try:
-            if clickable.get_id():
+            # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
+            if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
                 self._marionette.find_element('id', clickable.get_id()).tap()
             elif clickable.get_xpath():
                 self._marionette.find_element('xpath', clickable.get_xpath()).tap()
@@ -95,7 +97,7 @@ class B2gExecutor(Executor):
         for f in clickable.get_forms():
             for input_field in f.get_inputs():
                 try:
-                    if input_field.get_id():
+                    if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
                         self._marionette.find_element('id', input_field.get_id()).send_keys(input_field.get_value())
                     elif input_field.get_xpath():
                         self._marionette.find_element('xpath', input_field.get_xpath()).send_keys(input_field.get_value())
@@ -110,7 +112,7 @@ class B2gExecutor(Executor):
         for f in clickable.get_forms():
             for input_field in f.get_inputs():
                 try:
-                    if input_field.get_id():
+                    if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
                         self._marionette.find_element('id', input_field.get_id()).clear()
                     elif input_field.get_xpath():
                         self._marionette.find_element('xpath', input_field.get_xpath()).clear()
@@ -128,7 +130,7 @@ class B2gExecutor(Executor):
         element = None
         if clickable:
             try:
-                if clickable.get_id():
+                if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
                     element = self._marionette.find_element('id', clickable.get_id())
                 elif clickable.get_xpath():
                     element = self._marionette.find_element('xpath', clickable.get_xpath())
@@ -168,6 +170,7 @@ class B2gExecutor(Executor):
         apps.kill_all()
         import time
         time.sleep(3)
+        # todo: clear database (such as established contact)
         self.touch_home_button()
         #home_frame = self.__marionette.find_element('css selector', 'div.homescreen iframe')
         #self.__marionette.switch_to_frame(home_frame)

@@ -203,7 +203,7 @@ class ConfigurationTestCase(unittest.TestCase):
     def test_b2g_configuration(self):
         app_name = 'app-name'
         app_id = 'app-id'
-        init_max_depth = 2
+        init_max_depth = 3
         init_max_states = 0
         init_max_time = 0
         config = B2gConfiguration(app_name, app_id)
@@ -219,7 +219,7 @@ class TestRunnerTestCase(unittest.TestCase):
         #config = B2gConfiguration('E-Mail', 'email')
         config = B2gConfiguration('Contacts', 'contacts')
         runner = B2gTestRunner(config)
-        #runner.run()
+        runner.run()
 
 
 class DataBankTestCase(unittest.TestCase):

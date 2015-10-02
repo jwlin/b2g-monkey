@@ -14,7 +14,7 @@ class Configuration:
 
     def __init__(self):
         self._invariants = []
-        self._max_depth = 2
+        self._max_depth = 3
         self._max_states = 0
         self._max_time = 0
         self._sleep_time = 2

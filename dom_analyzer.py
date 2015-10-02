@@ -30,6 +30,8 @@ class DomAnalyzer:
         Tag('input', {'type': 'submit'}),
     ]
     _normalizers = [TagNormalizer(['head']), AttributeNormalizer()]
+    serial_prefix = 'b2g-monkey-'
+    _serial_num = 1  # used to dispatch id to clickables without id
 
     @classmethod
     def get_clickables(cls, dom):
@@ -40,7 +42,11 @@ class DomAnalyzer:
 
         # clickables with forms and inputs attached
         for form in forms:
-            f = FormField(form.get('id'), cls._get_xpath(form))
+            form_id = form.get('id')
+            if not form_id:
+                form_id = cls.serial_prefix + str(cls._serial_num)
+                cls._serial_num += 1
+            f = FormField(form_id, cls._get_xpath(form))
             input_types = ['text', 'email', 'password']
             for input_type in input_types:
                 inputs = form.find_all('input', attrs={'type': input_type})
@@ -50,7 +56,11 @@ class DomAnalyzer:
                         value = random.choice(list(data_set))
                     else:
                         value = ''.join(random.choice(string.lowercase) for i in xrange(8))
-                    f.add_input(InputField(my_input.get('id'), cls._get_xpath(my_input), input_type, value))
+                    input_id = my_input.get('id')
+                    if not input_id:
+                        input_id = cls.serial_prefix + str(cls._serial_num)
+                        cls._serial_num += 1
+                    f.add_input(InputField(input_id, cls._get_xpath(my_input), input_type, value))
             for tag in cls._clickable_tags:
                 if tag.get_attr():
                     for attr, value in tag.get_attr().items():
@@ -59,7 +69,11 @@ class DomAnalyzer:
                     candidate_clickables = form.find_all(tag.get_name())
                 for candidate_clickable in candidate_clickables:
                     #print candidate_clickable
-                    c = Clickable(candidate_clickable.get('id'), cls._get_xpath(candidate_clickable), tag.get_name())
+                    clickable_id = candidate_clickable.get('id')
+                    if not clickable_id:
+                        clickable_id = cls.serial_prefix + str(cls._serial_num)
+                        cls._serial_num += 1
+                    c = Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name())
                     c.add_form(f)
                     clickables.append(c)
 
@@ -73,7 +87,11 @@ class DomAnalyzer:
             for candidate_clickable in candidate_clickables:
                 #print candidate_clickable
                 if not cls._is_duplicate(clickables, candidate_clickable):
-                    clickables.append(Clickable(candidate_clickable.get('id'), cls._get_xpath(candidate_clickable), tag.get_name()))
+                    clickable_id = candidate_clickable.get('id')
+                    if not clickable_id:
+                        clickable_id = cls.serial_prefix + str(cls._serial_num)
+                        cls._serial_num += 1
+                    clickables.append(Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name()))
         #print 'len', len(clickables)
         return clickables
 
