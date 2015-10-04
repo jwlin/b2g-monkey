@@ -10,7 +10,7 @@ from automata import Automata, State
 from executor import B2gExecutor
 from configuration import B2gConfiguration
 from dom_analyzer import DomAnalyzer
-import time, base64, os
+import time, base64, os, json, posixpath
 
 
 class TestRunner:
@@ -31,7 +31,8 @@ class B2gTestRunner(TestRunner):
         self.executor.restart_app()
         initial_state = State(self.executor.get_source())
         self.automata.add_state(initial_state)
-        self.save_screenshot(initial_state.get_id() + '.png', self.executor.get_screenshot())
+        self.save_screenshot(initial_state.get_id() + '.png', self.executor.get_screenshot(), 'state')
+        self.save_dom(initial_state)
         self.crawl(1)
 
         print 'automata'
@@ -46,6 +47,8 @@ class B2gTestRunner(TestRunner):
         print 'edges'
         for (state_from, state_to, clickable, cost) in self.automata.get_edges():
             print state_from, state_to, clickable, cost
+
+        self.dump()
 
     def crawl(self, depth):
         if depth <= self.configuration.get_max_depth():
@@ -71,12 +74,13 @@ class B2gTestRunner(TestRunner):
                 new_dom = self.executor.get_source()
                 if not DomAnalyzer.is_equal(cs.get_dom(), new_dom):
                     cs.add_clickable(clickable)
-                    self.save_screenshot(img_name, img_data)
+                    self.save_screenshot(img_name, img_data, 'clickable')
                     ns, is_newly_added = self.automata.add_state(State(new_dom))
                     self.automata.add_edge(cs, ns, clickable)
                     if is_newly_added:
                         self.automata.change_state(ns)
-                        self.save_screenshot(ns.get_id() + '.png', self.executor.get_screenshot())
+                        self.save_screenshot(ns.get_id() + '.png', self.executor.get_screenshot(), 'state')
+                        self.save_dom(ns)
                         self.crawl(depth+1)
                     self.automata.change_state(cs)
                     self.backtrack(cs)
@@ -90,11 +94,117 @@ class B2gTestRunner(TestRunner):
             self.executor.fill_form(clickable)
             self.executor.fire_event(clickable)
 
-    def save_screenshot(self, fname, b64data):
-        path = os.path.join(self.configuration.get_file_dir(), fname)
+    def save_screenshot(self, fname, b64data, my_type):
+        path = os.path.join(self.configuration.get_abs_path(my_type), fname)
         imgdata = base64.b64decode(b64data)
         with open(path, 'wb') as f:
             f.write(imgdata)
+
+    def save_dom(self, state):
+        with open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '.txt'), 'w') as f:
+            f.write(state.get_dom())
+
+    def dump(self):
+        data = {
+            'state': [],
+            'edge': [],
+            'id_prefix': DomAnalyzer.serial_prefix  # the prefix used in ids given by our monkey
+        }
+        for state in self.automata.get_states():
+            state_data = {
+                'id': state.get_id(),
+                # output unix style path for website: first unpack dirs in get_path('dom') and then posixpath.join them with the filename
+                'dom_path': posixpath.join(
+                    posixpath.join(*(self.configuration.get_path('dom').split(os.sep))),
+                    state.get_id() + '.txt'
+                ),
+                'img_path': posixpath.join(
+                    posixpath.join(*(self.configuration.get_path('state').split(os.sep))),
+                    state.get_id() + '.png'
+                ),
+                'clickable': []
+            }
+            for clickable in state.get_clickables():
+                clickable_data = {
+                    'id': clickable.get_id(),
+                    'xpath': clickable.get_xpath(),
+                    'tag': clickable.get_tag(),
+                    'img_path': posixpath.join(posixpath.join(
+                        *(self.configuration.get_path('clickable').split(os.sep))),
+                        state.get_id() + '-' + clickable.get_id() + '.png'
+                    ),
+                    'form': []
+                }
+                for form in clickable.get_forms():
+                    form_data = {
+                        'id': form.get_id(),
+                        'xpath': form.get_xpath(),
+                        'input': []
+                    }
+                    for my_input in form.get_inputs():
+                        input_data = {
+                            'id': my_input.get_id(),
+                            'xpath': my_input.get_xpath(),
+                            'type': my_input.get_type(),
+                            'value': my_input.get_value()
+                        }
+                        form_data['input'].append(input_data)
+                    clickable_data['form'].append(form_data)
+                state_data['clickable'].append(clickable_data)
+            data['state'].append(state_data)
+        for (state_from, state_to, clickable, cost) in self.automata.get_edges():
+            edge_data = {
+                'from': state_from.get_id(),
+                'to': state_to.get_id(),
+                'clickable': clickable.get_id()
+            }
+            data['edge'].append(edge_data)
+
+        with open(os.path.join(self.configuration.get_abs_path('root'), 'automata.json'), 'w') as f:
+            json.dump(data, f, indent=2, sort_keys=True, ensure_ascii=False)
+        '''
+            {
+              'state':[
+                {
+                  'id': 0,
+                  'dom_path': 'trace/dom/0.txt',
+                  'img_path': 'trace/screenshot/state/0.png',
+                  'clickable':
+                  [
+                    {
+                      'id': 'add-contact-button',
+                      'xpath': '//html/body/section[1]/gaia-header[1]/button[1]',
+                      'tag': 'button'
+                      'img_path': 'trace/screenshot/clickable/0-add-contact-button.png',
+                      'form':
+                      [
+                        {
+                          'id': 'contact-form',
+                          'xpath': '//html/body/section[1]/article[1]/div[1]/form[1]',
+                          'input':
+                          [
+                            {
+                              'id': 'givenName',
+                              'xpath': '//html/body/section[1]/article[1]/div[1]/form[1]/section[1]/div[2]/p[1]/input[1]',
+                              'type': 'text',
+                              'value': 'ceusateo',
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ]
+                },
+              ],
+              'edge':[
+                {
+                  'from': 0
+                  'to': 1
+                  'clickable': 'add-contact-button'
+                },
+              ],
+            }
+        '''
 
 def main():
     '''

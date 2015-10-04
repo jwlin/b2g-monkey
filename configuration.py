@@ -14,7 +14,7 @@ class Configuration:
 
     def __init__(self):
         self._invariants = []
-        self._max_depth = 3
+        self._max_depth = 2
         self._max_states = 0
         self._max_time = 0
         self._sleep_time = 2
@@ -49,13 +49,17 @@ class B2gConfiguration(Configuration):
         super(B2gConfiguration, self).__init__()
         self._app_name = app_name
         self._app_id = app_id
-        self._file_dir = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
-            'trace',
-            datetime.datetime.now().strftime('%Y%m%d%H%M%S'),
-        )
-        if not os.path.exists(self._file_dir):
-            os.makedirs(self._file_dir)
+        self._root_path = os.path.join('trace', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+        self._file_path = {
+            'root': self._root_path,
+            'dom': os.path.join(self._root_path, 'dom'),
+            'state': os.path.join(self._root_path, 'screenshot', 'state'),
+            'clickable': os.path.join(self._root_path, 'screenshot', 'clickable'),
+        }
+        for key, value in self._file_path.iteritems():
+            abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
+            if not os.path.exists(abs_path):
+                os.makedirs(abs_path)
 
     def set_app_name(self, app_name):
         self._app_name = app_name
@@ -69,5 +73,9 @@ class B2gConfiguration(Configuration):
     def get_app_id(self):
         return self._app_id
 
-    def get_file_dir(self):
-        return self._file_dir
+    def get_abs_path(self, my_type):
+        abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
+        return abs_path
+
+    def get_path(self, my_type):
+        return self._file_path[my_type]

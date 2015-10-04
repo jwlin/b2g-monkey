@@ -169,7 +169,7 @@ class B2gExecutor(Executor):
         apps = GaiaApps(self._marionette)
         apps.kill_all()
         import time
-        time.sleep(3)
+        time.sleep(2)
         # todo: clear database (such as established contact)
         self.touch_home_button()
         #home_frame = self.__marionette.find_element('css selector', 'div.homescreen iframe')
