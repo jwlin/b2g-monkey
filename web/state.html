@@ -1,0 +1,232 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>State Diagram</title>
+
+<script src="js/d3.v3.min.js"></script>
+<script src="js/graphlib-dot.min.js"></script>
+<script src="js/dagre-d3.min.js"></script>
+
+<style>
+svg {
+  border: 1px solid #999;
+  overflow: hidden;
+  position: fixed; height:100%; width:100%;
+}
+
+.node {
+  white-space: nowrap;
+}
+
+.node rect,
+.node circle,
+.node ellipse {
+  stroke: #333;
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+
+.cluster rect {
+  stroke: #333;
+  fill: #000;
+  fill-opacity: 0.1;
+  stroke-width: 1.5px;
+}
+
+.edgePath path.path {
+  stroke: #333;
+  stroke-width: 1.5px;
+  fill: none;
+}
+</style>
+
+<style>
+h1, h2 {
+  color: #333;
+}
+
+textarea {
+  width: 800px;
+}
+
+label {
+  margin-top: 1em;
+  display: block;
+}
+
+.error {
+  color: red;
+}
+</style>
+
+<body onload="tryDraw();">
+<div id="images" style="display:none">
+<img src='screenshot/state/0.png'>
+<img src='screenshot/state/1.png'>
+<img src='screenshot/state/2.png'>
+<img src='screenshot/state/3.png'>
+<img src='screenshot/state/4.png'>
+<img src='screenshot/state/5.png'>
+<img src='screenshot/state/6.png'>
+<img src='screenshot/state/7.png'>
+<img src='screenshot/state/8.png'>
+<img src='screenshot/state/9.png'>
+<img src='screenshot/state/10.png'>
+<img src='screenshot/state/11.png'>
+<img src='screenshot/state/12.png'>
+<img src='screenshot/state/13.png'>
+<img src='screenshot/state/14.png'>
+<img src='screenshot/state/15.png'>
+<img src='screenshot/state/16.png'>
+<img src='screenshot/state/17.png'>
+<img src='screenshot/state/18.png'>
+<img src='screenshot/state/19.png'>
+<img src='screenshot/state/20.png'>
+<img src='screenshot/state/21.png'>
+<img src='screenshot/state/22.png'>
+<img src='screenshot/state/23.png'>
+<img src='screenshot/state/24.png'>
+<img src='screenshot/clickable/0-add-contact-button.png'>
+<img src='screenshot/clickable/0-settings-button.png'>
+<img src='screenshot/clickable/1-add-new-phone.png'>
+<img src='screenshot/clickable/1-add-new-address.png'>
+<img src='screenshot/clickable/1-add-new-date.png'>
+<img src='screenshot/clickable/1-add-new-note.png'>
+<img src='screenshot/clickable/1-add-new-email.png'>
+<img src='screenshot/clickable/1-save-button.png'>
+<img src='screenshot/clickable/2-add-new-phone.png'>
+<img src='screenshot/clickable/2-add-new-email.png'>
+<img src='screenshot/clickable/2-add-new-address.png'>
+<img src='screenshot/clickable/2-add-new-date.png'>
+<img src='screenshot/clickable/2-add-new-note.png'>
+<img src='screenshot/clickable/2-save-button.png'>
+<img src='screenshot/clickable/9-add-new-phone.png'>
+<img src='screenshot/clickable/9-add-new-email.png'>
+<img src='screenshot/clickable/9-add-new-address.png'>
+<img src='screenshot/clickable/9-add-new-date.png'>
+<img src='screenshot/clickable/9-add-new-note.png'>
+<img src='screenshot/clickable/14-add-new-phone.png'>
+<img src='screenshot/clickable/14-add-new-email.png'>
+<img src='screenshot/clickable/14-b2g-monkey-77.png'>
+<img src='screenshot/clickable/14-add-new-address.png'>
+<img src='screenshot/clickable/14-add-new-date.png'>
+<img src='screenshot/clickable/14-add-new-note.png'>
+<img src='screenshot/clickable/19-add-new-address.png'>
+<img src='screenshot/clickable/19-add-new-date.png'>
+<img src='screenshot/clickable/19-add-new-note.png'>
+<img src='screenshot/clickable/19-add-new-email.png'>
+<img src='screenshot/clickable/19-add-new-phone.png'>
+<img src='screenshot/clickable/22-add-contact-button.png'>
+<img src='screenshot/clickable/22-settings-button.png'>
+</div>
+
+<!-- /* Note: HTML labels do not work in IE, which lacks support for <foreignObject> tags. */-->
+<textarea id="inputGraph" rows="1" style="display: none">
+digraph {
+	node [rx=5 ry=5 labelStyle="font: 300 14px 'Helvetica Neue', Helvetica"]
+    edge [labelStyle="font: 300 14px 'Helvetica Neue', Helvetica"]
+    0 [labelType="html" label="0<img src='screenshot/state/0.png'>"];
+	1 [labelType="html" label="1<img src='screenshot/state/1.png'>"];
+	2 [labelType="html" label="2<img src='screenshot/state/2.png'>"];
+	3 [labelType="html" label="3<img src='screenshot/state/3.png'>"];
+	4 [labelType="html" label="4<img src='screenshot/state/4.png'>"];
+	5 [labelType="html" label="5<img src='screenshot/state/5.png'>"];
+	6 [labelType="html" label="6<img src='screenshot/state/6.png'>"];
+	7 [labelType="html" label="7<img src='screenshot/state/7.png'>"];
+	8 [labelType="html" label="8<img src='screenshot/state/8.png'>"];
+	9 [labelType="html" label="9<img src='screenshot/state/9.png'>"];
+	10 [labelType="html" label="10<img src='screenshot/state/10.png'>"];
+	11 [labelType="html" label="11<img src='screenshot/state/11.png'>"];
+	12 [labelType="html" label="12<img src='screenshot/state/12.png'>"];
+	13 [labelType="html" label="13<img src='screenshot/state/13.png'>"];
+	14 [labelType="html" label="14<img src='screenshot/state/14.png'>"];
+	15 [labelType="html" label="15<img src='screenshot/state/15.png'>"];
+	16 [labelType="html" label="16<img src='screenshot/state/16.png'>"];
+	17 [labelType="html" label="17<img src='screenshot/state/17.png'>"];
+	18 [labelType="html" label="18<img src='screenshot/state/18.png'>"];
+	19 [labelType="html" label="19<img src='screenshot/state/19.png'>"];
+	20 [labelType="html" label="20<img src='screenshot/state/20.png'>"];
+	21 [labelType="html" label="21<img src='screenshot/state/21.png'>"];
+	22 [labelType="html" label="22<img src='screenshot/state/22.png'>"];
+	23 [labelType="html" label="23<img src='screenshot/state/23.png'>"];
+	24 [labelType="html" label="24<img src='screenshot/state/24.png'>"];
+	0->1 [labelType="html" label="<img src='screenshot/clickable/0-add-contact-button.png'>"];
+	1->2 [labelType="html" label="<img src='screenshot/clickable/1-add-new-phone.png'>"];
+	2->3 [labelType="html" label="<img src='screenshot/clickable/2-add-new-phone.png'>"];
+	2->4 [labelType="html" label="<img src='screenshot/clickable/2-add-new-email.png'>"];
+	2->5 [labelType="html" label="<img src='screenshot/clickable/2-add-new-address.png'>"];
+	2->6 [labelType="html" label="<img src='screenshot/clickable/2-add-new-date.png'>"];
+	2->7 [labelType="html" label="<img src='screenshot/clickable/2-add-new-note.png'>"];
+	2->8 [labelType="html" label="<img src='screenshot/clickable/2-save-button.png'>"];
+	1->9 [labelType="html" label="<img src='screenshot/clickable/1-add-new-email.png'>"];
+	9->4 [labelType="html" label="<img src='screenshot/clickable/9-add-new-phone.png'>"];
+	9->10 [labelType="html" label="<img src='screenshot/clickable/9-add-new-email.png'>"];
+	9->11 [labelType="html" label="<img src='screenshot/clickable/9-add-new-address.png'>"];
+	9->12 [labelType="html" label="<img src='screenshot/clickable/9-add-new-date.png'>"];
+	9->13 [labelType="html" label="<img src='screenshot/clickable/9-add-new-note.png'>"];
+	1->14 [labelType="html" label="<img src='screenshot/clickable/1-add-new-address.png'>"];
+	14->5 [labelType="html" label="<img src='screenshot/clickable/14-add-new-phone.png'>"];
+	14->11 [labelType="html" label="<img src='screenshot/clickable/14-add-new-email.png'>"];
+	14->15 [labelType="html" label="<img src='screenshot/clickable/14-b2g-monkey-77.png'>"];
+	14->16 [labelType="html" label="<img src='screenshot/clickable/14-add-new-address.png'>"];
+	14->17 [labelType="html" label="<img src='screenshot/clickable/14-add-new-date.png'>"];
+	14->18 [labelType="html" label="<img src='screenshot/clickable/14-add-new-note.png'>"];
+	1->15 [labelType="html" label="<img src='screenshot/clickable/1-add-new-date.png'>"];
+	1->19 [labelType="html" label="<img src='screenshot/clickable/1-add-new-note.png'>"];
+	19->7 [labelType="html" label="<img src='screenshot/clickable/19-add-new-phone.png'>"];
+	19->13 [labelType="html" label="<img src='screenshot/clickable/19-add-new-email.png'>"];
+	19->18 [labelType="html" label="<img src='screenshot/clickable/19-add-new-address.png'>"];
+	19->20 [labelType="html" label="<img src='screenshot/clickable/19-add-new-date.png'>"];
+	19->21 [labelType="html" label="<img src='screenshot/clickable/19-add-new-note.png'>"];
+	1->22 [labelType="html" label="<img src='screenshot/clickable/1-save-button.png'>"];
+	22->1 [labelType="html" label="<img src='screenshot/clickable/22-add-contact-button.png'>"];
+	22->23 [labelType="html" label="<img src='screenshot/clickable/22-settings-button.png'>"];
+	0->24 [labelType="html" label="<img src='screenshot/clickable/0-settings-button.png'>"];
+}
+</textarea>
+
+<h1>State Diagram</h1> 
+
+<svg viewBox="0 0 1024 768">
+  <g/>
+</svg>
+
+<script>
+
+var inputGraph = document.querySelector("#inputGraph");
+
+// Set up zoom support
+var svg = d3.select("svg"),
+    inner = d3.select("svg g"),
+    zoom = d3.behavior.zoom().on("zoom", function() {
+    inner.attr("transform", "translate(" + d3.event.translate + ")" +
+                                "scale(" + d3.event.scale + ")");
+    });
+svg.call(zoom);
+
+// Create and configure the renderer
+var render = dagreD3.render();
+
+function tryDraw() {
+  var g;
+  inputGraph.setAttribute("class", "");
+  //oldInputGraphValue = inputGraph.value;
+  try {
+    g = graphlibDot.read(inputGraph.value);
+  } catch (e) {
+    inputGraph.setAttribute("class", "error");
+    throw e;
+  }
+  // Set margins, if not present
+  if (!g.graph().hasOwnProperty("marginx") &&
+      !g.graph().hasOwnProperty("marginy")) {
+    g.graph().marginx = 20;
+    g.graph().marginy = 20;
+  }
+  g.graph().transition = function(selection) {
+    return selection.transition().duration(500);
+  };
+  // Render the graph into svg g
+  d3.select("svg g").call(render, g);
+}
+</script>

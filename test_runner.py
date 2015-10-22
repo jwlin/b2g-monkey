@@ -10,6 +10,8 @@ from automata import Automata, State
 from executor import B2gExecutor
 from configuration import B2gConfiguration
 from dom_analyzer import DomAnalyzer
+from visualizer import Visualizer
+from os.path import relpath
 import time, base64, os, json, posixpath
 
 
@@ -34,7 +36,7 @@ class B2gTestRunner(TestRunner):
         self.save_screenshot(initial_state.get_id() + '.png', self.executor.get_screenshot(), 'state')
         self.save_dom(initial_state)
         self.crawl(1)
-
+        '''
         print 'automata'
         for s in self.automata.get_states():
             print s
@@ -47,8 +49,9 @@ class B2gTestRunner(TestRunner):
         print 'edges'
         for (state_from, state_to, clickable, cost) in self.automata.get_edges():
             print state_from, state_to, clickable, cost
-
-        self.dump()
+        '''
+        self.dump_automata()
+        Visualizer.generate_html('web', os.path.join(self.configuration.get_path('root'), 'automata.json'))
 
     def crawl(self, depth):
         if depth <= self.configuration.get_max_depth():
@@ -104,7 +107,7 @@ class B2gTestRunner(TestRunner):
         with open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '.txt'), 'w') as f:
             f.write(state.get_dom())
 
-    def dump(self):
+    def dump_automata(self):
         data = {
             'state': [],
             'edge': [],
@@ -115,11 +118,19 @@ class B2gTestRunner(TestRunner):
                 'id': state.get_id(),
                 # output unix style path for website: first unpack dirs in get_path('dom') and then posixpath.join them with the filename
                 'dom_path': posixpath.join(
-                    posixpath.join(*(self.configuration.get_path('dom').split(os.sep))),
+                    posixpath.join(*(
+
+                        self.configuration.get_path('dom').split(os.sep)
+                    )),
                     state.get_id() + '.txt'
                 ),
                 'img_path': posixpath.join(
-                    posixpath.join(*(self.configuration.get_path('state').split(os.sep))),
+                    posixpath.join(
+                        *(relpath(
+                            self.configuration.get_path('state'),
+                            self.configuration.get_path('root')
+                            ).split(os.sep))
+                    ),
                     state.get_id() + '.png'
                 ),
                 'clickable': []
@@ -129,8 +140,13 @@ class B2gTestRunner(TestRunner):
                     'id': clickable.get_id(),
                     'xpath': clickable.get_xpath(),
                     'tag': clickable.get_tag(),
-                    'img_path': posixpath.join(posixpath.join(
-                        *(self.configuration.get_path('clickable').split(os.sep))),
+                    'img_path': posixpath.join(
+                        posixpath.join(
+                            *(relpath(
+                                self.configuration.get_path('clickable'),
+                                self.configuration.get_path('root')
+                                ).split(os.sep))
+                        ),
                         state.get_id() + '-' + clickable.get_id() + '.png'
                     ),
                     'form': []
@@ -162,49 +178,6 @@ class B2gTestRunner(TestRunner):
 
         with open(os.path.join(self.configuration.get_abs_path('root'), 'automata.json'), 'w') as f:
             json.dump(data, f, indent=2, sort_keys=True, ensure_ascii=False)
-        '''
-            {
-              'state':[
-                {
-                  'id': 0,
-                  'dom_path': 'trace/dom/0.txt',
-                  'img_path': 'trace/screenshot/state/0.png',
-                  'clickable':
-                  [
-                    {
-                      'id': 'add-contact-button',
-                      'xpath': '//html/body/section[1]/gaia-header[1]/button[1]',
-                      'tag': 'button'
-                      'img_path': 'trace/screenshot/clickable/0-add-contact-button.png',
-                      'form':
-                      [
-                        {
-                          'id': 'contact-form',
-                          'xpath': '//html/body/section[1]/article[1]/div[1]/form[1]',
-                          'input':
-                          [
-                            {
-                              'id': 'givenName',
-                              'xpath': '//html/body/section[1]/article[1]/div[1]/form[1]/section[1]/div[2]/p[1]/input[1]',
-                              'type': 'text',
-                              'value': 'ceusateo',
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                  ]
-                },
-              ],
-              'edge':[
-                {
-                  'from': 0
-                  'to': 1
-                  'clickable': 'add-contact-button'
-                },
-              ],
-            }
-        '''
 
 def main():
     '''
@@ -230,7 +203,9 @@ def main():
 		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 		crawljax.call();
 	'''
-    config = B2gConfiguration('E-Mail', 'email')
+    #config = B2gConfiguration('E-Mail', 'email')
+    config = B2gConfiguration('Contacts', 'contacts')
+    config.set_max_depth(2)
     runner = B2gTestRunner(config)
     runner.run()
 

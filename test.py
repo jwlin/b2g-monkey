@@ -218,7 +218,7 @@ class TestRunnerTestCase(unittest.TestCase):
     def test_testrunner(self):
         #config = B2gConfiguration('E-Mail', 'email')
         config = B2gConfiguration('Contacts', 'contacts')
-        config.set_max_depth(3)
+        config.set_max_depth(2)
         runner = B2gTestRunner(config)
         runner.run()
 
@@ -257,6 +257,72 @@ class NormalizerTestCase(unittest.TestCase):
         normalizer = TagNormalizer(['button'])
         dom = normalizer.normalize(dom)
         self.assertEqual(dom, '')
+
+    def demo(self):
+        dom = '''
+        <!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Social Network Rocks</title>
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen, projection"/>
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  </head>
+  <body class="lime lighten-5">
+    <div class="head">
+      <h1 class="valign-wrapper">Hi,</h1>
+    </div>
+    <div class="error">
+    </div>
+    <div class="message">
+    </div>
+    <div class="content">
+<div class="container">
+  <div class="row">
+    <form class="col s12" method="post" action="/login">
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="id_username" maxlength="254" name="username" type="text" />
+          <label for="id_username">Username:</label>
+        </div>
+        <div class="input-field col s12">
+          <label for="id_password">Password:</label>
+          <input id="id_password" name="password" type="password" />
+        </div>
+        <input type="hidden" name="next" value=""/>
+      </div>
+      <div class="row valign-wrapper">
+        <div class="input-field col l6 m12 valign-wrapper">
+          <button class="btn waves-effect waves-light btn-large" type="submit">Login</button>
+        </div>
+        <div class="input-field col l6 m12 valign-wrapper">
+          <a href="/register" class="btn waves-effect waves-light btn-large">Register</a>
+        </div>
+      </div>
+      <input type='hidden' name='csrfmiddlewaretoken' value='lsTZUZgfS3a4bkMfQXFpm9tYFOlhAzXp' />
+    </form>
+  </div>
+</div>
+  </body>
+</html>
+        '''
+        normalizer = TagNormalizer()
+        dom = normalizer.normalize(dom)
+        normalizer = AttributeNormalizer()
+        dom = normalizer.normalize(dom)
+        normalizer = TagContentNormalizer()
+        dom = normalizer.normalize(dom)
+        print dom
+
+
+class VisualizerTestCase(unittest.TestCase):
+    def test_testvisualizer(self):
+        from visualizer import Visualizer
+        Visualizer.generate_html(
+            'web',
+            'trace/example-contact-depth-2/automata.json'
+        )
 
 
 if __name__ == '__main__':
