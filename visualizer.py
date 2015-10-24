@@ -25,8 +25,16 @@ class Visualizer:
             dstname = os.path.join(dst, name)
             try:
                 if os.path.isdir(srcname):
+                    try:
+                        shutil.rmtree(dstname)
+                    except OSError:
+                        pass
                     shutil.copytree(srcname, dstname)
                 else:
+                    try:
+                        os.remove(dstname)
+                    except OSError:
+                        pass
                     shutil.copy2(srcname, dstname)
             except Exception as e:
                 print 'Exception: %s in generate_html() of Visualizer' % (str(e))

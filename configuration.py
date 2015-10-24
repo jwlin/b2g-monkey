@@ -5,7 +5,7 @@
 Module docstring
 """
 
-import os, datetime
+import os, datetime, json
 from abc import ABCMeta
 
 
@@ -49,6 +49,7 @@ class B2gConfiguration(Configuration):
         super(B2gConfiguration, self).__init__()
         self._app_name = app_name
         self._app_id = app_id
+        self._automata_fname = 'automata.json'
         self._root_path = os.path.join('trace', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
         self._file_path = {
             'root': self._root_path,
@@ -72,6 +73,9 @@ class B2gConfiguration(Configuration):
 
     def get_app_id(self):
         return self._app_id
+
+    def get_automata_fname(self):
+        return self._automata_fname
 
     def get_abs_path(self, my_type):
         abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])

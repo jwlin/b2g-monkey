@@ -41,7 +41,7 @@ class Automata:
             for s in self._states:
                 if DomAnalyzer.is_equal(s.get_dom(), state.get_dom()):
                     return s, False
-        state_id = str(len(self._states))
+        state_id = state.get_id() if state.get_id() else str(len(self._states))
         state.set_id(state_id)
         self._states.append(state)
         return state, True
@@ -52,6 +52,12 @@ class Automata:
     def add_edge(self, state_from, state_to, clickable, cost=1):
         edge = (state_from, state_to, clickable, cost)
         self._edges.append(edge)
+
+    def get_state_by_id(self, sid):
+        for s in self._states:
+            if s.get_id() == sid:
+                return s
+        return None
 
     def get_shortest_path(self, target):
         # Breath First Search
@@ -148,6 +154,12 @@ class State:
 
     def get_clickables(self):
         return self._clickables
+
+    def get_clickable_by_id(self, cid):
+        for c in self._clickables:
+            if c.get_id() == cid:
+                return c
+        return None
 
     '''
     def get_candidate_clickables(self):

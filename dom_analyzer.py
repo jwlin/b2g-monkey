@@ -29,17 +29,26 @@ class DomAnalyzer:
         Tag('button'),
         Tag('input', {'type': 'submit'}),
     ]
+    input_types = ['text', 'email', 'password']  # type of input fields filled with values
     _normalizers = [TagNormalizer(['head']), AttributeNormalizer()]
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
 
     @classmethod
-    def get_clickables(cls, dom):
-        # todo: should compare the new dom with the old dom and just return clickables in the diff
+    def get_clickables(cls, dom, prev_dom=None):
+        # only return newly discovered clickables, i.e. clickables not in prev_clickables
+        prev_clickables = []
+        if prev_dom:
+            prev_soup = BeautifulSoup(prev_dom, 'html.parser')
+            for tag in cls._clickable_tags:
+                if tag.get_attr():
+                    for attr, value in tag.get_attr().items():
+                        prev_clickables += prev_soup.find_all(tag.get_name(), attrs={attr: value})
+                else:
+                    prev_clickables += prev_soup.find_all(tag.get_name())
         soup = BeautifulSoup(dom, 'html.parser')
         forms = soup.find_all('form')
         clickables = []
-
         # clickables with forms and inputs attached
         for form in forms:
             form_id = form.get('id')
@@ -47,8 +56,7 @@ class DomAnalyzer:
                 form_id = cls.serial_prefix + str(cls._serial_num)
                 cls._serial_num += 1
             f = FormField(form_id, cls._get_xpath(form))
-            input_types = ['text', 'email', 'password']
-            for input_type in input_types:
+            for input_type in cls.input_types:
                 inputs = form.find_all('input', attrs={'type': input_type})
                 for my_input in inputs:
                     data_set = InlineDataBank.get_data(input_type)
@@ -69,6 +77,8 @@ class DomAnalyzer:
                     candidate_clickables = form.find_all(tag.get_name())
                 for candidate_clickable in candidate_clickables:
                     #print candidate_clickable
+                    if candidate_clickable in prev_clickables:
+                        continue
                     clickable_id = candidate_clickable.get('id')
                     if not clickable_id:
                         clickable_id = cls.serial_prefix + str(cls._serial_num)
@@ -86,13 +96,15 @@ class DomAnalyzer:
                 candidate_clickables = soup.find_all(tag.get_name())
             for candidate_clickable in candidate_clickables:
                 #print candidate_clickable
+                if candidate_clickable in prev_clickables:
+                        continue
                 if not cls._is_duplicate(clickables, candidate_clickable):
                     clickable_id = candidate_clickable.get('id')
                     if not clickable_id:
                         clickable_id = cls.serial_prefix + str(cls._serial_num)
                         cls._serial_num += 1
                     clickables.append(Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name()))
-        #print 'len', len(clickables)
+        #print 'prev_clickables len', len(prev_clickables), 'clickables len', len(clickables)
         return clickables
 
     @classmethod

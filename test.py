@@ -5,16 +5,17 @@
 Module docstring
 """
 
-import unittest
+import unittest, os
 from automata import Automata, State
 from clickable import Clickable, FormField, InputField
-from test_runner import TestRunner
+from crawler import B2gCrawler
 from executor import B2gExecutor
 from configuration import B2gConfiguration
 from dom_analyzer import DomAnalyzer
-from test_runner import B2gTestRunner
 from bs4 import BeautifulSoup
 from normalizer import AttributeNormalizer, TagContentNormalizer, TagNormalizer
+from visualizer import Visualizer
+from controller import save_automata
 
 
 class AutomataTestCase(unittest.TestCase):
@@ -214,13 +215,16 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEqual(config.get_max_time(), init_max_time)
 
 
-class TestRunnerTestCase(unittest.TestCase):
-    def test_testrunner(self):
+class ControllerTestCase(unittest.TestCase):
+    def test_controller(self):
         #config = B2gConfiguration('E-Mail', 'email')
         config = B2gConfiguration('Contacts', 'contacts')
         config.set_max_depth(2)
-        runner = B2gTestRunner(config)
-        runner.run()
+        executor = B2gExecutor(config.get_app_name(), config.get_app_id())
+        crawler = B2gCrawler(config, executor)
+        automata = crawler.run()
+        save_automata(automata, config)
+        Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
 
 
 class DataBankTestCase(unittest.TestCase):
