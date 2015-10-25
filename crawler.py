@@ -60,6 +60,7 @@ class B2gCrawler(Crawler):
                 #--cs.remove_candidate_clickable(clickable)
 
                 # prefetch image of the clickable
+                time.sleep(0.1)  # time for correctly fetching image
                 img_name = cs.get_id() + '-' + clickable.get_id() + '.png'
                 img_data = self.executor.get_screenshot(clickable)
 
@@ -76,9 +77,9 @@ class B2gCrawler(Crawler):
                     ns, is_newly_added = self.automata.add_state(State(new_dom))
                     self.automata.add_edge(cs, ns, clickable)
                     if is_newly_added:
-                        self.automata.change_state(ns)
                         self.save_screenshot(ns.get_id() + '.png', self.executor.get_screenshot(), 'state')
                         self.save_dom(ns)
+                        self.automata.change_state(ns)
                         self.crawl(depth+1, cs)
                     self.automata.change_state(cs)
                     self.backtrack(cs)

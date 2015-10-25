@@ -5,7 +5,7 @@
 Module docstring
 """
 
-import os, json, posixpath
+import os, json, posixpath, time
 from os.path import relpath
 from configuration import B2gConfiguration
 from automata import Automata, State
@@ -14,12 +14,38 @@ from executor import B2gExecutor
 from crawler import B2gCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
+from test_generator import TestGenerator
+
 
 
 def main():
     config = B2gConfiguration('Contacts', 'contacts')
-    config.set_max_depth(2)
+    config.set_max_depth(3)
+    #config = load_config(os.path.join('trace/20151024005306/config.json'))
+    #automata = load_automata(os.path.join('trace/20151024005306/automata.json'))
     executor = B2gExecutor(config.get_app_name(), config.get_app_id())
+    #tg = TestGenerator(automata, config, executor)
+    #edges = tg.path_to_state(automata.get_state_by_id('5'))
+    '''
+    edges = []
+    edges.append(
+        (automata.get_initial_state(), automata.get_state_by_id('1'), automata.get_initial_state().get_clickable_by_id('add-contact-button'), 1)
+    )
+    edges.append(
+        (automata.get_state_by_id('1'), automata.get_state_by_id('4'), automata.get_state_by_id('1').get_clickable_by_id('add-new-address'), 1)
+    )
+    edges.append(
+        (automata.get_state_by_id('4'), automata.get_state_by_id('5'), automata.get_state_by_id('4').get_clickable_by_id('b2g-monkey-45'), 1)
+    )
+
+    executor.restart_app()
+    for (state_from, state_to, clickable, cost) in edges:
+        time.sleep(config.get_sleep_time())
+        executor.empty_form(clickable)
+        executor.fill_form(clickable)
+        raw_input()
+        executor.fire_event(clickable)
+    '''
     crawler = B2gCrawler(config, executor)
     automata = crawler.run()
     save_automata(automata, config)
@@ -129,6 +155,7 @@ def save_config(config, fname):
 
 
 def load_automata(fname):
+    t_start = time.time()
     assert os.path.isfile(fname) and os.path.exists(fname)
     automata = Automata()
     with open(fname) as f:
@@ -152,10 +179,12 @@ def load_automata(fname):
             clickable = from_state.get_clickable_by_id(edge['clickable'])
             assert from_state and to_state and clickable
             automata.add_edge(from_state, to_state, clickable)
+    print 'automata loaded. loading time: %f sec' % (time.time() - t_start)
     return automata
 
 
 def load_config(fname):
+    t_start = time.time()
     with open(fname) as f:
         data = json.load(f)
         config = B2gConfiguration(data['app_name'], data['app_id'])
@@ -164,6 +193,7 @@ def load_config(fname):
         config.set_sleep_time(int(data['sleep_time']))
         config.set_max_time(int(data['max_time']))
         # ignore the rest ('automata_fname', 'root_path', 'dom_path', 'state_path', 'clickable_path')
+        print 'config loaded. loading time: %f sec' % (time.time() - t_start)
     return config
 
 

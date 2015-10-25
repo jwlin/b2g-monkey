@@ -5,7 +5,7 @@
 Test case executor (a.k.a. robot)
 """
 
-import sys, os
+import sys, os, time
 from abc import ABCMeta, abstractmethod
 from marionette import Marionette
 from marionette_driver.errors import ElementNotVisibleException, InvalidElementStateException, NoSuchElementException
@@ -168,15 +168,14 @@ class B2gExecutor(Executor):
         # kill all running apps
         apps = GaiaApps(self._marionette)
         apps.kill_all()
-        import time
-        time.sleep(2)
+        time.sleep(1)
         # todo: clear database (such as established contact)
         self.touch_home_button()
         #home_frame = self.__marionette.find_element('css selector', 'div.homescreen iframe')
         #self.__marionette.switch_to_frame(home_frame)
         icon = self._marionette.find_element('xpath', "//div[contains(@class, 'icon')]//span[contains(text(),'" + self._app_name + "')]")
         icon.tap()
-        time.sleep(2)
+        time.sleep(1)
         self._marionette.switch_to_frame()
         app_frame = self._marionette.find_element('css selector', "iframe[data-url*='" + self._app_id + "']")
         self._marionette.switch_to_frame(app_frame)

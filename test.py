@@ -15,7 +15,6 @@ from dom_analyzer import DomAnalyzer
 from bs4 import BeautifulSoup
 from normalizer import AttributeNormalizer, TagContentNormalizer, TagNormalizer
 from visualizer import Visualizer
-from controller import save_automata
 
 
 class AutomataTestCase(unittest.TestCase):
@@ -217,14 +216,8 @@ class ConfigurationTestCase(unittest.TestCase):
 
 class ControllerTestCase(unittest.TestCase):
     def test_controller(self):
-        #config = B2gConfiguration('E-Mail', 'email')
-        config = B2gConfiguration('Contacts', 'contacts')
-        config.set_max_depth(2)
-        executor = B2gExecutor(config.get_app_name(), config.get_app_id())
-        crawler = B2gCrawler(config, executor)
-        automata = crawler.run()
-        save_automata(automata, config)
-        Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
+        import controller
+        controller.main()
 
 
 class DataBankTestCase(unittest.TestCase):
