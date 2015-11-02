@@ -7,51 +7,47 @@ Module docstring
 
 import os, json, posixpath, time
 from os.path import relpath
-from configuration import B2gConfiguration
+from configuration import B2gConfiguration,SeleniumConfiguration
 from automata import Automata, State
 from clickable import Clickable, FormField, InputField
-from executor import B2gExecutor
-from crawler import B2gCrawler
+from executor import SeleniumExecutor
+from crawler import B2gCrawler, SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
 from test_generator import TestGenerator
 
 
 
-def main():
+def B2gmain():
     config = B2gConfiguration('Contacts', 'contacts')
     config.set_max_depth(3)
-    #config = load_config(os.path.join('trace/20151024005306/config.json'))
-    #automata = load_automata(os.path.join('trace/20151024005306/automata.json'))
     executor = B2gExecutor(config.get_app_name(), config.get_app_id())
-    #tg = TestGenerator(automata, config, executor)
-    #edges = tg.path_to_state(automata.get_state_by_id('5'))
-    '''
-    edges = []
-    edges.append(
-        (automata.get_initial_state(), automata.get_state_by_id('1'), automata.get_initial_state().get_clickable_by_id('add-contact-button'), 1)
-    )
-    edges.append(
-        (automata.get_state_by_id('1'), automata.get_state_by_id('4'), automata.get_state_by_id('1').get_clickable_by_id('add-new-address'), 1)
-    )
-    edges.append(
-        (automata.get_state_by_id('4'), automata.get_state_by_id('5'), automata.get_state_by_id('4').get_clickable_by_id('b2g-monkey-45'), 1)
-    )
 
-    executor.restart_app()
-    for (state_from, state_to, clickable, cost) in edges:
-        time.sleep(config.get_sleep_time())
-        executor.empty_form(clickable)
-        executor.fill_form(clickable)
-        raw_input()
-        executor.fire_event(clickable)
-    '''
     crawler = B2gCrawler(config, executor)
     automata = crawler.run()
     save_automata(automata, config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     save_config(config, 'config.json')
 
+
+#==============================================================================================================================
+# Selenium Web Driver
+#==============================================================================================================================
+def SeleniumMain():
+    print "setting config..."
+    config = SeleniumConfiguration(1, "http://140.112.42.143/nothing/main.html")
+    config.set_max_depth(4)
+    print "setting executor..."
+    executor = SeleniumExecutor(config.get_browserID(), config.get_url())
+    print "setting crawler..."
+    crawler = SeleniumCrawler(config, executor)
+    print "crawler start run..."
+    automata = crawler.run()
+    print "end! save automata..."
+    save_automata(automata, config)
+    Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
+    save_config(config, 'config.json')
+#==============================================================================================================================
 
 def save_automata(automata, configuration):
         data = {
@@ -135,8 +131,15 @@ def save_config(config, fname):
     config_data['max_states'] = config.get_max_states()
     config_data['max_time'] = config.get_max_time()
     config_data['sleep_time'] = config.get_sleep_time()
+    #=============================================================================================
+    #Diff: browser use url & browserID not app
+    '''
     config_data['app_name'] = config.get_app_name()
     config_data['app_id'] = config.get_app_id()
+    '''
+    config_data['url'] = config.get_url()
+    config_data['browser_id'] = config.get_browserID()
+    #=============================================================================================
     config_data['automata_fname'] = config.get_automata_fname()
     config_data['root_path'] = posixpath.join(
         posixpath.join(*(config.get_path('root').split(os.sep)))
@@ -199,4 +202,4 @@ def load_config(fname):
 
 
 if __name__ == '__main__':
-    main()
+    SeleniumMain()

@@ -38,6 +38,15 @@ class InlineDataBank(DataBank):
         'username': {'user1', 'user2'},
         'password': {'P@ssw0rd', '!qaz2wsX'},
         'email': {'user1@example.com', 'user2@mailhost.com'},
+        'name': {'Ann', 'Bob'},
+        'address':{'abc street'},
+        'telephone':{'0912345678'},
+        'mail':{'louis@gmail.com'},
+        'year':{'1999', '2015'},
+        'city':{'2', '3'},
+        'job1':{'1', '3'},
+        'degree2':{'true'},
+        'interest':{'true'}
     }
 
     @classmethod

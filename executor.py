@@ -6,13 +6,23 @@ Test case executor (a.k.a. robot)
 """
 
 import sys, os, time
+
 from abc import ABCMeta, abstractmethod
+'''
 from marionette import Marionette
 from marionette_driver.errors import ElementNotVisibleException, InvalidElementStateException, NoSuchElementException
 from marionette_driver import Wait, By
 from gaiatest.gaia_test import GaiaApps, GaiaDevice
+'''
 from dom_analyzer import DomAnalyzer
 
+#==============================================================================================================================
+# Selenium Web Driver
+#==============================================================================================================================
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
+#==============================================================================================================================
 
 class Executor():
     __metaclass__ = ABCMeta
@@ -41,7 +51,7 @@ class Executor():
     def restart_app(self):
         pass
 
-
+'''
 class B2gExecutor(Executor):
     def __init__(self, app_name, app_id):
         self._app_name = app_name
@@ -52,7 +62,8 @@ class B2gExecutor(Executor):
         apps = GaiaApps(self._marionette)
         apps.kill_all()
 
-        '''
+'''
+'''
         # C:\Users\Jun-Wei\Desktop\b2g\battery\manifest.webapp
         #app = GaiaApps(self._marionette).launch(self._app_name)
         #app = GaiaApps(self._marionette).launch('Battery', manifest_url='C:/Users/Jun-Wei/Desktop/b2g/battery/manifest.webapp', entry_point='/index.html')
@@ -76,7 +87,8 @@ class B2gExecutor(Executor):
         #print self.gaia_apps.running_apps()
         #js = os.path.abspath(os.path.join(__file__, os.path.pardir, 'atoms', "gaia_apps.js"))
         #self.__marionette.import_script(js)
-        '''
+'''
+'''
 
     def fire_event(self, clickable):
         print 'fire_event: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
@@ -207,3 +219,96 @@ class B2gExecutor(Executor):
     def _dispatch_home_button_event(self):
         self._marionette.switch_to_frame()
         self._marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
+'''
+
+#==============================================================================================================================
+#==============================================================================================================================
+# Selenium Web Driver
+#==============================================================================================================================
+class SeleniumExecutor():
+    def __init__(self, browserID, url):
+        #choose the type of browser
+        self.browserID = browserID
+        if browserID == 1:
+            self.driver = webdriver.Firefox();
+        elif browserID == 2:
+            self.driver = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+        elif browserID == 3:
+            self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
+        else:
+            self.driver = webdriver.Firefox(); 
+
+        #link to the url
+        self.startUrl = url
+        self.driver.get(self.startUrl)
+
+    def fire_event(self, clickable):
+        print 'fire_event: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
+        try:
+            # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
+            if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
+                self.driver.find_element_by_id( clickable.get_id() ).click()
+            elif clickable.get_xpath():
+                self.driver.find_element_by_xpath( clickable.get_xpath() ).click()
+            else:
+                raise ValueError('No id nor xpath for the clickable: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath()))
+        except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
+            print 'Element is not interactable in fire_event(): id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
+        except Exception as e:
+            print 'Unknown Exception: %s in fire_event(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
+
+    def fill_form(self, clickable):
+        for f in clickable.get_forms():
+            for input_field in f.get_inputs():
+                try:
+                    if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                        self.driver.find_element_by_id( input_field.get_id() ).send_keys(input_field.get_value())
+                    elif input_field.get_xpath():
+                        self.driver.find_element_by_xpath( input_field.get_xpath() ).send_keys(input_field.get_value())
+                    else:
+                        raise ValueError('No id nor xpath for an input field in the form id: %s (xpath: %s)' % (f.get_id(), f.get_xpath()))
+                except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
+                    print 'Element is not interactable in fill_form(): id: %s (xpath: %s)' % (f.get_id(), f.get_xpath())
+                except Exception as e:
+                    print 'Unknown Exception: %s in fill_form(): id: %s (xpath: %s)' % (str(e), f.get_id(), f.get_xpath())
+
+    def empty_form(self, clickable):
+        for f in clickable.get_forms():
+            for input_field in f.get_inputs():
+                try:
+                    if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                        self.driver.find_element_by_id( input_field.get_id() ).clear()
+                    elif input_field.get_xpath():
+                        self.driver.find_element_by_xpath( input_field.get_xpath() ).clear()
+                    else:
+                        raise ValueError('No id nor xpath for an input field in the form %s (%s)' % (f.get_id(), f.get_xpath()))
+                except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
+                    print 'Element is not interactable in empty_form(): id: %s (xpath: %s)' % (f.get_id(), f.get_xpath())
+                except Exception as e:
+                    print 'Unknown Exception: %s in empty_form(): id: %s (xpath: %s)' % (str(e), f.get_id(), f.get_xpath())
+
+    def get_source(self):
+        text = self.driver.page_source
+        return text.encode('utf-8')
+
+    def get_screenshot(self, file_path):
+        return self.driver.get_screenshot_as_file(file_path)
+
+    def restart_app(self):
+        self.driver.close()
+        if self.browserID == 1:
+            self.driver = webdriver.Firefox();
+        elif self.browserID == 2:
+            self.driver = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+        elif self.browserID == 3:
+            self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
+        else:
+            self.driver = webdriver.Firefox(); 
+        self.driver.get(self.startUrl)
+
+    def back_history(self):
+        self.driver.execute_script("window.history.go(-1)")
+
+    def get_url(self):
+        return self.driver.current_url
+#==============================================================================================================================

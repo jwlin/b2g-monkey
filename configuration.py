@@ -14,9 +14,9 @@ class Configuration:
 
     def __init__(self):
         self._invariants = []
-        self._max_depth = 2
-        self._max_states = 0
-        self._max_time = 0
+        self._max_depth = 3
+        self._max_states = 10
+        self._max_time = 2000
         self._sleep_time = 2
 
     def set_max_depth(self, depth):
@@ -83,3 +83,51 @@ class B2gConfiguration(Configuration):
 
     def get_path(self, my_type):
         return self._file_path[my_type]
+
+
+#==============================================================================================================================
+# Selenium Web Driver
+#==============================================================================================================================
+class SeleniumConfiguration(Configuration):
+    def __init__(self, browserID, url):
+        super(SeleniumConfiguration, self).__init__()
+        self._browserID = browserID
+        self._url = url
+        self._automata_fname = 'automata.json'
+        self._root_path = os.path.join('trace', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+        self._file_path = {
+            'root': self._root_path,
+            'dom': os.path.join(self._root_path, 'dom'),
+            'state': os.path.join(self._root_path, 'screenshot', 'state'),
+            'clickable': os.path.join(self._root_path, 'screenshot', 'clickable'),
+        }
+        for key, value in self._file_path.iteritems():
+            abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
+            if not os.path.exists(abs_path):
+                os.makedirs(abs_path)
+
+    #=============================================================================================
+    #Diff: browser use url & browserID not app
+    def set_browserID(self, app_name):
+        self._browserID = browserID
+
+    def get_browserID(self):
+        return self._browserID
+
+    def set_url(self, app_id):
+        self._url = _url
+
+    def get_url(self):
+        return self._url
+    #=============================================================================================
+
+    def get_automata_fname(self):
+        return self._automata_fname
+
+    def get_abs_path(self, my_type):
+        abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
+        return abs_path
+
+    def get_path(self, my_type):
+        return self._file_path[my_type]
+#==============================================================================================================================
