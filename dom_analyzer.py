@@ -6,7 +6,7 @@ Module docstring
 """
 import random, string
 from bs4 import BeautifulSoup
-from clickable import Clickable, FormField, InputField
+from clickable import Clickable, InputField, SelectField
 from data_bank import InlineDataBank
 from normalizer import AttributeNormalizer, TagNormalizer
 
@@ -28,12 +28,22 @@ class DomAnalyzer:
         Tag('a'),
         Tag('button'),
         Tag('input', {'type': 'submit'}),
+        Tag('input', {'type': 'button'})
     ]
     input_types = ['text', 'email', 'password']  # type of input fields filled with values
-    _normalizers = [TagNormalizer(['head']), AttributeNormalizer()]
+    _normalizers = [TagNormalizer(['head', 'canvas']), AttributeNormalizer('class')]
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
 
+    @classmethod
+    def make_id(cls, _id):
+        if not _id:
+            _id = cls.serial_prefix + str(cls._serial_num)
+            cls._serial_num += 1
+        return _id
+
+    #=============================================================================================
+    #Diff: inputs information save in state, indiviual to clickbles
     @classmethod
     def get_clickables(cls, dom, prev_dom=None):
         # only return newly discovered clickables, i.e. clickables not in prev_clickables
@@ -46,29 +56,18 @@ class DomAnalyzer:
                         prev_clickables += prev_soup.find_all(tag.get_name(), attrs={attr: value})
                 else:
                     prev_clickables += prev_soup.find_all(tag.get_name())
+
         soup = BeautifulSoup(dom, 'html.parser')
-        forms = soup.find_all('form')
         clickables = []
-        # clickables with forms and inputs attached
+        """
+        forms = soup.find_all('form')
         for form in forms:
             form_id = form.get('id')
             if not form_id:
                 form_id = cls.serial_prefix + str(cls._serial_num)
                 cls._serial_num += 1
             f = FormField(form_id, cls._get_xpath(form))
-            for input_type in cls.input_types:
-                inputs = form.find_all('input', attrs={'type': input_type})
-                for my_input in inputs:
-                    data_set = InlineDataBank.get_data(input_type)
-                    if data_set:
-                        value = random.choice(list(data_set))
-                    else:
-                        value = ''.join(random.choice(string.lowercase) for i in xrange(8))
-                    input_id = my_input.get('id')
-                    if not input_id:
-                        input_id = cls.serial_prefix + str(cls._serial_num)
-                        cls._serial_num += 1
-                    f.add_input(InputField(input_id, cls._get_xpath(my_input), input_type, value))
+            # add clickables in form
             for tag in cls._clickable_tags:
                 if tag.get_attr():
                     for attr, value in tag.get_attr().items():
@@ -76,8 +75,8 @@ class DomAnalyzer:
                 else:
                     candidate_clickables = form.find_all(tag.get_name())
                 for candidate_clickable in candidate_clickables:
-                    #print candidate_clickable
                     if candidate_clickable in prev_clickables:
+                        print "candidate_clickable:",candidate_clickable
                         continue
                     clickable_id = candidate_clickable.get('id')
                     if not clickable_id:
@@ -86,7 +85,7 @@ class DomAnalyzer:
                     c = Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name())
                     c.add_form(f)
                     clickables.append(c)
-
+        """
         # other clickables
         for tag in cls._clickable_tags:
             if tag.get_attr():
@@ -95,17 +94,46 @@ class DomAnalyzer:
             else:
                 candidate_clickables = soup.find_all(tag.get_name())
             for candidate_clickable in candidate_clickables:
-                #print candidate_clickable
-                if candidate_clickable in prev_clickables:
-                        continue
+                if candidate_clickable in prev_clickables:   
+                    continue
                 if not cls._is_duplicate(clickables, candidate_clickable):
-                    clickable_id = candidate_clickable.get('id')
-                    if not clickable_id:
-                        clickable_id = cls.serial_prefix + str(cls._serial_num)
-                        cls._serial_num += 1
+                    clickable_id = cls.make_id( candidate_clickable.get('id') )
                     clickables.append(Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name()))
-        #print 'prev_clickables len', len(prev_clickables), 'clickables len', len(clickables)
         return clickables
+    #=============================================================================================
+
+    #=============================================================================================
+    #Diff: inputs information save in state, indiviual to clickbles
+    @classmethod
+    def get_inputs(cls, dom):
+        # add inputs in dom
+        soup = BeautifulSoup(dom, 'html.parser')
+        inputs_list = []
+        for input_type in cls.input_types:
+            inputs = soup.find_all('input', attrs={'type': input_type})
+            for my_input in inputs:
+                data_set = InlineDataBank.get_data(input_type)
+                if data_set:
+                    value = random.choice(list(data_set))
+                else:
+                    value = ''.join(random.choice(string.lowercase) for i in xrange(8))
+                input_id = cls.make_id( my_input.get('id') )
+                inputs_list.append(InputField(input_id, cls._get_xpath(my_input), input_type, value))
+        return inputs_list
+
+    @classmethod
+    def get_selects(cls, dom):
+        # add selects in dom
+        soup = BeautifulSoup(dom, 'html.parser')
+        selects_list = []
+        selects = soup.find_all('select')
+        for my_select in selects:
+            '''TODO: make select value'''
+            value = 1
+            select_id = cls.make_id( my_select.get('id') )
+            selects_list.append(SelectField(select_id, cls._get_xpath(my_select), value))
+        return selects_list
+    #=============================================================================================
 
     @classmethod
     def _get_node(cls, node):
@@ -144,16 +172,3 @@ class DomAnalyzer:
             return True
         else:
             return False
-        '''
-        import difflib
-        for i, s in enumerate(difflib.ndiff(dom1, dom2)):
-            if s[0]==' ':
-                continue
-            elif s[0]=='-':
-                print 'Delete "{}" from position {}'.format(s[-1],i)
-            elif s[0]=='+':
-                print 'Add "{}" to position {}'.format(s[-1],i)
-        print
-        return True
-        '''
-

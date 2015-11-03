@@ -9,7 +9,7 @@ import os, json, posixpath, time
 from os.path import relpath
 from configuration import B2gConfiguration,SeleniumConfiguration
 from automata import Automata, State
-from clickable import Clickable, FormField, InputField
+from clickable import Clickable, InputField, SelectField
 from executor import SeleniumExecutor
 from crawler import B2gCrawler, SeleniumCrawler
 from visualizer import Visualizer
@@ -43,6 +43,7 @@ def SeleniumMain():
     crawler = SeleniumCrawler(config, executor)
     print "crawler start run..."
     automata = crawler.run()
+    crawler.close()
     print "end! save automata..."
     save_automata(automata, config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
@@ -52,8 +53,9 @@ def SeleniumMain():
 def save_automata(automata, configuration):
         data = {
             'state': [],
-            'edge': [],
-            'id_prefix': DomAnalyzer.serial_prefix  # the prefix used in ids given by our monkey
+            'edge': [], 
+            # the prefix used in ids given by our monkey
+            'id_prefix': DomAnalyzer.serial_prefix
         }
         for state in automata.get_states():
             state_data = {
@@ -78,7 +80,9 @@ def save_automata(automata, configuration):
                     ),
                     state.get_id() + '.png'
                 ),
-                'clickable': []
+                'clickable': [],
+                'inputs': [],
+                'selects': []
             }
             for clickable in state.get_clickables():
                 clickable_data = {
@@ -93,25 +97,24 @@ def save_automata(automata, configuration):
                                 ).split(os.sep))
                         ),
                         state.get_id() + '-' + clickable.get_id() + '.png'
-                    ),
-                    'form': []
+                    )
                 }
-                for form in clickable.get_forms():
-                    form_data = {
-                        'id': form.get_id(),
-                        'xpath': form.get_xpath(),
-                        'input': []
-                    }
-                    for my_input in form.get_inputs():
-                        input_data = {
-                            'id': my_input.get_id(),
-                            'xpath': my_input.get_xpath(),
-                            'type': my_input.get_type(),
-                            'value': my_input.get_value()
-                        }
-                        form_data['input'].append(input_data)
-                    clickable_data['form'].append(form_data)
                 state_data['clickable'].append(clickable_data)
+            for my_input in state.get_inputs():
+                input_data = {
+                    'id': my_input.get_id(),
+                    'xpath': my_input.get_xpath(),
+                    'type': my_input.get_type(),
+                    'value': my_input.get_value()
+                }
+                state_data['inputs'].append(input_data)
+            for select in state.get_selects():
+                select_data = {
+                    'id': select.get_id(),
+                    'xpath': select.get_xpath(),
+                    'value': select.get_value()
+                }
+                state_data['selects'].append(select_data)
             data['state'].append(state_data)
         for (state_from, state_to, clickable, cost) in automata.get_edges():
             edge_data = {
@@ -169,11 +172,6 @@ def load_automata(fname):
                 s.set_id(state['id'])
                 for clickable in state['clickable']:
                     c = Clickable(clickable['id'], clickable['xpath'], clickable['tag'])
-                    for form in clickable['form']:
-                        f = FormField(form['id'], form['xpath'])
-                        for the_input in form['input']:
-                            f.add_input(InputField(the_input['id'], the_input['xpath'], the_input['type'], the_input['value']))
-                        c.add_form(f)
                     s.add_clickable(c)
                 automata.add_state(s)
         for edge in data['edge']:

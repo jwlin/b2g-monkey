@@ -22,6 +22,9 @@ from dom_analyzer import DomAnalyzer
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support import expected_conditions 
+from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchElementException
 #==============================================================================================================================
 
 class Executor():
@@ -229,18 +232,8 @@ class SeleniumExecutor():
     def __init__(self, browserID, url):
         #choose the type of browser
         self.browserID = browserID
-        if browserID == 1:
-            self.driver = webdriver.Firefox();
-        elif browserID == 2:
-            self.driver = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
-        elif browserID == 3:
-            self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
-        else:
-            self.driver = webdriver.Firefox(); 
-
         #link to the url
         self.startUrl = url
-        self.driver.get(self.startUrl)
 
     def fire_event(self, clickable):
         print 'fire_event: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
@@ -248,44 +241,67 @@ class SeleniumExecutor():
             # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
             if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
                 self.driver.find_element_by_id( clickable.get_id() ).click()
+                self.check_alert()
             elif clickable.get_xpath():
                 self.driver.find_element_by_xpath( clickable.get_xpath() ).click()
+                self.check_alert()
             else:
                 raise ValueError('No id nor xpath for the clickable: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath()))
-        except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
-            print 'Element is not interactable in fire_event(): id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
         except Exception as e:
             print 'Unknown Exception: %s in fire_event(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
 
-    def fill_form(self, clickable):
-        for f in clickable.get_forms():
-            for input_field in f.get_inputs():
-                try:
-                    if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                        self.driver.find_element_by_id( input_field.get_id() ).send_keys(input_field.get_value())
-                    elif input_field.get_xpath():
-                        self.driver.find_element_by_xpath( input_field.get_xpath() ).send_keys(input_field.get_value())
-                    else:
-                        raise ValueError('No id nor xpath for an input field in the form id: %s (xpath: %s)' % (f.get_id(), f.get_xpath()))
-                except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
-                    print 'Element is not interactable in fill_form(): id: %s (xpath: %s)' % (f.get_id(), f.get_xpath())
-                except Exception as e:
-                    print 'Unknown Exception: %s in fill_form(): id: %s (xpath: %s)' % (str(e), f.get_id(), f.get_xpath())
+    def fill_form(self, all_inputs):
+        state_inputs = all_inputs[0]
+        sate_selects = all_inputs[1]
+        for input_field in state_inputs:
+            try:
+                if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                    self.driver.find_element_by_id( input_field.get_id() ).send_keys(input_field.get_value())
+                elif input_field.get_xpath():
+                    self.driver.find_element_by_xpath( input_field.get_xpath() ).send_keys(input_field.get_value())
+                else:
+                    raise ValueError('No id nor xpath for an input field')
+            except Exception as e:
+                print 'Unknown Exception: %s' % (str(e))
+        for select_field in sate_selects:
+            try:
+                if select_field.get_id() and not select_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                    select = Select(self.driver.find_element_by_id(select_field.get_id()))
+                    select.select_by_index(select_field.get_value())
+                elif select_field.get_xpath():
+                    select = Select(self.driver.find_element_by_xpath(select_field.get_xpath()))
+                    select.select_by_index(select_field.get_value())
+                else:
+                    raise ValueError('No id nor xpath for an input field')
+            except Exception as e:
+                print 'Unknown Exception: %s' % (str(e))
 
-    def empty_form(self, clickable):
-        for f in clickable.get_forms():
-            for input_field in f.get_inputs():
-                try:
-                    if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                        self.driver.find_element_by_id( input_field.get_id() ).clear()
-                    elif input_field.get_xpath():
-                        self.driver.find_element_by_xpath( input_field.get_xpath() ).clear()
-                    else:
-                        raise ValueError('No id nor xpath for an input field in the form %s (%s)' % (f.get_id(), f.get_xpath()))
-                except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
-                    print 'Element is not interactable in empty_form(): id: %s (xpath: %s)' % (f.get_id(), f.get_xpath())
-                except Exception as e:
-                    print 'Unknown Exception: %s in empty_form(): id: %s (xpath: %s)' % (str(e), f.get_id(), f.get_xpath())
+
+    def empty_form(self, all_inputs):
+        state_inputs = all_inputs[0]
+        sate_selects = all_inputs[1]
+        for input_field in state_inputs:
+            try:
+                if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                    self.driver.find_element_by_id( input_field.get_id() ).clear()
+                elif input_field.get_xpath():
+                    self.driver.find_element_by_xpath( input_field.get_xpath() ).clear()
+                else:
+                    raise ValueError('No id nor xpath for an input field')
+            except Exception as e:
+                print 'Unknown Exception: %s' % (str(e))
+        for select_feild in sate_selects:
+            try:
+                if select_field.get_id() and not select_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                    select = Select(self.driver.find_element_by_id(select_field.get_id()))
+                    select.select_by_index(0)
+                elif select_field.get_xpath():
+                    select = Select(self.driver.find_element_by_xpath(select_field.get_xpath()))
+                    select.select_by_index(0)
+                else:
+                    raise ValueError('No id nor xpath for an input field')
+            except Exception as e:
+                print 'Unknown Exception: %s' % (str(e))
 
     def get_source(self):
         text = self.driver.page_source
@@ -294,8 +310,7 @@ class SeleniumExecutor():
     def get_screenshot(self, file_path):
         return self.driver.get_screenshot_as_file(file_path)
 
-    def restart_app(self):
-        self.driver.close()
+    def start(self):
         if self.browserID == 1:
             self.driver = webdriver.Firefox();
         elif self.browserID == 2:
@@ -306,9 +321,24 @@ class SeleniumExecutor():
             self.driver = webdriver.Firefox(); 
         self.driver.get(self.startUrl)
 
+    def restart_app(self):
+        self.driver.close()
+        self.start()
+
     def back_history(self):
         self.driver.execute_script("window.history.go(-1)")
 
     def get_url(self):
         return self.driver.current_url
+
+    def check_alert(self):
+        try:
+            alert = self.driver.switch_to_alert()
+            print "[LOG] click with alert: %s" % alert.text
+            alert.accept()
+        except Exception:
+            print "[LOG] click without alert"
+
+    def close(self):
+        self.driver.close()
 #==============================================================================================================================

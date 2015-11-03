@@ -14,10 +14,6 @@ class Automata:
         self._edges = []
         self._initial_state = None
         self._current_state = None
-        # self.stateNum = 0
-        # self.abstraction = abstraction
-        # self.consideredAttributes = []
-        # self.ignoredAttributes = []
 
     def get_current_state(self):
         return self._current_state
@@ -92,14 +88,11 @@ class State:
         self._dom = dom
         self._prev_states = []
         self._clickables = []
-        # self.__candidate_clickables = []
-        #self.Type = "View"
-        #self.viewList = []
-        #self.XMLs = []
-        #self.Moves = []
-        #self.action = None
-        #self.totalMemory = -1
-        #self.parents = []
+        #=============================================================================================
+        #Diff: inputs information save in state, indiviual to clickbles
+        self._inputs = []
+        self._selects = []
+        #=============================================================================================
 
     def add_clickable(self, clickable):
         # check if the clickable is duplicated
@@ -114,36 +107,20 @@ class State:
         self._clickables.append(clickable)
         return True
 
-    '''
-    def add_candidate_clickable(self, clickable):
-        # check if the clickable is duplicated
-        if clickable.get_id():
-            for c in self.__candidate_clickables:
-                if c.get_id() == clickable.get_id():
-                    return False
-        else:
-            for c in self.__candidate_clickables:
-                if c.get_xpath() == clickable.get_xpath():
-                    return False
-        self.__candidate_clickables.append(clickable)
-        return True
+    def get_clickable_by_id(self, cid):
+        for c in self._clickables:
+            if c.get_id() == cid:
+                return c
+        return None
 
-    def remove_candidate_clickable(self, clickable):
-        if clickable.get_id():
-            for c in self.__candidate_clickables:
-                if c.get_id() == clickable.get_id():
-                    self.__candidate_clickables.remove(c)
-                    return True
-        else:
-            for c in self.__candidate_clickables:
-                if c.get_xpath() == clickable.get_xpath():
-                    self.__candidate_clickables.remove(c)
-                    return True
-        return False
-    '''
+    def get_clickables(self):
+        return self._clickables
 
     def set_id(self, state_id):
         self._id = state_id
+
+    def get_id(self):
+        return self._id
 
     def add_prev_state(self, state):
         for s in self._prev_states:
@@ -152,25 +129,8 @@ class State:
         self._prev_states.append(state)
         return True
 
-    def get_clickables(self):
-        return self._clickables
-
-    def get_clickable_by_id(self, cid):
-        for c in self._clickables:
-            if c.get_id() == cid:
-                return c
-        return None
-
-    '''
-    def get_candidate_clickables(self):
-        return self.__candidate_clickables
-    '''
-
     def get_prev_states(self):
         return self._prev_states
-
-    def get_id(self):
-        return self._id
 
     def get_dom(self):
         return self._dom
@@ -179,3 +139,41 @@ class State:
         return 'state id: %s, prev states: %s, clickables: %s' % \
                (self._id, self._prev_states, len(self._clickables))
 
+    #=============================================================================================
+    #Diff: inputs information save in state, indiviual to clickbles
+    def add_input(self, _input):
+        # check if the input is duplicated
+        if _input.get_id():
+            for i in self._inputs:
+                if i.get_id() == _input.get_id():
+                    return False
+        else:
+            for i in self._inputs:
+                if i.get_xpath() == _input.get_xpath():
+                    return False
+        self._inputs.append(_input)
+
+    def set_inputs(self, inputs):
+        self._inputs = inputs
+
+    def get_inputs(self):
+        return self._inputs 
+
+    def add_select(self, select):
+        # check if the select is duplicated
+        if select.get_id():
+            for s in self._selects:
+                if s.get_id() == select.get_id():
+                    return False
+        else:
+            for s in self._selects:
+                if s.get_xpath() == select.get_xpath():
+                    return False
+        self._selects.append(select)
+
+    def set_selects(self, selects):
+        self._selects = selects
+
+    def get_selects(self):
+        return self._selects
+    #=============================================================================================

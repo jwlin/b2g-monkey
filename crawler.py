@@ -119,54 +119,47 @@ class SeleniumCrawler(Crawler):
 
     def run(self):
         #self.executor.restart_app()
+        self.executor.start()
         print "get initial state"
         initial_state = State(self.executor.get_source())
         self.automata.add_state(initial_state)
-        #=============================================================================================
-        #Diff: selenium save screenshot as file, need mkdir first!
-        path = os.path.join(self.configuration.get_abs_path('state'), initial_state.get_id() + '.png')
-        self.executor.get_screenshot(path)
-        #=============================================================================================
-        self.save_dom(initial_state)
-        self.crawl(1)
+        self.save_state(initial_state)
+        self.crawl(1)        
         return self.automata
 
     def crawl(self, depth, prev_state=None):
-        print "now depth: ",depth," - max_depth: ",self.configuration.get_max_depth()
+        print "[LOG] now depth: ",depth," - max_depth: ",self.configuration.get_max_depth()
         if depth <= self.configuration.get_max_depth():
             cs = self.automata.get_current_state()
-            print "current state", cs.get_id()
-
+            print "[LOG] current state", cs.get_id()
             for clickable in DomAnalyzer.get_clickables(cs.get_dom(), prev_state.get_dom() if prev_state else None):
-                #=============================================================================================
-                #Diff: selenium dosen't screenshot edge clickable
-                #=============================================================================================
-                # EVENT1-SIMPLE CLICK : fire the clickable
                 '''TODO: ADD OTHER EVENTS '''
-                print "state ",cs.get_id(), " fire element"
-                self.executor.empty_form(clickable)
-                self.executor.fill_form(clickable)
+                print "[LOG] state ",cs.get_id(), " fire element"
+                self.executor.empty_form([cs.get_inputs(), cs.get_selects()])
+                self.executor.fill_form([cs.get_inputs(), cs.get_selects()])
                 self.executor.fire_event(clickable)
                 time.sleep(self.configuration.get_sleep_time())
-
                 new_dom = self.executor.get_source()
-                if not DomAnalyzer.is_equal(cs.get_dom(), new_dom) and self.is_same_domain(self.executor.get_url()):
-                    print "change dom to: ", self.executor.get_url()
+
+                if (not DomAnalyzer.is_equal(cs.get_dom(), new_dom) ) and self.is_same_domain(self.executor.get_url()):
+                    print "[LOG] change dom to: ", self.executor.get_url()
+                    # check if this is a new state
+                    temp_state = State(new_dom)
+                    ns, is_newly_added = self.automata.add_state(temp_state)
+                    # save this click edge
                     cs.add_clickable(clickable)
-                    ns, is_newly_added = self.automata.add_state(State(new_dom))
                     self.automata.add_edge(cs, ns, clickable)
+                    '''TODO: value of inputs should connect with edges '''
                     if is_newly_added:
-                        print "add new state ",ns.get_id()," of: ", self.executor.get_url()
-                        path = os.path.join(self.configuration.get_abs_path('state'), ns.get_id() + '.png')
-                        self.executor.get_screenshot(path)
-                        self.save_dom(ns)
+                        print "[LOG] add new state ",ns.get_id()," of: ", self.executor.get_url()
+                        self.save_state(ns)
                         self.automata.change_state(ns)
                         self.crawl(depth+1, cs)
                     self.automata.change_state(cs)
-                    print "depth ", depth," -> backtrack to state ", cs.get_id()
+                    print "[LOG] depth ", depth," -> backtrack to state ", cs.get_id()
                     self.backtrack(cs)
-                    print "backtrack end"
-            print "depth ", depth," -> state ", cs.get_id()," crawl end"
+                    print "[LOG] backtrack end"
+            print "[LOG] depth ", depth," -> state ", cs.get_id()," crawl end"
 
     def backtrack(self, state):
         self.executor.back_history()
@@ -176,7 +169,7 @@ class SeleniumCrawler(Crawler):
         if not DomAnalyzer.is_equal(state.get_dom(), dom):
             edges = self.automata.get_shortest_path(state)
             self.executor.restart_app()
-            print "retart"
+            print "[LOG] retart"
             for (state_from, state_to, clickable, cost) in edges:
                 time.sleep(self.configuration.get_sleep_time())
                 self.executor.empty_form(clickable)
@@ -198,6 +191,18 @@ class SeleniumCrawler(Crawler):
     def is_same_domain(self, url):
         base_url = urlparse( self.configuration.get_url() )
         new_url = urlparse( url )
-        return base_url.netloc == new_url.netloc 
+        return base_url.netloc == new_url.netloc
+
+    def close(self):
+        self.executor.close()
+
+    def save_state(self, state):
+        state.set_inputs( DomAnalyzer.get_inputs(state.get_dom()) )
+        state.set_selects( DomAnalyzer.get_selects(state.get_dom()) )
+        # save this state's screenshot and dom
+        path = os.path.join(self.configuration.get_abs_path('state'), state.get_id() + '.png')
+        self.executor.get_screenshot(path)
+        self.save_dom(state)
+
     #=============================================================================================
 #==============================================================================================================================
