@@ -14,9 +14,6 @@ from executor import SeleniumExecutor
 from crawler import B2gCrawler, SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
-from test_generator import TestGenerator
-
-
 
 def B2gmain():
     config = B2gConfiguration('Contacts', 'contacts')
@@ -35,8 +32,10 @@ def B2gmain():
 #==============================================================================================================================
 def SeleniumMain():
     print "setting config..."
-    config = SeleniumConfiguration(1, "http://140.112.42.143/nothing/main.html")
-    config.set_max_depth(4)
+    #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/content1.do")
+    config = SeleniumConfiguration(1, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
+    config.set_max_depth(2)
+    config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
     print "setting crawler..."

@@ -106,6 +106,18 @@ class SeleniumConfiguration(Configuration):
             if not os.path.exists(abs_path):
                 os.makedirs(abs_path)
 
+        self._domains = []
+
+    def get_automata_fname(self):
+        return self._automata_fname
+
+    def get_abs_path(self, my_type):
+        abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
+        return abs_path
+
+    def get_path(self, my_type):
+        return self._file_path[my_type]
+
     #=============================================================================================
     #Diff: browser use url & browserID not app
     def set_browserID(self, app_name):
@@ -119,15 +131,12 @@ class SeleniumConfiguration(Configuration):
 
     def get_url(self):
         return self._url
+
+    def set_domains(self, domains):
+        self._domains = domains
+
+    def get_domains(self):
+        return self._domains
+
     #=============================================================================================
-
-    def get_automata_fname(self):
-        return self._automata_fname
-
-    def get_abs_path(self, my_type):
-        abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
-        return abs_path
-
-    def get_path(self, my_type):
-        return self._file_path[my_type]
 #==============================================================================================================================

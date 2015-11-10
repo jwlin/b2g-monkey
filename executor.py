@@ -234,6 +234,7 @@ class SeleniumExecutor():
         self.browserID = browserID
         #link to the url
         self.startUrl = url
+        self.main_window = None
 
     def fire_event(self, clickable):
         print 'fire_event: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
@@ -241,10 +242,10 @@ class SeleniumExecutor():
             # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
             if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
                 self.driver.find_element_by_id( clickable.get_id() ).click()
-                self.check_alert()
+                self.check_after_click()
             elif clickable.get_xpath():
                 self.driver.find_element_by_xpath( clickable.get_xpath() ).click()
-                self.check_alert()
+                self.check_after_click()
             else:
                 raise ValueError('No id nor xpath for the clickable: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath()))
         except Exception as e:
@@ -254,6 +255,7 @@ class SeleniumExecutor():
         state_inputs = all_inputs[0]
         sate_selects = all_inputs[1]
         for input_field in state_inputs:
+            print "[DEBUG] fill: ",input_field.__str__()
             try:
                 if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
                     self.driver.find_element_by_id( input_field.get_id() ).send_keys(input_field.get_value())
@@ -281,6 +283,7 @@ class SeleniumExecutor():
         state_inputs = all_inputs[0]
         sate_selects = all_inputs[1]
         for input_field in state_inputs:
+            print "[DEBUG] empty: ",input_field.__str__()
             try:
                 if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
                     self.driver.find_element_by_id( input_field.get_id() ).clear()
@@ -290,7 +293,7 @@ class SeleniumExecutor():
                     raise ValueError('No id nor xpath for an input field')
             except Exception as e:
                 print 'Unknown Exception: %s' % (str(e))
-        for select_feild in sate_selects:
+        for select_field in sate_selects:
             try:
                 if select_field.get_id() and not select_field.get_id().startswith(DomAnalyzer.serial_prefix):
                     select = Select(self.driver.find_element_by_id(select_field.get_id()))
@@ -319,17 +322,26 @@ class SeleniumExecutor():
             self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
         else:
             self.driver = webdriver.Firefox(); 
+            self.driver.set_window_size(1120, 550)
         self.driver.get(self.startUrl)
+        self.main_window = self.driver.current_window_handle
 
     def restart_app(self):
         self.driver.close()
         self.start()
 
     def back_history(self):
-        self.driver.execute_script("window.history.go(-1)")
+        self.driver.back()
 
     def get_url(self):
         return self.driver.current_url
+
+    #=============================================================================================
+    #Diff: check any browser detail after cleck event
+    def check_after_click(self):
+        self.check_alert()
+        self.check_window()
+        self.check_tab()
 
     def check_alert(self):
         try:
@@ -338,6 +350,18 @@ class SeleniumExecutor():
             alert.accept()
         except Exception:
             print "[LOG] click without alert"
+
+    def check_window(self):
+        if len(self.driver.window_handles) > 1:
+            for handle in self.driver.window_handles:
+                if handle != self.driver.main_window:
+                    self.driver.switch_to_window(handle)
+                    self.driver.close()
+            self.driver.switch_to_window(main_window)
+
+    def check_tab(self):
+        pass
+    #=============================================================================================
 
     def close(self):
         self.driver.close()

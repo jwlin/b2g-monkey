@@ -59,34 +59,7 @@ class DomAnalyzer:
 
         soup = BeautifulSoup(dom, 'html.parser')
         clickables = []
-        """
-        forms = soup.find_all('form')
-        for form in forms:
-            form_id = form.get('id')
-            if not form_id:
-                form_id = cls.serial_prefix + str(cls._serial_num)
-                cls._serial_num += 1
-            f = FormField(form_id, cls._get_xpath(form))
-            # add clickables in form
-            for tag in cls._clickable_tags:
-                if tag.get_attr():
-                    for attr, value in tag.get_attr().items():
-                        candidate_clickables = form.find_all(tag.get_name(), attrs={attr: value})
-                else:
-                    candidate_clickables = form.find_all(tag.get_name())
-                for candidate_clickable in candidate_clickables:
-                    if candidate_clickable in prev_clickables:
-                        print "candidate_clickable:",candidate_clickable
-                        continue
-                    clickable_id = candidate_clickable.get('id')
-                    if not clickable_id:
-                        clickable_id = cls.serial_prefix + str(cls._serial_num)
-                        cls._serial_num += 1
-                    c = Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name())
-                    c.add_form(f)
-                    clickables.append(c)
-        """
-        # other clickables
+        
         for tag in cls._clickable_tags:
             if tag.get_attr():
                 for attr, value in tag.get_attr().items():
@@ -112,7 +85,11 @@ class DomAnalyzer:
         for input_type in cls.input_types:
             inputs = soup.find_all('input', attrs={'type': input_type})
             for my_input in inputs:
-                data_set = InlineDataBank.get_data(input_type)
+                if input_type == "text":
+                    data_set = InlineDataBank.get_data(my_input['id'])
+                else:
+                    data_set = InlineDataBank.get_data(input_type)
+
                 if data_set:
                     value = random.choice(list(data_set))
                 else:

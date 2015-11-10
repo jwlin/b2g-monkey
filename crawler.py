@@ -141,21 +141,24 @@ class SeleniumCrawler(Crawler):
                 time.sleep(self.configuration.get_sleep_time())
                 new_dom = self.executor.get_source()
 
-                if (not DomAnalyzer.is_equal(cs.get_dom(), new_dom) ) and self.is_same_domain(self.executor.get_url()):
-                    print "[LOG] change dom to: ", self.executor.get_url()
-                    # check if this is a new state
-                    temp_state = State(new_dom)
-                    ns, is_newly_added = self.automata.add_state(temp_state)
-                    # save this click edge
-                    cs.add_clickable(clickable)
-                    self.automata.add_edge(cs, ns, clickable)
-                    '''TODO: value of inputs should connect with edges '''
-                    if is_newly_added:
-                        print "[LOG] add new state ",ns.get_id()," of: ", self.executor.get_url()
-                        self.save_state(ns)
-                        self.automata.change_state(ns)
-                        self.crawl(depth+1, cs)
-                    self.automata.change_state(cs)
+                if not DomAnalyzer.is_equal(cs.get_dom(), new_dom):
+                    if self.is_same_domain(self.executor.get_url()):
+                        print "[LOG] change dom to: ", self.executor.get_url()
+                        # check if this is a new state
+                        temp_state = State(new_dom)
+                        ns, is_newly_added = self.automata.add_state(temp_state)
+                        # save this click edge
+                        cs.add_clickable(clickable)
+                        self.automata.add_edge(cs, ns, clickable)
+                        '''TODO: value of inputs should connect with edges '''
+                        if is_newly_added:
+                            print "[LOG] add new state ",ns.get_id()," of: ", self.executor.get_url()
+                            self.save_state(ns)
+                            self.automata.change_state(ns)
+                            self.crawl(depth+1, cs)
+                        self.automata.change_state(cs)
+                    else:
+                        print "[LOG] out of domain: ", self.executor.get_url()
                     print "[LOG] depth ", depth," -> backtrack to state ", cs.get_id()
                     self.backtrack(cs)
                     print "[LOG] backtrack end"
@@ -172,15 +175,15 @@ class SeleniumCrawler(Crawler):
             print "[LOG] retart"
             for (state_from, state_to, clickable, cost) in edges:
                 time.sleep(self.configuration.get_sleep_time())
-                self.executor.empty_form(clickable)
-                self.executor.fill_form(clickable)
+                self.executor.empty_form([state_from.get_inputs(), state_from.get_selects()])
+                self.executor.fill_form([state_from.get_inputs(), state_from.get_selects()])
                 self.executor.fire_event(clickable)
-            time.sleep(self.configuration.get_sleep_time())
-            dom = self.executor.get_source()
-            #check again if executor really turn back. if not, sth error, stop
-            if not DomAnalyzer.is_equal(state.get_dom(), dom):
-                '''TODO: stop and throw exception'''
-
+                #check again if executor really turn back. if not, sth error, stop
+                time.sleep(self.configuration.get_sleep_time())
+                dom = self.executor.get_source()
+                if not DomAnalyzer.is_equal(state_to.get_dom(), dom):
+                    print "[ERROR] cannot traceback"
+                    self.close()
 
     def save_dom(self, state):
         with open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '.txt'), 'w') as f:
@@ -191,7 +194,14 @@ class SeleniumCrawler(Crawler):
     def is_same_domain(self, url):
         base_url = urlparse( self.configuration.get_url() )
         new_url = urlparse( url )
-        return base_url.netloc == new_url.netloc
+        if base_url.netloc == new_url.netloc:
+            return True
+        else:
+            for d in self.configuration.get_domains():
+                d_url = urlparse(d)
+                if d_url.netloc == new_url.netloc:
+                    return True
+            return False
 
     def close(self):
         self.executor.close()

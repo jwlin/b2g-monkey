@@ -36,7 +36,7 @@ class InlineDataBank(DataBank):
     # data is a list of types and the corresponding input data (set)
     data = {
         'username': {'user1', 'user2'},
-        'password': {'P@ssw0rd', '!qaz2wsX'},
+        'password': {'j6j6fu3fu3mp3mp3'},
         'email': {'user1@example.com', 'user2@mailhost.com'},
         'name': {'Ann', 'Bob'},
         'address':{'abc street'},
@@ -46,7 +46,8 @@ class InlineDataBank(DataBank):
         'city':{'2', '3'},
         'job1':{'1', '3'},
         'degree2':{'true'},
-        'interest':{'true'}
+        'interest':{'true'},
+        'uid': {'louisalflame@hotmail.com.tw'}
     }
 
     @classmethod
