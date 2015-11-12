@@ -8,16 +8,13 @@ The automata (finite state machine) referenced by the monkey.
 
 from dom_analyzer import DomAnalyzer
 
+
 class Automata:
     def __init__(self):
         self._states = []
         self._edges = []
         self._initial_state = None
         self._current_state = None
-        # self.stateNum = 0
-        # self.abstraction = abstraction
-        # self.consideredAttributes = []
-        # self.ignoredAttributes = []
 
     def get_current_state(self):
         return self._current_state
@@ -92,55 +89,13 @@ class State:
         self._dom = dom
         self._prev_states = []
         self._clickables = []
-        # self.__candidate_clickables = []
-        #self.Type = "View"
-        #self.viewList = []
-        #self.XMLs = []
-        #self.Moves = []
-        #self.action = None
-        #self.totalMemory = -1
-        #self.parents = []
+        self._forms = []
 
     def add_clickable(self, clickable):
-        # check if the clickable is duplicated
-        if clickable.get_id():
-            for c in self._clickables:
-                if c.get_id() == clickable.get_id():
-                    return False
-        else:
-            for c in self._clickables:
-                if c.get_xpath() == clickable.get_xpath():
-                    return False
+        if clickable in self._clickables:
+            return False
         self._clickables.append(clickable)
         return True
-
-    '''
-    def add_candidate_clickable(self, clickable):
-        # check if the clickable is duplicated
-        if clickable.get_id():
-            for c in self.__candidate_clickables:
-                if c.get_id() == clickable.get_id():
-                    return False
-        else:
-            for c in self.__candidate_clickables:
-                if c.get_xpath() == clickable.get_xpath():
-                    return False
-        self.__candidate_clickables.append(clickable)
-        return True
-
-    def remove_candidate_clickable(self, clickable):
-        if clickable.get_id():
-            for c in self.__candidate_clickables:
-                if c.get_id() == clickable.get_id():
-                    self.__candidate_clickables.remove(c)
-                    return True
-        else:
-            for c in self.__candidate_clickables:
-                if c.get_xpath() == clickable.get_xpath():
-                    self.__candidate_clickables.remove(c)
-                    return True
-        return False
-    '''
 
     def set_id(self, state_id):
         self._id = state_id
@@ -161,11 +116,6 @@ class State:
                 return c
         return None
 
-    '''
-    def get_candidate_clickables(self):
-        return self.__candidate_clickables
-    '''
-
     def get_prev_states(self):
         return self._prev_states
 
@@ -174,6 +124,32 @@ class State:
 
     def get_dom(self):
         return self._dom
+
+    def get_forms(self):
+        if not self._forms:
+            for c in self._clickables:
+                for f in c.get_forms():
+                    is_existed = False
+                    for existing_form in self._forms:
+                        if f.get_xpath() == existing_form.get_xpath():
+                            is_existed = True
+                            break
+                    if not is_existed:
+                        self._forms.append(f)
+        return self._forms
+
+    def add_form(self, form):
+        for f in self._forms:
+            if f.get_xpath() == form.get_xpath():
+                return False
+        self._forms.append(form)
+        return True
+
+    def get_form_by_id(self, fid):
+        for f in self._forms:
+            if f.get_id() == fid:
+                return f
+        return None
 
     def __str__(self):
         return 'state id: %s, prev states: %s, clickables: %s' % \

@@ -30,7 +30,7 @@ class DomAnalyzer:
         Tag('input', {'type': 'submit'}),
     ]
     input_types = ['text', 'email', 'password']  # type of input fields filled with values
-    _normalizers = [TagNormalizer(['head']), AttributeNormalizer()]
+    _normalizers = [TagNormalizer(['head']), AttributeNormalizer('class')]
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
 

@@ -60,7 +60,7 @@ class B2gCrawler(Crawler):
                 #--cs.remove_candidate_clickable(clickable)
 
                 # prefetch image of the clickable
-                time.sleep(0.1)  # time for correctly fetching image
+                time.sleep(0.2)  # time for correctly fetching image
                 img_name = cs.get_id() + '-' + clickable.get_id() + '.png'
                 img_data = self.executor.get_screenshot(clickable)
 

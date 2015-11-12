@@ -1,0 +1,3 @@
+beautifulsoup4==4.4.1
+gaiatest==0.33
+marionette-client==0.17

@@ -256,61 +256,21 @@ class NormalizerTestCase(unittest.TestCase):
         self.assertEqual(dom, '')
 
     def demo(self):
-        dom = '''
-        <!DOCTYPE HTML>
-<html>
-  <head>
-    <title>Social Network Rocks</title>
-    <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen, projection"/>
-    <link type="text/css" rel="stylesheet" href="/static/css/style.css"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  </head>
-  <body class="lime lighten-5">
-    <div class="head">
-      <h1 class="valign-wrapper">Hi,</h1>
-    </div>
-    <div class="error">
-    </div>
-    <div class="message">
-    </div>
-    <div class="content">
-<div class="container">
-  <div class="row">
-    <form class="col s12" method="post" action="/login">
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="id_username" maxlength="254" name="username" type="text" />
-          <label for="id_username">Username:</label>
-        </div>
-        <div class="input-field col s12">
-          <label for="id_password">Password:</label>
-          <input id="id_password" name="password" type="password" />
-        </div>
-        <input type="hidden" name="next" value=""/>
-      </div>
-      <div class="row valign-wrapper">
-        <div class="input-field col l6 m12 valign-wrapper">
-          <button class="btn waves-effect waves-light btn-large" type="submit">Login</button>
-        </div>
-        <div class="input-field col l6 m12 valign-wrapper">
-          <a href="/register" class="btn waves-effect waves-light btn-large">Register</a>
-        </div>
-      </div>
-      <input type='hidden' name='csrfmiddlewaretoken' value='lsTZUZgfS3a4bkMfQXFpm9tYFOlhAzXp' />
-    </form>
-  </div>
-</div>
-  </body>
-</html>
-        '''
-        normalizer = TagNormalizer()
-        dom = normalizer.normalize(dom)
-        normalizer = AttributeNormalizer()
-        dom = normalizer.normalize(dom)
-        normalizer = TagContentNormalizer()
-        dom = normalizer.normalize(dom)
-        print dom
+        with open('C:\\Users\\Jun-Wei\\Desktop\\20151102214729\\dom\\2.txt') as f:
+            dom1 = f.read()
+
+        with open('C:\\Users\\Jun-Wei\\Desktop\\20151102214729\\dom\\3.txt') as f:
+            dom2 = f.read()
+        normalizer = TagNormalizer(['head', 'canvas'])
+        dom1 = normalizer.normalize(dom1)
+        dom2 = normalizer.normalize(dom2)
+        normalizer = AttributeNormalizer('class')
+        dom1 = normalizer.normalize(dom1)
+        dom2 = normalizer.normalize(dom2)
+        #normalizer = TagContentNormalizer()
+        #dom1 = normalizer.normalize(dom1)
+        #dom2 = normalizer.normalize(dom2)
+        print dom1==dom2
 
 
 class VisualizerTestCase(unittest.TestCase):

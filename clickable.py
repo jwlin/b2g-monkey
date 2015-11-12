@@ -27,32 +27,25 @@ class Clickable:
         return self._tag
 
     def add_form(self, form):
-        if form.get_id():
-            for _form in self._forms:
-                if _form.get_id() == form.get_id():
-                    return False
-        else:
-            for _form in self._forms:
-                if _form.get_xpath() == form.get_xpath():
-                    return False
+        if form in self._forms:
+            return False
         self._forms.append(form)
         return True
 
     def remove_form(self, form):
-        if form.get_id():
-            for _form in self._forms:
-                if _form.get_id() == form.get_id():
-                    self._forms.remove(_form)
-                    return True
-        else:
-            for _form in self._forms:
-                if _form.get_xpath() == form.get_xpath():
-                    self._forms.remove(_form)
-                    return True
+        if form in self._forms:
+            self._forms.remove(form)
+            return True
         return False
 
     def __str__(self):
         return 'clickable id: %s (xpath: %s), forms: %s' % (self._id, self._xpath, len(self._forms))
+
+    def __eq__(self, other):
+        if self._id and other.get_id():
+            return self._id == other.get_id()
+        else:
+            return self._xpath == other.get_xpath()
 
 
 class FormField:
@@ -71,26 +64,25 @@ class FormField:
         return self._xpath
 
     def add_input(self, input_field):
-        if input_field.get_id():
-            for _input in self._inputs:
-                if _input.get_id() == input_field.get_id():
-                    return False
-        else:
-            for _input in self._inputs:
-                if _input.get_xpath() == input_field.get_xpath():
-                    return False
+        if input_field in self._inputs:
+            return False
         self._inputs.append(input_field)
         return True
 
     def remove_input(self, input_field):
-        for _input in self._inputs:
-            if _input.get_id() == input_field.get_id():
-                self._inputs.remove(_input)
-                return True
+        if input_field in self._inputs:
+            self._inputs.remove(input_field)
+            return True
         return False
 
     def __str__(self):
         return 'form id: %s (xpath: %s), inputs: %s' % (self._id, self._xpath, len(self._inputs))
+
+    def __eq__(self, other):
+        if self._id and other.get_id():
+            return self._id == other.get_id()
+        else:
+            return self._xpath == other.get_xpath()
 
 
 class InputField:
@@ -117,3 +109,9 @@ class InputField:
 
     def __str__(self):
         return 'input id: %s (xpath: %s), type: %s, value: %s' % (self._id, self._xpath, self._type, self._value)
+
+    def __eq__(self, other):
+        if self._id and other.get_id():
+            return self._id == other.get_id()
+        else:
+            return self._xpath == other.get_xpath()

@@ -45,7 +45,7 @@ class Configuration:
 
 
 class B2gConfiguration(Configuration):
-    def __init__(self, app_name, app_id):
+    def __init__(self, app_name, app_id, mkdir=True):
         super(B2gConfiguration, self).__init__()
         self._app_name = app_name
         self._app_id = app_id
@@ -57,10 +57,11 @@ class B2gConfiguration(Configuration):
             'state': os.path.join(self._root_path, 'screenshot', 'state'),
             'clickable': os.path.join(self._root_path, 'screenshot', 'clickable'),
         }
-        for key, value in self._file_path.iteritems():
-            abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
-            if not os.path.exists(abs_path):
-                os.makedirs(abs_path)
+        if mkdir:
+            for key, value in self._file_path.iteritems():
+                abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
+                if not os.path.exists(abs_path):
+                    os.makedirs(abs_path)
 
     def set_app_name(self, app_name):
         self._app_name = app_name
@@ -77,9 +78,15 @@ class B2gConfiguration(Configuration):
     def get_automata_fname(self):
         return self._automata_fname
 
+    def set_automata_fname(self, fname):
+        self._automata_fname = fname
+
     def get_abs_path(self, my_type):
         abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
         return abs_path
 
     def get_path(self, my_type):
         return self._file_path[my_type]
+
+    def set_path(self, my_type, fpath):
+        self._file_path[my_type] = os.path.join(*(fpath.split('/')))  # separate dirs with unix splitter

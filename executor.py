@@ -10,7 +10,7 @@ from abc import ABCMeta, abstractmethod
 from marionette import Marionette
 from marionette_driver.errors import ElementNotVisibleException, InvalidElementStateException, NoSuchElementException
 from marionette_driver import Wait, By
-from gaiatest.gaia_test import GaiaApps, GaiaDevice
+from gaiatest.gaia_test import GaiaApps, GaiaData
 from dom_analyzer import DomAnalyzer
 
 
@@ -165,17 +165,14 @@ class B2gExecutor(Executor):
         #self._marionette.switch_to_frame()
         #print self.marionette.execute_async_script("GaiaApps.locateWithName('%s')" % app_name)
 
-        # kill all running apps
-        apps = GaiaApps(self._marionette)
-        apps.kill_all()
-        time.sleep(1)
-        # todo: clear database (such as established contact)
+        self.kill_all_apps()
+        self.clear_data()
         self.touch_home_button()
         #home_frame = self.__marionette.find_element('css selector', 'div.homescreen iframe')
         #self.__marionette.switch_to_frame(home_frame)
         icon = self._marionette.find_element('xpath', "//div[contains(@class, 'icon')]//span[contains(text(),'" + self._app_name + "')]")
         icon.tap()
-        time.sleep(1)
+        time.sleep(0.5)
         self._marionette.switch_to_frame()
         app_frame = self._marionette.find_element('css selector', "iframe[data-url*='" + self._app_id + "']")
         self._marionette.switch_to_frame(app_frame)
@@ -207,3 +204,14 @@ class B2gExecutor(Executor):
     def _dispatch_home_button_event(self):
         self._marionette.switch_to_frame()
         self._marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
+
+    def clear_data(self):
+        # for now, clear contact data
+        gdata = GaiaData(self._marionette)
+        gdata.remove_all_contacts()
+        time.sleep(0.5)
+
+    def kill_all_apps(self):
+        apps = GaiaApps(self._marionette)
+        apps.kill_all()
+        time.sleep(0.5)
