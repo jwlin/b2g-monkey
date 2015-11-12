@@ -138,7 +138,6 @@ class SeleniumCrawler(Crawler):
                 self.executor.empty_form([cs.get_inputs(), cs.get_selects()])
                 self.executor.fill_form([cs.get_inputs(), cs.get_selects()])
                 self.executor.fire_event(clickable)
-                time.sleep(self.configuration.get_sleep_time())
                 new_dom = self.executor.get_source()
 
                 if not DomAnalyzer.is_equal(cs.get_dom(), new_dom):
@@ -166,7 +165,6 @@ class SeleniumCrawler(Crawler):
 
     def backtrack(self, state):
         self.executor.back_history()
-        time.sleep(self.configuration.get_sleep_time())
         dom = self.executor.get_source()
         #check if executor really turn back. if not, restart and try go again
         if not DomAnalyzer.is_equal(state.get_dom(), dom):
@@ -174,7 +172,6 @@ class SeleniumCrawler(Crawler):
             self.executor.restart_app()
             print "[LOG] retart"
             for (state_from, state_to, clickable, cost) in edges:
-                time.sleep(self.configuration.get_sleep_time())
                 self.executor.empty_form([state_from.get_inputs(), state_from.get_selects()])
                 self.executor.fill_form([state_from.get_inputs(), state_from.get_selects()])
                 self.executor.fire_event(clickable)
