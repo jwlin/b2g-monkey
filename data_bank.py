@@ -47,7 +47,9 @@ class InlineDataBank(DataBank):
         'job1':{'1', '3'},
         'degree2':{'true'},
         'interest':{'true'},
-        'uid': {'louisalflame@hotmail.com.tw'}
+        'uid': {'louisalflame@hotmail.com.tw'},
+        'textfield2':{'0911233456'}, #name=tel
+        'personal_name':{'Louis','Alice'}        
     }
 
     @classmethod

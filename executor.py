@@ -65,7 +65,9 @@ class SeleniumExecutor():
         try:
             # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
             if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
-                self.driver.find_element_by_id( clickable.get_id() ).click()
+                el = self.driver.find_element_by_id( clickable.get_id() )
+                if el.text == "登出":
+                    raise ValueError('not to log out!')
                 self.check_after_click()
             elif clickable.get_xpath():
                 self.driver.find_element_by_xpath( clickable.get_xpath() ).click()
@@ -73,8 +75,7 @@ class SeleniumExecutor():
             else:
                 raise ValueError('No id nor xpath for the clickable: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath()))
         except Exception as e:
-            pass
-            #print 'Unknown Exception: %s in fire_event(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
+            print 'Unknown Exception: %s in fire_event(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
 
     def fill_form(self, all_inputs):
         state_inputs = all_inputs[0]

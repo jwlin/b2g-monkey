@@ -31,7 +31,7 @@ class DomAnalyzer:
         Tag('input', {'type': 'button'})
     ]
     input_types = ['text', 'email', 'password']  # type of input fields filled with values
-    _normalizers = [TagNormalizer(['head', 'canvas']), AttributeNormalizer('class')]
+    _normalizers = [TagNormalizer(['head', 'canvas', 'li']), AttributeNormalizer('class')]
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
 
@@ -149,3 +149,13 @@ class DomAnalyzer:
             return True
         else:
             return False
+
+    @classmethod
+    def normalize(cls, dom):
+        for normalizer in cls._normalizers:
+            dom = normalizer.normalize(dom)
+        return dom
+
+    @classmethod
+    def is_normalize_equal(cls, dom1, dom2):
+        return dom1 == dom2

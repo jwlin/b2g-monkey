@@ -89,12 +89,14 @@ class B2gConfiguration(Configuration):
 # Selenium Web Driver
 #==============================================================================================================================
 class SeleniumConfiguration(Configuration):
-    def __init__(self, browserID, url):
+    def __init__(self, browserID, url, dirname=None):
         super(SeleniumConfiguration, self).__init__()
         self._browserID = browserID
         self._url = url
         self._automata_fname = 'automata.json'
-        self._root_path = os.path.join('trace', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+        if not dirname:
+            dirname = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        self._root_path = os.path.join('trace', dirname )
         self._file_path = {
             'root': self._root_path,
             'dom': os.path.join(self._root_path, 'dom'),

@@ -32,17 +32,21 @@ def B2gmain():
 #==============================================================================================================================
 def SeleniumMain():
     print "setting config..."
-    #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/content1.do")
-    config = SeleniumConfiguration(1, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
-    config.set_max_depth(2)
+    #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
+    config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
+    config.set_max_depth(1)
     config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
+    
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
+    
     print "setting crawler..."
     crawler = SeleniumCrawler(config, executor)
+    
     print "crawler start run..."
     automata = crawler.run()
     crawler.close()
+    
     print "end! save automata..."
     save_automata(automata, config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
