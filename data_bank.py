@@ -50,7 +50,8 @@ class InlineDataBank(DataBank):
         'uid': {'louisalflame@hotmail.com.tw'},
         'textfield2':{'0911233456'}, #name=tel
         'personal_name':{'Louis','Alice'} ,
-        'id': {'1234'}
+        'id': {'1234'},
+        'personal_name':{'Louis','Alice'} 
     }
 
     @classmethod

@@ -31,21 +31,30 @@ def B2gmain():
 #==============================================================================================================================
 # Selenium Web Driver
 #==============================================================================================================================
-def SeleniumMain():
+    #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
+    #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
+    #config.set_max_depth(1)
+    #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
+    def SeleniumMain():
     print "connect to mysql"
     connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
     _url, _deep, _time = connect.get_submit_by_id(sys.argv[1])
     _web_inputs = connect.get_all_inputs_by_id(sys.argv[1])
+
     print "setting config..."
     config = SeleniumConfiguration(3, _url, sys.argv[2])
     config.set_max_depth(_deep)
+    
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
+    
     print "setting crawler..."
     crawler = SeleniumCrawler(config, executor)
+    
     print "crawler start run..."
     automata = crawler.run()
     crawler.close()
+    
     print "end! save automata..."
     save_automata(automata, config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))

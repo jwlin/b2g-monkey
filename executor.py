@@ -65,7 +65,9 @@ class SeleniumExecutor():
         try:
             # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
             if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
-                self.driver.find_element_by_id( clickable.get_id() ).click()
+                el = self.driver.find_element_by_id( clickable.get_id() )
+                if el.text == "登出":
+                    raise ValueError('not to log out!')
                 self.check_after_click()
             elif clickable.get_xpath():
                 self.driver.find_element_by_xpath( clickable.get_xpath() ).click()

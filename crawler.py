@@ -139,8 +139,9 @@ class SeleniumCrawler(Crawler):
                 self.executor.fill_form([cs.get_inputs(), cs.get_selects()])
                 self.executor.fire_event(clickable)
                 new_dom = self.executor.get_source()
+                new_normalize_dom = DomAnalyzer.normalize(new_dom)
 
-                if not DomAnalyzer.is_equal(cs.get_dom(), new_dom):
+                if not DomAnalyzer.is_normalize_equal(cs.get_normalize_dom(), new_normalize_dom):
                     if self.is_same_domain(self.executor.get_url()):
                         print "[LOG] change dom to: ", self.executor.get_url()
                         # check if this is a new state
@@ -180,7 +181,7 @@ class SeleniumCrawler(Crawler):
                 dom = self.executor.get_source()
                 if not DomAnalyzer.is_equal(state_to.get_dom(), dom):
                     print "[ERROR] cannot traceback"
-                    self.close()
+                    raw_input("wait ...")
 
     def save_dom(self, state):
         with open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '.txt'), 'w') as f:

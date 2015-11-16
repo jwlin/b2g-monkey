@@ -35,7 +35,7 @@ class Automata:
         else:
             # check if the dom is duplicated
             for s in self._states:
-                if DomAnalyzer.is_equal(s.get_dom(), state.get_dom()):
+                if DomAnalyzer.is_normalize_equal(s.get_normalize_dom(), state.get_normalize_dom()):
                     return s, False
         state_id = state.get_id() if state.get_id() else str(len(self._states))
         state.set_id(state_id)
@@ -89,9 +89,10 @@ class State:
         self._prev_states = []
         self._clickables = []
         #=============================================================================================
-        #Diff: inputs information save in state, indiviual to clickbles
+        #Diff: inputs information save in state, indiviual to clickbles, add normalize_dom
         self._inputs = []
         self._selects = []
+        self.normalize_dom = DomAnalyzer.normalize(dom)
         #=============================================================================================
 
     def add_clickable(self, clickable):
@@ -176,4 +177,7 @@ class State:
 
     def get_selects(self):
         return self._selects
+
+    def get_normalize_dom(self):
+        return self.normalize_dom
     #=============================================================================================
