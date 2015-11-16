@@ -116,7 +116,7 @@ class SeleniumCrawler(Crawler):
         self.automata = Automata()
         self.configuration = configuration
         self.executor = executor
-'''aaa'''
+    
     def run(self):
         #self.executor.restart_app()
         self.executor.start()

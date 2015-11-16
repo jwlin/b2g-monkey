@@ -5,7 +5,7 @@
 Module docstring
 """
 
-import os, json, posixpath, time
+import os, sys, json, posixpath, time
 from os.path import relpath
 from configuration import B2gConfiguration,SeleniumConfiguration
 from automata import Automata, State
@@ -14,6 +14,7 @@ from executor import SeleniumExecutor
 from crawler import B2gCrawler, SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
+from connecter import mysqlConnect
 
 def B2gmain():
     config = B2gConfiguration('Contacts', 'contacts')
@@ -31,11 +32,13 @@ def B2gmain():
 # Selenium Web Driver
 #==============================================================================================================================
 def SeleniumMain():
+    print "connect to mysql"
+    connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
+    _url, _deep, _time = connect.get_submit_by_id(sys.argv[1])
+    _web_inputs = connect.get_all_inputs_by_id(sys.argv[1])
     print "setting config..."
-    #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/content1.do")
-    config = SeleniumConfiguration(1, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
-    config.set_max_depth(2)
-    config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
+    config = SeleniumConfiguration(3, _url, sys.argv[2])
+    config.set_max_depth(_deep)
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
     print "setting crawler..."
@@ -199,4 +202,7 @@ def load_config(fname):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print "need argument [submit-ID]"
+        sys.exit()
     SeleniumMain()

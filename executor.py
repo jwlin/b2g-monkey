@@ -73,8 +73,7 @@ class SeleniumExecutor():
             else:
                 raise ValueError('No id nor xpath for the clickable: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath()))
         except Exception as e:
-            pass
-            #print 'Unknown Exception: %s in fire_event(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
+            print 'Unknown Exception: %s in fire_event(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
 
     def fill_form(self, all_inputs):
         state_inputs = all_inputs[0]
@@ -151,9 +150,9 @@ class SeleniumExecutor():
         if self.browserID == 1:
             self.driver = webdriver.Firefox();
         elif self.browserID == 2:
-            self.driver = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+            self.driver = webdriver.Chrome(executable_path='/usr/local/share/chromedriver')
         elif self.browserID == 3:
-            self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
+            self.driver = webdriver.PhantomJS()
         else:
             self.driver = webdriver.Firefox(); 
             self.driver.set_window_size(1120, 550)
