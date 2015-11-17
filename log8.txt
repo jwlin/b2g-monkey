@@ -1,0 +1,177 @@
+setting config...
+setting executor...
+setting crawler...
+crawler start run...
+get initial state
+[DEBUG] loop in list 11 (length 0) in hash
+[LOG] now depth:  1  - max_depth:  3
+[LOG] current state 0
+[LOG] state  0  fire element
+fire_event: id: b2g-monkey-2 (xpath: //html/body/div[1]/div[1]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] out of domain:  https://cloud.edu.tw/EduCloudWeb/wSite/sp?xdUrl=/wSite/forgotPassword.jsp
+[LOG] depth  1  -> backtrack to state  0
+[LOG] backtrack end
+[LOG] state  0  fire element
+fire_event: id: b2g-monkey-3 (xpath: //html/body/div[1]/div[1]/a[2])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] out of domain:  https://cloud.edu.tw/EduCloudWeb/wSite/sp?xdUrl=/wSite/resendEnableMail.jsp
+[LOG] depth  1  -> backtrack to state  0
+[LOG] backtrack end
+[LOG] state  0  fire element
+fire_event: id: b2g-monkey-4 (xpath: //html/body/div[1]/div[1]/a[3])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] out of domain:  https://cloud.edu.tw/EduCloudWeb/wSite/sp?xdUrl=/wSite/registerTerms.jsp
+[LOG] depth  1  -> backtrack to state  0
+[LOG] backtrack end
+[LOG] state  0  fire element
+fire_event: id: b2g-monkey-5 (xpath: //html/body/div[1]/form[1]/input[5])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] change dom to:  https://ups.moe.edu.tw/Personal_Page/index.php
+[DEBUG] loop in list 1 (length 0) in hash
+[LOG] add new state  1  of:  https://ups.moe.edu.tw/Personal_Page/index.php
+[LOG] now depth:  2  - max_depth:  3
+[LOG] current state 1
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-7 (xpath: //html/body/div[1]/div[1]/div[1]/ol[1]/li[1]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-8 (xpath: //html/body/div[1]/div[1]/div[1]/ol[1]/li[2]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] more than one window appear
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-9 (xpath: //html/body/div[1]/div[1]/div[1]/ol[1]/li[3]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] more than one window appear
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-10 (xpath: //html/body/div[1]/div[1]/div[1]/ol[1]/li[4]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-11 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-12 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-13 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[3]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-14 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[4]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-15 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[5]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-16 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[6]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-17 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[7]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-18 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[8]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-19 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[9]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] more than one window appear
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-20 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[10]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-21 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[11]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-22 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[12]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-23 (xpath: //html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[13]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] more than one window appear
+[LOG] state  1  fire element
+fire_event: id: b2g-monkey-24 (xpath: //html/body/div[1]/div[2]/div[1]/div[1]/div[3]/input[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] change dom to:  https://ups.moe.edu.tw/index.php
+[DEBUG] loop in list 16 (length 0) in hash
+[LOG] add new state  2  of:  https://ups.moe.edu.tw/index.php
+[LOG] now depth:  3  - max_depth:  3
+[LOG] current state 2
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-25 (xpath: //html/body/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/a[1])
+Unknown Exception: Message: element not visible
+  (Session info: chrome=46.0.2490.86)
+  (Driver info: chromedriver=2.20.353145 (343b531d31eeb933ec778dbcf7081628a1396067),platform=Windows NT 6.3 x86_64)
+ in fire_event(): id: b2g-monkey-25 (xpath: //html/body/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/a[1])
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-26 (xpath: //html/body/div[1]/div[1]/div[1]/div[2]/div[1]/div[2]/a[1])
+Unknown Exception: Message: element not visible
+  (Session info: chrome=46.0.2490.86)
+  (Driver info: chromedriver=2.20.353145 (343b531d31eeb933ec778dbcf7081628a1396067),platform=Windows NT 6.3 x86_64)
+ in fire_event(): id: b2g-monkey-26 (xpath: //html/body/div[1]/div[1]/div[1]/div[2]/div[1]/div[2]/a[1])
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-27 (xpath: //html/body/div[1]/div[1]/div[1]/div[3]/a[1])
+Unknown Exception: Message: element not visible
+  (Session info: chrome=46.0.2490.86)
+  (Driver info: chromedriver=2.20.353145 (343b531d31eeb933ec778dbcf7081628a1396067),platform=Windows NT 6.3 x86_64)
+ in fire_event(): id: b2g-monkey-27 (xpath: //html/body/div[1]/div[1]/div[1]/div[3]/a[1])
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-28 (xpath: //html/body/div[4]/div[1]/div[1]/ol[1]/li[1]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-29 (xpath: //html/body/div[4]/div[1]/div[1]/ol[1]/li[3]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] more than one window appear
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-30 (xpath: //html/body/div[4]/div[1]/div[1]/ol[1]/li[4]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-31 (xpath: //html/body/div[4]/div[2]/div[1]/div[2]/div[1]/div[1]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-32 (xpath: //html/body/div[4]/div[2]/div[1]/div[2]/div[1]/div[2]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-33 (xpath: //html/body/div[4]/div[2]/div[1]/div[2]/div[1]/div[3]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-34 (xpath: //html/body/div[4]/div[2]/div[1]/div[2]/div[1]/div[4]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] more than one window appear
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-35 (xpath: //html/body/div[4]/div[2]/div[1]/div[2]/div[1]/div[5]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-36 (xpath: //html/body/div[4]/div[2]/div[1]/div[2]/div[1]/div[6]/a[1])
+[LOG] sleep after click event
+[LOG] click without alert
+[LOG] state  2  fire element
+fire_event: id: b2g-monkey-37 (xpath: //html/body/div[4]

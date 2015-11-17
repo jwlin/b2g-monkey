@@ -180,7 +180,11 @@ class SeleniumCrawler(Crawler):
                 time.sleep(self.configuration.get_sleep_time())
                 dom = self.executor.get_source()
                 if not DomAnalyzer.is_equal(state_to.get_dom(), dom):
-                    print "[ERROR] cannot traceback"
+                    with open('debug_o'+state_to.get_id()+'.txt', 'w') as f:
+                        f.write(state_to.get_dom())
+                    with open('debug_r'+state_to.get_id()+'.txt', 'w') as f:
+                        f.write(dom)
+                    print "[ERROR] cannot traceback to %s" % ( state_to.get_id())
                     raw_input("wait ...")
 
     def save_dom(self, state):
