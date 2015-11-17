@@ -7,6 +7,7 @@ The automata (finite state machine) referenced by the monkey.
 """
 
 from dom_analyzer import DomAnalyzer
+from hashUtil import Hash
 
 class Automata:
     def __init__(self):
@@ -14,6 +15,7 @@ class Automata:
         self._edges = []
         self._initial_state = None
         self._current_state = None
+        self.hash = Hash(20, self)
 
     def get_current_state(self):
         return self._current_state
@@ -32,15 +34,16 @@ class Automata:
         if not self._initial_state:
             self._initial_state = state
             self._current_state = state
+            is_new = True
         else:
             # check if the dom is duplicated
-            for s in self._states:
-                if DomAnalyzer.is_normalize_equal(s.get_normalize_dom(), state.get_normalize_dom()):
-                    return s, False
-        state_id = state.get_id() if state.get_id() else str(len(self._states))
-        state.set_id(state_id)
-        self._states.append(state)
-        return state, True
+            is_new, state_id = self.hash.put(state)
+
+        if is_new:
+            self._states.append(state)
+            return state, True
+        else:
+            return get_state_by_id(state_id), False
 
     def change_state(self, state):
         self._current_state = state
