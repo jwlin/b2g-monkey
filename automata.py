@@ -15,7 +15,7 @@ class Automata:
         self._edges = []
         self._initial_state = None
         self._current_state = None
-        self.hash = Hash(20, self)
+        self.hash = Hash(19, self)
 
     def get_current_state(self):
         return self._current_state
@@ -30,11 +30,14 @@ class Automata:
         return self._edges
 
     def add_state(self, state):
+        if not state.get_id():
+            state.set_id( str(len( self.get_states() )) )
+
         # check if the automata is empty
         if not self._initial_state:
             self._initial_state = state
             self._current_state = state
-            is_new = True
+            is_new, state_id = self.hash.put(state)
         else:
             # check if the dom is duplicated
             is_new, state_id = self.hash.put(state)
@@ -43,7 +46,7 @@ class Automata:
             self._states.append(state)
             return state, True
         else:
-            return get_state_by_id(state_id), False
+            return self.get_state_by_id(state_id), False
 
     def change_state(self, state):
         self._current_state = state

@@ -14,7 +14,7 @@ from executor import SeleniumExecutor
 from crawler import B2gCrawler, SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
-from connecter import mysqlConnect
+#from connecter import mysqlConnect
 
 def B2gmain():
     config = B2gConfiguration('Contacts', 'contacts')
@@ -31,11 +31,7 @@ def B2gmain():
 #==============================================================================================================================
 # Selenium Web Driver
 #==============================================================================================================================
-    #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
-    #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
-    #config.set_max_depth(1)
-    #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
-    def SeleniumMain():
+def SeleniumMain():
     print "connect to mysql"
     connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
     _url, _deep, _time = connect.get_submit_by_id(sys.argv[1])
@@ -55,6 +51,27 @@ def B2gmain():
     automata = crawler.run()
     crawler.close()
     
+    print "end! save automata..."
+    save_automata(automata, config)
+    Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
+    save_config(config, 'config.json')
+
+def debugTestMain():
+    #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
+    #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
+    #config.set_max_depth(1)
+    #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
+    print "setting config..."
+    config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
+    config.set_max_depth(3)
+    
+    print "setting executor..."
+    executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
+    print "setting crawler..."
+    crawler = SeleniumCrawler(config, executor)    
+    print "crawler start run..."
+    automata = crawler.run()
+    crawler.close()    
     print "end! save automata..."
     save_automata(automata, config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
@@ -208,10 +225,5 @@ def load_config(fname):
         print 'config loaded. loading time: %f sec' % (time.time() - t_start)
     return config
 
-
-
 if __name__ == '__main__':
-    if len(sys.argv) < 3:
-        print "need argument [submit-ID]"
-        sys.exit()
-    SeleniumMain()
+    debugTestMain()
