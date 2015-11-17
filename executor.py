@@ -149,15 +149,22 @@ class SeleniumExecutor():
         return self.driver.get_screenshot_as_file(file_path)
 
     def start(self):
+        '''
         if self.browserID == 1:
             self.driver = webdriver.Firefox();
         elif self.browserID == 2:
             self.driver = webdriver.Chrome(executable_path='/usr/local/share/chromedriver')
         elif self.browserID == 3:
             self.driver = webdriver.PhantomJS()
+        '''
+        if self.browserID == 1:
+            self.driver = webdriver.Firefox();
+        elif self.browserID == 2:
+            self.driver = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+        elif self.browserID == 3:
+            self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
         else:
             self.driver = webdriver.Firefox(); 
-            self.driver.set_window_size(1120, 550)
         self.driver.get(self.startUrl)
         self.main_window = self.driver.current_window_handle
 
