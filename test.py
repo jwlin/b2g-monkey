@@ -256,21 +256,28 @@ class NormalizerTestCase(unittest.TestCase):
         self.assertEqual(dom, '')
 
         dom = '''
-        <body>
-        <p class="title"><b>The Dormouse story</b></p>
+        <body><p class="title"><b>The Dormouse story</b></p>
         <a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>
+        <a class="sister" href="http://example2.com/anna" id="link2">Anna</a>
         <table><tr><td>文字</td><td>Wtf</td></tr></table>
+        <table><tr><td>Wtf</td><td>文字</td></tr></table>
         </body>
         '''
         normalizer = TagWithAttributeNormalizer('a', 'href', 'http://example.co')
         self.assertEqual(
             normalizer.normalize(dom),
-            '<body><p class="title"><b>The Dormouse story</b></p><table><tr><td>文字</td><td>Wtf</td></tr></table></body>'
+            '<body><p class="title"><b>The Dormouse story</b></p>'\
+            '<a class="sister" href="http://example2.com/anna" id="link2">Anna</a>'\
+            '<table><tr><td>文字</td><td>Wtf</td></tr></table>'\
+            '<table><tr><td>Wtf</td><td>文字</td></tr></table></body>'
         )
         normalizer = TagWithAttributeNormalizer('table', None, u'文字')
         self.assertEqual(
             normalizer.normalize(dom),
-            '<body><p class="title"><b>The Dormouse story</b></p><a class="sister" href="http://example.com/elsie" id="link1">Elsie</a></body>'
+            '<body><p class="title"><b>The Dormouse story</b></p>'\
+            '<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>'\
+            '<a class="sister" href="http://example2.com/anna" id="link2">Anna</a>'\
+            '</body>'
         )
 
 

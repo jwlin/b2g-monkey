@@ -86,11 +86,9 @@ class TagWithAttributeNormalizer(AbstractNormalizer):
             if self.attr and self.attr in tag.attrs:
                 if tag[self.attr].startswith(self.value):
                     tag.decompose()
-                    break
             elif not self.attr:  # self.attr is None
                 if self.value in tag.strings:
                     tag.decompose()
-                    break
         return str(soup).replace('\n', '')
 
     def __str__(self):
