@@ -13,7 +13,7 @@ from executor import B2gExecutor
 from configuration import B2gConfiguration
 from dom_analyzer import DomAnalyzer
 from bs4 import BeautifulSoup
-from normalizer import AttributeNormalizer, TagContentNormalizer, TagNormalizer
+from normalizer import AttributeNormalizer, TagContentNormalizer, TagNormalizer, TagWithAttributeNormalizer
 from visualizer import Visualizer
 
 
@@ -254,6 +254,25 @@ class NormalizerTestCase(unittest.TestCase):
         normalizer = TagNormalizer(['button'])
         dom = normalizer.normalize(dom)
         self.assertEqual(dom, '')
+
+        dom = '''
+        <body>
+        <p class="title"><b>The Dormouse story</b></p>
+        <a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>
+        <table><tr><td>文字</td><td>Wtf</td></tr></table>
+        </body>
+        '''
+        normalizer = TagWithAttributeNormalizer('a', 'href', 'http://example.co')
+        self.assertEqual(
+            normalizer.normalize(dom),
+            '<body><p class="title"><b>The Dormouse story</b></p><table><tr><td>文字</td><td>Wtf</td></tr></table></body>'
+        )
+        normalizer = TagWithAttributeNormalizer('table', None, u'文字')
+        self.assertEqual(
+            normalizer.normalize(dom),
+            '<body><p class="title"><b>The Dormouse story</b></p><a class="sister" href="http://example.com/elsie" id="link1">Elsie</a></body>'
+        )
+
 
     def demo(self):
         with open('C:\\Users\\Jun-Wei\\Desktop\\20151102214729\\dom\\2.txt') as f:

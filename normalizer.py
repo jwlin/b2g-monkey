@@ -69,3 +69,29 @@ class TagNormalizer(AbstractNormalizer):
 
     def __str__(self):
         return 'TagNormalizer: tag_list: %s' % self.tag_list
+
+
+# remove tag with:
+# 1. matched name, attr and startswith value
+# 2. matched name, and tag content contains value without given attr
+class TagWithAttributeNormalizer(AbstractNormalizer):
+    def __init__(self, name, attr, value):
+        self.name = name
+        self.attr = attr
+        self.value = value
+
+    def normalize(self, dom):
+        soup = BeautifulSoup(dom, 'html.parser')
+        for tag in soup.find_all(self.name):
+            if self.attr and self.attr in tag.attrs:
+                if tag[self.attr].startswith(self.value):
+                    tag.decompose()
+                    break
+            elif not self.attr:  # self.attr is None
+                if self.value in tag.strings:
+                    tag.decompose()
+                    break
+        return str(soup).replace('\n', '')
+
+    def __str__(self):
+        return 'TagWithAttributeNormalizer: tag: %s, attr: %s, value: %s' % self.name, self.attr, self.value
