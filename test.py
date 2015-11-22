@@ -8,13 +8,13 @@ Module docstring
 import unittest, os
 from automata import Automata, State
 from clickable import Clickable, FormField, InputField
-from crawler import B2gCrawler
 from executor import B2gExecutor
 from configuration import B2gConfiguration
 from dom_analyzer import DomAnalyzer
 from bs4 import BeautifulSoup
 from normalizer import AttributeNormalizer, TagContentNormalizer, TagNormalizer, TagWithAttributeNormalizer
 from visualizer import Visualizer
+from invariant import TagInvariant, FileNotFoundInvariant
 
 
 class AutomataTestCase(unittest.TestCase):
@@ -271,7 +271,7 @@ class NormalizerTestCase(unittest.TestCase):
             '<table><tr><td>文字</td><td>Wtf</td></tr></table>'\
             '<table><tr><td>Wtf</td><td>文字</td></tr></table></body>'
         )
-        normalizer = TagWithAttributeNormalizer('table', None, u'文字')
+        normalizer = TagWithAttributeNormalizer('table', 'string', u'文字')
         self.assertEqual(
             normalizer.normalize(dom),
             '<body><p class="title"><b>The Dormouse story</b></p>'\
@@ -280,6 +280,17 @@ class NormalizerTestCase(unittest.TestCase):
             '</body>'
         )
 
+        dom = '<div class="today">2015-01-31</div>'
+        normalizer = TagWithAttributeNormalizer('div', 'class', 'today')
+        self.assertEqual(normalizer.normalize(dom), '')
+
+        '''
+        str1 = '<section class="group-section hide" id="section-group-ice" data-nonsearchable="true"><ol data-group="ice" id="contact-list-ice"><li class="contact-item" data-group="ice" data-cache="true" data-status="" data-rendered="false" data-visited="false"><span></span><p class="contact-text" data-l10n-id="ICEContactsGroup">ICE Contacts</p></li></ol></section><section id="section-group-und" class="group-section"><header id="group-und" class="" aria-labelledby="contacts-listed-abbr-und"><abbr title="Contacts listed und" aria-hidden="true" id="contacts-listed-abbr-und">#</abbr></header><ol role="listbox" aria-labelledby="contacts-listed-abbr-und" id="contacts-list-und" data-group="und"><li data-uuid="eb480de98ce34e188cb38d57fd1563bf" role="option" data-group="und" class="contact-item" data-updated="1448208019398" data-rendered="false" data-search="No name" data-order="NO NAME" data-visited="false" data-cache="true" data-status=""><label class="contact-checkbox pack-checkbox"><input type="checkbox" name="selectIds[]" value="eb480de98ce34e188cb38d57fd1563bf" /><span></span></label><p class="contact-text"><bdi><strong>No name</strong> </bdi></p></li></ol></section></section>'
+        str2 = '<section class="group-section hide" id="section-group-ice" data-nonsearchable="true"><ol data-group="ice" id="contact-list-ice"><li class="contact-item" data-group="ice" data-cache="true" data-status="" data-rendered="false" data-visited="false"><span></span><p class="contact-text" data-l10n-id="ICEContactsGroup">ICE Contacts</p></li></ol></section><section id="section-group-und" class="group-section"><header id="group-und" class="hide" aria-labelledby="contacts-listed-abbr-und"><abbr title="Contacts listed und" aria-hidden="true" id="contacts-listed-abbr-und">#</abbr></header><ol role="listbox" aria-labelledby="contacts-listed-abbr-und" id="contacts-list-und" data-group="und"></ol></section></section>'
+        normalizer = TagWithAttributeNormalizer('section', 'class', 'hide')
+        print 'str1', normalizer.normalize(str1)
+        print 'str2', normalizer.normalize(str2)
+        '''
 
     def demo(self):
         with open('C:\\Users\\Jun-Wei\\Desktop\\20151102214729\\dom\\2.txt') as f:
@@ -299,9 +310,36 @@ class NormalizerTestCase(unittest.TestCase):
         print dom1==dom2
 
 
+class InvariantTestCase(unittest.TestCase):
+    def test_invariant(self):
+        dom = '''
+        <p class="title"><b>The Dormouse story</b></p>
+        <a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>
+        <a class="sister" href="http://example2.com/anna" id="link2">Anna</a>
+        <table><tr><td>文字</td><td>Wtf</td></tr></table>
+        '''
+        invariant = FileNotFoundInvariant()
+        self.assertFalse(invariant.check(dom))
+        dom += '<h1 class="title" id="error-title" data-l10n-id="file-not-found">File not found</h1>'
+        self.assertTrue(invariant.check(dom))
+        invariant = TagInvariant('a',
+                                 [{'name': 'class', 'value': 'sister'},
+                                  {'name': 'string', 'value':'Anna'}])
+        self.assertTrue(invariant.check(dom))
+        invariant = TagInvariant('a',
+                                 [{'name': 'class', 'value': 'sister'},
+                                  {'name': 'id', 'value': 'link2'},
+                                  {'name': 'string', 'value': 'Bobby'}])
+        self.assertFalse(invariant.check(dom))
+        invariant = TagInvariant('a',
+                                 [{'name': 'data', 'value': 'sister'},
+                                  {'name': 'id', 'value': 'link2'},
+                                  {'name': 'string', 'value': 'Bobby'}])
+        self.assertFalse(invariant.check(dom))
+
+
 class VisualizerTestCase(unittest.TestCase):
-    def test_testvisualizer(self):
-        from visualizer import Visualizer
+    def test_visualizer(self):
         Visualizer.generate_html(
             'web',
             'trace/example-contact-depth-2/automata.json'

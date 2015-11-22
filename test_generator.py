@@ -15,6 +15,7 @@ class TestGenerator:
     def path_to_state(self, state):
         return self.automata.get_shortest_path(state)
 
+    '''
     def clickables_to_forms(self):
         # return clickable sequences for each form in states with forms
         states_with_seqs = {}
@@ -32,5 +33,6 @@ class TestGenerator:
                             states_with_seqs[key] = list(seq)
                             states_with_seqs[key].append(clickable)
         return states_with_seqs
+    '''
 
 

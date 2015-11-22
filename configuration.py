@@ -5,15 +5,17 @@
 Module docstring
 """
 
-import os, datetime, json
+import os
+import datetime
 from abc import ABCMeta
+from invariant import FileNotFoundInvariant
 
 
 class Configuration:
     __metaclass__ = ABCMeta
 
     def __init__(self):
-        self._invariants = []
+        self._invariants = [FileNotFoundInvariant()]
         self._max_depth = 2
         self._max_states = 0
         self._max_time = 0
@@ -90,3 +92,10 @@ class B2gConfiguration(Configuration):
 
     def set_path(self, my_type, fpath):
         self._file_path[my_type] = os.path.join(*(fpath.split('/')))  # separate dirs with unix splitter
+
+    def set_invariants(self, invariants):
+        self._invariants = list(invariants)
+
+    def get_invariants(self):
+        return self._invariants
+

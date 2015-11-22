@@ -5,7 +5,9 @@
 Test case executor (a.k.a. robot)
 """
 
-import sys, os, time
+import sys
+import os
+import time
 from abc import ABCMeta, abstractmethod
 from marionette import Marionette
 from marionette_driver.errors import ElementNotVisibleException, InvalidElementStateException, NoSuchElementException
@@ -49,8 +51,13 @@ class B2gExecutor(Executor):
         self._marionette = Marionette()
         self._marionette.start_session()
 
-        apps = GaiaApps(self._marionette)
-        apps.kill_all()
+        # https://github.com/mozilla-b2g/gaia/blob/b568b7ae8adb6ee3651bd75acbaaedff86a08912/tests/python/gaia-ui-tests/gaiatest/gaia_test.py
+        js = os.path.abspath(os.path.join(__file__, os.path.pardir, 'atoms', "gaia_apps.js"))
+        self._marionette.import_script(js)
+        js = os.path.abspath(os.path.join(__file__, os.path.pardir, 'atoms', "gaia_data_layer.js"))
+        self._marionette.set_context(self._marionette.CONTEXT_CHROME)
+        self._marionette.import_script(js)
+        self._marionette.set_context(self._marionette.CONTEXT_CONTENT)
 
         '''
         # C:\Users\Jun-Wei\Desktop\b2g\battery\manifest.webapp
@@ -168,15 +175,13 @@ class B2gExecutor(Executor):
         self.kill_all_apps()
         self.clear_data()
         self.touch_home_button()
-        #home_frame = self.__marionette.find_element('css selector', 'div.homescreen iframe')
-        #self.__marionette.switch_to_frame(home_frame)
+
         icon = self._marionette.find_element('xpath', "//div[contains(@class, 'icon')]//span[contains(text(),'" + self._app_name + "')]")
         icon.tap()
         time.sleep(0.5)
         self._marionette.switch_to_frame()
         app_frame = self._marionette.find_element('css selector', "iframe[data-url*='" + self._app_id + "']")
         self._marionette.switch_to_frame(app_frame)
-        #self._marionette.switch_to_frame(self._app_frame_id)
 
     def touch_home_button(self):
         # ref: https://github.com/mozilla-b2g/gaia/blob/master/tests/python/gaia-ui-tests/gaiatest/gaia_test.py#L751
@@ -207,11 +212,30 @@ class B2gExecutor(Executor):
 
     def clear_data(self):
         # for now, clear contact data
-        gdata = GaiaData(self._marionette)
-        gdata.remove_all_contacts()
+        # https://github.com/mozilla-b2g/gaia/blob/v2.2/tests/python/gaia-ui-tests/gaiatest/gaia_test.py#L208
+        self._marionette.set_context(self._marionette.CONTEXT_CHROME)
+        result = self._marionette.execute_async_script('return GaiaDataLayer.removeAllContacts();')
+        assert result, 'Unable to remove all contacts'
+        self._marionette.set_context(self._marionette.CONTEXT_CONTENT)
         time.sleep(0.5)
 
     def kill_all_apps(self):
-        apps = GaiaApps(self._marionette)
-        apps.kill_all()
+        self._marionette.switch_to_frame()
+        self._marionette.execute_async_script("""
+        // Kills all running apps, except the homescreen.
+        function killAll() {
+          let manager = window.wrappedJSObject.appWindowManager;
+
+          let apps = manager.getApps();
+          for (let id in apps) {
+            let origin = apps[id].origin;
+            if (origin.indexOf('verticalhome') == -1) {
+              manager.kill(origin);
+            }
+          }
+        };
+        killAll();
+        // return true so execute_async_script knows the script is complete
+        marionetteScriptFinished(true);
+        """)
         time.sleep(0.5)

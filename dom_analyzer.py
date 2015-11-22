@@ -8,7 +8,7 @@ import random, string
 from bs4 import BeautifulSoup
 from clickable import Clickable, FormField, InputField
 from data_bank import InlineDataBank
-from normalizer import AttributeNormalizer, TagNormalizer
+from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
 
 
 class Tag:
@@ -28,9 +28,14 @@ class DomAnalyzer:
         Tag('a'),
         Tag('button'),
         Tag('input', {'type': 'submit'}),
+        #Tag('input', {'type': 'button'}),
     ]
     input_types = ['text', 'email', 'password']  # type of input fields filled with values
-    _normalizers = [TagNormalizer(['head']), AttributeNormalizer('class')]
+    _normalizers = [
+        TagNormalizer(['head']),
+        AttributeNormalizer('class'),
+        TagWithAttributeNormalizer('section', 'class', 'hide')
+    ]
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
 
@@ -76,7 +81,6 @@ class DomAnalyzer:
                 else:
                     candidate_clickables = form.find_all(tag.get_name())
                 for candidate_clickable in candidate_clickables:
-                    #print candidate_clickable
                     if candidate_clickable in prev_clickables:
                         continue
                     clickable_id = candidate_clickable.get('id')
@@ -104,7 +108,6 @@ class DomAnalyzer:
                         clickable_id = cls.serial_prefix + str(cls._serial_num)
                         cls._serial_num += 1
                     clickables.append(Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name()))
-        #print 'prev_clickables len', len(prev_clickables), 'clickables len', len(clickables)
         return clickables
 
     @classmethod
@@ -144,16 +147,3 @@ class DomAnalyzer:
             return True
         else:
             return False
-        '''
-        import difflib
-        for i, s in enumerate(difflib.ndiff(dom1, dom2)):
-            if s[0]==' ':
-                continue
-            elif s[0]=='-':
-                print 'Delete "{}" from position {}'.format(s[-1],i)
-            elif s[0]=='+':
-                print 'Add "{}" to position {}'.format(s[-1],i)
-        print
-        return True
-        '''
-

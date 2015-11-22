@@ -55,11 +55,12 @@ class Visualizer:
                     + '<img src=\'' + state['img_path'] + '\'>"];\n'
                 for clickable in state['clickable']:
                     clickable_path[state['id'] + '-' + clickable['id']] = clickable['img_path']
-                    img_div_str += '<img src="' + clickable['img_path'] + '">\n'
+                    img_div_str += '<img src="' + clickable['img_path'] + '" alt="' + clickable['id'] + '">\n'
             #print automata['id_prefix']
             for edge in automata['edge']:
                 input_graph_str += edge['from'] + '->' + edge['to'] \
-                    + '[labelType=\"html\" label=\"<img src=\'' + clickable_path[edge['from'] + '-' + edge['clickable']] + '\'>"];\n'
+                    + '[labelType=\"html\" label=\"<img src=\'' + clickable_path[edge['from'] + '-' + edge['clickable']] \
+                    + '\' alt=\'' + edge['clickable'] + '\'>"];\n'
             #print img_div_str
             #print input_graph_str
             input_graph_str += '}'

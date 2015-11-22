@@ -82,6 +82,30 @@ class Automata:
 
         return edges
 
+    def get_forms_with_clickables(self):
+        # return clickable sequences for each form in states with forms
+        form_list = []
+        for state in self._states:
+            forms = state.get_forms()
+            if forms:
+                seq = []
+                edges = self.get_shortest_path(state)
+                for (state_from, state_to, clickable, cost) in edges:
+                    seq.append(clickable)
+                for form in forms:
+                    form_element = {
+                        'state': state.get_id(),
+                        'form': form,
+                        'execution_seq': list(seq)  # shallow copy of clickables
+                    }
+                    clickable_list = []
+                    for clickable in state.get_clickables():
+                        if form in clickable.get_forms():
+                            clickable_list.append(clickable)
+                        form_element['clickable'] = clickable_list
+                    form_list.append(form_element)
+        return form_list
+
 
 class State:
     def __init__(self, dom):
@@ -129,12 +153,7 @@ class State:
         if not self._forms:
             for c in self._clickables:
                 for f in c.get_forms():
-                    is_existed = False
-                    for existing_form in self._forms:
-                        if f.get_xpath() == existing_form.get_xpath():
-                            is_existed = True
-                            break
-                    if not is_existed:
+                    if f not in self._forms:
                         self._forms.append(f)
         return self._forms
 
