@@ -59,3 +59,9 @@ target/
 trace/
 .idea/
 note.txt
+log/
+log*.txt
+unitTest/
+debug*.txt
+
+
