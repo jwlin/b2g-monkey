@@ -5,8 +5,12 @@
 Module docstring
 """
 
-import os, datetime, json
+import os, sys, json, posixpath, time, datetime
+from os.path import relpath
 from abc import ABCMeta
+
+from dom_analyzer import DomAnalyzer
+from clickable import Clickable, InputField, SelectField
 
 
 class Configuration:
@@ -89,14 +93,12 @@ class B2gConfiguration(Configuration):
 # Selenium Web Driver
 #==============================================================================================================================
 class SeleniumConfiguration(Configuration):
-    def __init__(self, browserID, url, dirname=None):
+    def __init__(self, browserID, url, dirname=None, filepath=None ):
         super(SeleniumConfiguration, self).__init__()
         self._browserID = browserID
         self._url = url
-        self._automata_fname = 'automata.json'
-        if not dirname:
-            dirname = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-        self._root_path = os.path.join('trace', dirname )
+        dirname = datetime.datetime.now().strftime('%Y%m%d%H%M%S') if not dirname else dirname
+        self._root_path = os.path.join('trace', dirname ) if not filepath else filepath
         self._file_path = {
             'root': self._root_path,
             'dom': os.path.join(self._root_path, 'dom'),
@@ -108,7 +110,12 @@ class SeleniumConfiguration(Configuration):
             if not os.path.exists(abs_path):
                 os.makedirs(abs_path)
 
+        self._automata_fname = ''
         self._domains = []
+        self._scripts = []
+
+    def set_automata_fname(self, automata_fname):
+        self._automata_fname = automata_fname
 
     def get_automata_fname(self):
         return self._automata_fname
@@ -140,5 +147,62 @@ class SeleniumConfiguration(Configuration):
     def get_domains(self):
         return self._domains
 
-    #=============================================================================================
+    def set_normalizer(self, normalizer):
+        DomAnalyzer.add_normalizer(normalizer)
+
+    def set_simple_clickable_tags(self):
+        DomAnalyzer.set_simple_clickable_tags()
+
+    def set_simple_inputs_tags(self):
+        DomAnalyzer.set_simple_inputs_tags()
+
+    def set_simple_normalizers(self):
+        DomAnalyzer.set_simple_normalizers()
+
+    def get_before_script(self):
+        return self._scripts
+
+    def set_before_script(self, scripts):
+        for edge in scripts:
+            inputs = []
+            for _input in edge['inputs']:
+                inputs.append( (InputField(_input['id'], _input['xpath'], _input['type'], _input['value']), _input['iframe_list']) )
+            selects = []
+            for _select in edge['selects']:
+                selects.append( (SelectField(_select['id'], _select['xpath'], _select['value']), _select['iframe_list']) )
+                c = edge['clickable']
+            clickable = ( Clickable(c['id'], c['xpath'], c['tag']), c['iframe_list'] )
+            self._scripts.append( ( inputs, selects, clickable ) )
+
+
+    def save_config(self, fname):
+        config_data = {}
+        config_data['max_depth'] = self._max_depth
+        config_data['max_states'] = self._max_states
+        config_data['max_time'] = self._max_time
+        config_data['sleep_time'] = self._sleep_time
+        #=============================================================================================
+        #Diff: browser use url & browserID not app
+        '''
+        config_data['app_name'] = self.get_app_name()
+        config_data['app_id'] = self.get_app_id()
+        '''
+        config_data['url'] = self._url
+        config_data['browser_id'] = self._browserID
+        #=============================================================================================
+        config_data['automata_fname'] = self._automata_fname
+        config_data['root_path'] = posixpath.join(
+            posixpath.join(*(self.get_path('root').split(os.sep)))
+        )
+        config_data['dom_path'] = posixpath.join(
+            posixpath.join(*(self.get_path('dom').split(os.sep)))
+        )
+        config_data['state_path'] = posixpath.join(
+            posixpath.join(*(self.get_path('state').split(os.sep)))
+        )
+        config_data['clickable_path'] = posixpath.join(
+            posixpath.join(*(self.get_path('clickable').split(os.sep)))
+        )
+        with open(os.path.join(self.get_abs_path('root'), fname), 'w') as f:
+            json.dump(config_data, f, indent=2, sort_keys=True, ensure_ascii=False)
 #==============================================================================================================================

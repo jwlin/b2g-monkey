@@ -6,6 +6,8 @@
 The automata (finite state machine) referenced by the monkey.
 """
 
+import os, sys, json, posixpath, time
+from os.path import relpath
 from dom_analyzer import DomAnalyzer
 from hashUtil import Hash
 
@@ -16,6 +18,7 @@ class Automata:
         self._initial_state = None
         self._current_state = None
         self.hash = Hash(19, self)
+        self._automata_fname = 'automata.json'
 
     def get_current_state(self):
         return self._current_state
@@ -51,8 +54,8 @@ class Automata:
     def change_state(self, state):
         self._current_state = state
 
-    def add_edge(self, state_from, state_to, clickable, cost=1):
-        edge = (state_from, state_to, clickable, cost)
+    def add_edge(self, state_from, state_to, clickable, iframe_list, cost=1):
+        edge = (state_from, state_to, clickable, iframe_list, cost)
         self._edges.append(edge)
 
     def get_state_by_id(self, sid):
@@ -87,31 +90,114 @@ class Automata:
 
         return edges
 
+    def save_automata(self, configuration, automata_fname=None):
+        automata_fname = self._automata_fname if not automata_fname else automata_fname
+        data = {
+            'state': [],
+            'edge': [], 
+            # the prefix used in ids given by our monkey
+            'id_prefix': DomAnalyzer.serial_prefix
+        }
+        for state in self._states:
+            state_data = {
+                'id': state.get_id(),
+                # output unix style path for website: first unpack dirs in get_path('dom'),
+                # and then posixpath.join them with the filename
+                'dom_path': posixpath.join(
+                    posixpath.join(
+                        *(relpath(
+                            configuration.get_path('dom'),
+                            configuration.get_path('root')
+                            ).split(os.sep))
+                    ),
+                    state.get_id() + '.txt'
+                ),
+                'img_path': posixpath.join(
+                    posixpath.join(
+                        *(relpath(
+                            configuration.get_path('state'),
+                            configuration.get_path('root')
+                            ).split(os.sep))
+                    ),
+                    state.get_id() + '.png'
+                ),
+                'clickable': [],
+                'inputs': [],
+                'selects': []
+            }
+            for clickable, iframe_list in state.get_clickables():
+                clickable_data = {
+                    'id': clickable.get_id(),
+                    'xpath': clickable.get_xpath(),
+                    'tag': clickable.get_tag(),
+                    'iframe_list': str(iframe_list),
+                    'img_path': posixpath.join(
+                        posixpath.join(
+                            *(relpath(
+                                configuration.get_path('clickable'),
+                                configuration.get_path('root')
+                                ).split(os.sep))
+                        ),
+                        state.get_id() + '-' + clickable.get_id() + '.png'
+                    )
+                }
+                state_data['clickable'].append(clickable_data)
+            for my_inputs, iframe_list in state.get_all_inputs():
+                for my_input in my_inputs:
+                    input_data = {
+                        'id': my_input.get_id(),
+                        'xpath': my_input.get_xpath(),
+                        'type': my_input.get_type(),
+                        'value': my_input.get_value(),
+                        'iframe_list': str(iframe_list)
+                    }
+                    state_data['inputs'].append(input_data)
+            for selects, iframe_list in state.get_all_selects():
+                for select in selects:
+                    select_data = {
+                        'id': select.get_id(),
+                        'xpath': select.get_xpath(),
+                        'value': select.get_value(),
+                        'iframe_list': str(iframe_list)
+                    }
+                    state_data['selects'].append(select_data)
+            data['state'].append(state_data)
+        for (state_from, state_to, clickable, iframe_list, cost) in self._edges:
+            edge_data = {
+                'from': state_from.get_id(),
+                'to': state_to.get_id(),
+                'clickable': clickable.get_id(),
+                'iframe_list': str(iframe_list)
+            }
+            data['edge'].append(edge_data)
+
+        with open(os.path.join(configuration.get_abs_path('root'), configuration.get_automata_fname()), 'w') as f:
+            json.dump(data, f, indent=2, sort_keys=True, ensure_ascii=False)
+
 
 class State:
-    def __init__(self, dom):
+    def __init__(self, dom_list):
         self._id = None
-        self._dom = dom
+        self._dom_list = dom_list
         self._prev_states = []
         self._clickables = []
         #=============================================================================================
         #Diff: inputs information save in state, indiviual to clickbles, add normalize_dom
-        self._inputs = []
+        self._inputs = [] #list of iframes of inputs
         self._selects = []
-        self.normalize_dom = DomAnalyzer.normalize(dom)
         #=============================================================================================
 
-    def add_clickable(self, clickable):
+    def add_clickable(self, clickable, iframe_list):
         # check if the clickable is duplicated
         if clickable.get_id():
-            for c in self._clickables:
+            for c, i_list in self._clickables:
                 if c.get_id() == clickable.get_id():
                     return False
         else:
-            for c in self._clickables:
+            for c, i_list in self._clickables:
                 if c.get_xpath() == clickable.get_xpath():
                     return False
-        self._clickables.append(clickable)
+        self._clickables.append( (clickable, iframe_list) )
         return True
 
     def get_clickable_by_id(self, cid):
@@ -139,51 +225,76 @@ class State:
     def get_prev_states(self):
         return self._prev_states
 
-    def get_dom(self):
-        return self._dom
-
     def __str__(self):
         return 'state id: %s, prev states: %s, clickables: %s' % \
                (self._id, self._prev_states, len(self._clickables))
 
     #=============================================================================================
     #Diff: inputs information save in state, indiviual to clickbles
-    def add_input(self, _input):
-        # check if the input is duplicated
-        if _input.get_id():
-            for i in self._inputs:
-                if i.get_id() == _input.get_id():
-                    return False
-        else:
-            for i in self._inputs:
-                if i.get_xpath() == _input.get_xpath():
-                    return False
-        self._inputs.append(_input)
-
     def set_inputs(self, inputs):
         self._inputs = inputs
 
-    def get_inputs(self):
-        return self._inputs 
+    def get_inputs(self, iframe_list):
+        for inputs, iframe_path_list in self._inputs:
+            if not iframe_list and not iframe_path_list:
+                return inputs 
+            if iframe_list == iframe_path_list:
+                return inputs 
 
-    def add_select(self, select):
-        # check if the select is duplicated
-        if select.get_id():
-            for s in self._selects:
-                if s.get_id() == select.get_id():
-                    return False
-        else:
-            for s in self._selects:
-                if s.get_xpath() == select.get_xpath():
-                    return False
-        self._selects.append(select)
+    def get_all_inputs(self):
+        return self._inputs 
 
     def set_selects(self, selects):
         self._selects = selects
 
-    def get_selects(self):
+    def get_selects(self, iframe_list):
+        for selects, iframe_path_list in self._selects:
+            if not iframe_list and not iframe_path_list:
+                return selects
+            if iframe_list == iframe_path_list:
+                return selects
+
+    def get_all_selects(self):
         return self._selects
+
+    def get_dom_list(self):
+        return self._dom_list
+
+    def get_all_dom(self):
+        dom = ''
+        for stateDom in self._dom_list:
+            dom += stateDom.get_dom()
+        return dom
+
+    def get_all_normalize_dom(self):
+        dom = ''
+        for stateDom in self._dom_list:
+            dom += stateDom.get_normalize_dom()
+        return dom
+
+    #============================================================================
+
+class StateDom:
+    def __init__(self, iframe_path_list, dom, url):
+        self.iframe_path_list = iframe_path_list
+        self.dom = dom
+        self.url = url
+        self.normalize_dom = DomAnalyzer.normalize(dom)
+
+    def get_url(self):
+        return self.url
+
+    def get_iframe_path_list(self):
+        return self.iframe_path_list
+
+    def get_dom(self):
+        return self.dom
 
     def get_normalize_dom(self):
         return self.normalize_dom
-    #=============================================================================================
+
+    def is_same(self, stateDom):
+        return self.url == stateDom.get_url() and \
+               self.iframe_path_list == stateDom.get_iframe_path_list() and \
+               DomAnalyzer.is_normalize_equal(self.normalize_dom, stateDom.get_normalize_dom())
+

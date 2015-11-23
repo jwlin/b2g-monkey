@@ -143,6 +143,14 @@ class SeleniumExecutor():
             text = "ERROR! cannot load file"
         return text.encode('utf-8')
 
+    def switch_iframe_and_get_source(self, iframe_xpath_list=None):
+        self.driver.switch_to_default_content()
+        if iframe_xpath_list:
+            for xpath in iframe_xpath_list:        
+                iframe = self.driver.find_element_by_xpath(xpath)
+                self.driver.switch_to_frame(iframe)
+        return self.get_source()
+
     def get_screenshot(self, file_path):
         return self.driver.get_screenshot_as_file(file_path)
 

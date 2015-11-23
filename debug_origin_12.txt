@@ -1,0 +1,3948 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<link href="/themes/IE2/css/calendar.css" rel="stylesheet" type="text/css"/>
+<script language="javascript">
+var inCourse;
+
+
+&lt;!--
+function goto(obj, year, month, day){
+	if(inCourse){
+		var tmp = document.getElementsByName('information')[0];
+		//alert(tmp.innerHTML);
+		top.frames['information'].location.href = "./month.php?sel_year="+year+"&amp;sel_month="+month+"&amp;sel_day="+day;
+        //top.frames['main_info'].location.href = "./month.php?sel_year="+year+"&amp;sel_month="+month+"&amp;sel_day="+day;
+	}else
+		//top.frames['information'].location.href = "./month.php?sel_year="+year+"&amp;sel_month="+month+"&amp;sel_day"+day;
+        top.frames['main_info'].location.href = "./month.php?sel_year="+year+"&amp;sel_month="+month+"&amp;sel_day="+day;
+}
+
+function setFocus(obj){
+	obj.style.backgroundColor = "#FFFFBF";
+}
+
+function unsetFocus(obj){
+	obj.style.backgroundColor = "";
+}
+
+function changeByMonth(month){
+	var year = document.getElementById('sel_year').value;
+	location.href="./calendar.php?action=change&amp;valueY="+year+"&amp;valueM="+month;
+}
+
+function changeByYear(year){
+	var month = document.getElementById('sel_month').value;
+	location.href="./calendar.php?action=change&amp;valueY="+year+"&amp;valueM="+month;
+}
+--&gt;
+
+</script>
+<title>的行事曆</title>
+</head>
+<body bgcolor="#e6e6e6" class="cal">
+<table class="clmonth">
+<caption>
+<a href="./calendar.php?action=sub&amp;target=month&amp;valueY=2015&amp;valueM=11">&lt;</a>
+<select id="sel_month" name="sel_month" onchange="changeByMonth(this.value);">
+<option value="1">一月</option><option value="2">二月</option><option value="3">三月</option><option value="4">四月</option><option value="5">五月</option><option value="6">六月</option><option value="7">七月</option><option value="8">八月</option><option value="9">九月</option><option value="10">十月</option><option selected="" value="11">十一月</option><option value="12">十二月</option>
+</select>
+<!--<select id="sel_month" name="sel_year" onChange="changeByYear(this.value);">-->
+<select id="sel_year" name="sel_year" onchange="changeByYear(this.value);">
+<option value="2011">2011</option><option value="2012">2012</option><option value="2013">2013</option><option value="2014">2014</option><option selected="" value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option>
+</select>
+<a href="./calendar.php?action=add&amp;target=month&amp;valueY=2015&amp;valueM=11">&gt;</a>
+</caption>
+<tbody><tr>
+<th scope="col">日</th>
+<th scope="col">一</th>
+<th scope="col">二</th>
+<th scope="col">三</th>
+<th scope="col">四</th>
+<th scope="col">五</th>
+<th scope="col">六</th>
+</tr>
+<tr>
+<td onclick="goto(this,2015,11,1);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">1</td>
+<td onclick="goto(this,2015,11,2);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">2</td>
+<td onclick="goto(this,2015,11,3);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">3</td>
+<td onclick="goto(this,2015,11,4);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">4</td>
+<td onclick="goto(this,2015,11,5);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">5</td>
+<td onclick="goto(this,2015,11,6);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">6</td>
+<td onclick="goto(this,2015,11,7);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">7</td>
+</tr>
+<tr>
+<td onclick="goto(this,2015,11,8);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">8</td>
+<td onclick="goto(this,2015,11,9);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">9</td>
+<td onclick="goto(this,2015,11,10);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">10</td>
+<td onclick="goto(this,2015,11,11);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">11</td>
+<td onclick="goto(this,2015,11,12);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">12</td>
+<td onclick="goto(this,2015,11,13);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">13</td>
+<td onclick="goto(this,2015,11,14);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">14</td>
+</tr>
+<tr>
+<td onclick="goto(this,2015,11,15);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">15</td>
+<td onclick="goto(this,2015,11,16);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">16</td>
+<td onclick="goto(this,2015,11,17);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">17</td>
+<td onclick="goto(this,2015,11,18);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">18</td>
+<td class="active" onclick="goto(this,2015,11,19);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)"><font color="red">19</font></td>
+<td onclick="goto(this,2015,11,20);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">20</td>
+<td onclick="goto(this,2015,11,21);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">21</td>
+</tr>
+<tr>
+<td onclick="goto(this,2015,11,22);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">22</td>
+<td onclick="goto(this,2015,11,23);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">23</td>
+<td onclick="goto(this,2015,11,24);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">24</td>
+<td onclick="goto(this,2015,11,25);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">25</td>
+<td onclick="goto(this,2015,11,26);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">26</td>
+<td onclick="goto(this,2015,11,27);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">27</td>
+<td onclick="goto(this,2015,11,28);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">28</td>
+</tr>
+<tr>
+<td onclick="goto(this,2015,11,29);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">29</td>
+<td onclick="goto(this,2015,11,30);" onmouseout="unsetFocus(this)" onmouseover="setFocus(this)">30</td>
+<td class="next">1</td>
+<td class="next">2</td>
+<td class="next">3</td>
+<td class="next">4</td>
+<td class="next">5</td>
+</tr>
+</tbody></table>
+<div class="to" onclick="location.href='./calendar.php';">今天</div>
+</body></html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<!--<base target="_blank" />-->
+<title>公告</title>
+<link href="/themes/IE2/css/font_style.css" rel="stylesheet" type="text/css"/>
+<link href="/themes/IE2/css/table.css" rel="stylesheet" type="text/css"/>
+<link href="/themes/IE2/css/form.css" rel="stylesheet" type="text/css"/>
+<link href="/themes/IE2/css/tabs.css" rel="stylesheet" type="text/css"/>
+<link href="/themes/IE2/css/content.css" rel="stylesheet" type="text/css"/>
+<script src="/script/jquery-1.3.2.js" type="text/javascript"></script>
+<style>
+
+.news_subject{
+
+cursor: hand;
+
+}
+
+.style2 {
+font-size: 12px;
+
+}
+
+</style>
+<script type="text/javascript">
+
+	$(document).ready(function(){
+
+	$(".tr3").find('a').attr('target', '_blank');
+
+		//bind click event 
+
+		$(".news_subject").bind("click", function(e){
+
+			var news_cd_arr = this.id.split('-');
+
+			var news_cd = news_cd_arr[1];
+
+			var course_type_id = null ;
+
+			if( news_cd_arr[2] != null) { 
+
+			// 主要是因為有一個所有課程裡面的公告會跟各種纇混雜在一起所以 id用後面再用 - course_type分開
+
+			// 所以index的時候要注意 
+
+				course_type_id = '-' + news_cd_arr[2];
+
+			}else{
+
+				course_type_id = '';
+
+			}
+
+			if(	$('#news_detail_content_tr-'+ news_cd + course_type_id ).css('display') == 'none'){
+
+				$('#news_detail_content_tr-'+ news_cd + course_type_id ).css('display','');
+
+				updateViewNum(news_cd);
+
+			}else {
+
+				$('#news_detail_content_tr-'+ news_cd + course_type_id ).css('display', 'none');
+
+			}
+
+		});
+
+	});
+
+
+
+
+
+//增加瀏覽次數Request
+
+function updateViewNum(news_cd)
+
+{
+
+	$.post(
+
+		'ajax_showList_updateViewNum.php',
+
+		{news_cd:news_cd},
+
+		function(data){//增加瀏覽次數Reponse
+
+			$('.viewNum_'+news_cd).text(data.viewNum);
+			$('.viewNum_'+news_cd).css('text-align','center');
+
+
+		}, 
+
+		"json"
+
+	);	
+
+}
+
+
+
+
+
+function downloadRSS() {
+
+	window.remoteWindow = window.open('http://www.google.com.tw/search?q=rss+reader','remoteWindow','width=550,height=400,scrollbars,resizable');
+
+	window.remoteWindow.window.focus();
+
+}
+
+
+
+</script>
+</head>
+<body>
+<h1>
+
+最新消息
+</h1>
+<div class="describe"> 小提示：選擇公告類別可以瀏覽該類別公告。</div>
+<p></p>
+<table border="0" cellpadding="0" cellspacing="0" height="28" width="222">
+<tbody><tr height="27px">
+<td background="../images/button002.gif" class="style2" width="74"><div align="center" font-size="10px"> <a href="systemNews_homeShowList.php?news_type=system">系統</a> </div></td>
+<td background="../images/button002.gif" class="style2" width="74"><div align="center"> <a href="systemNews_homeShowList.php?news_type=course-all">課程</a></div></td>
+<td background="../images/button002.gif" class="style2" width="74"> <div align="center"> <a href="systemNews_homeShowList.php?news_type=other">其他</a></div></td>
+</tr>
+</tbody></table>
+<span class="style2">
+<hr style="color: #fff; background-color: #fff; border: 1px dotted #6699FF; border-style: none none dotted;" width="100%"/>
+<br/>
+<div>
+<table class="datatable" width="90%">
+<tbody><tr>
+<th align="center" width="9%"><div align="center">公告日期</div></th>
+<th width="50%">標　題</th>
+<th align="center" width="6%"><div align="center">點閱數</div></th>
+</tr>
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2015/09/15</div></td>
+<td class="news_subject" id="news_content_tr-704"><b>【課程公告】能源科技教育系列課程下架通知</b></td>
+<td class="viewNum_704"><div align="center">1519</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-704" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>有鑒於「(104年度)K-12能源科技教育種子教師培訓課程[初階]」、「K-12能源科技教育種子教師培訓課程 [中階]」、「K-12能源科技教育種子教師培訓課程 [進階]」這三門課程目前已移轉至其他線上學習平台，故本平台不再受理相關課程選課，特此公告周知。</div><div>欲研習此三門課程的學員，請至「教育部能量科技人才培育網」，網址(www.energyedu.tw)，如有任何問題請撥打客服專線：(03)4227151#57753，林小姐。</div><div> 不便之處，敬請見諒 !! </div><div>數位學習服務平台 敬上</div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://www.energyedu.tw" target="_blank">
+
+			http://www.energyedu.tw</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2015/04/02</div></td>
+<td class="news_subject" id="news_content_tr-652"><b>【客服公告】客服人員104年春假休假公告</b></td>
+<td class="viewNum_652"><div align="center">1374</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-652" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div><font color="#0000ff" face="新細明體, serif">104年4月3日(五)~4月7日(二)為春假連假，若您有任何問題，歡迎以E-MAIL (ups_moe@mail.moe.gov.tw)告知，團隊將會於上班日(4/8)第一時間與您連絡並處理，感謝您！</font></div><div><font color="#0000ff" face="新細明體, serif"> </font></div><div><font color="#0000ff" face="新細明體, serif">不便之處，敬請見諒 !! </font></div><div><font color="#0000ff" face="新細明體, serif">敬 祝     佳 節 愉 快</font></div><div><font color="#0000ff" face="新細明體, serif"><br/></font></div><div><font color="#0000ff" face="新細明體, serif">數位學習服務平台 敬上</font></div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2015/01/30</div></td>
+<td class="news_subject" id="news_content_tr-640"><b>配合「全國教師在職進修資訊網」停機作業，暫停傳送研習時數事宜</b></td>
+<td class="viewNum_640"><div align="center">1417</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-640" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	各位學員好：<br/><br/>   因高師大「全國教師在職進修網」進行系統性能升級而停機，</p><div>   故本平台於104年1月30日(五)17:00起至104年2月3日(二)止配合在職進修網系統性能升級作業停止研習時數的傳送。</div><div><br/>   預計將於104年2月4日(三)凌晨0點恢復研習時數的傳送，特此公告。<br/> <br/><br/>數位學習服務平台 敬上</div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://cons.inservice.edu.tw/?201501300000" target="_blank">
+
+			http://cons.inservice.edu.tw/?201501300000</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2015/01/27</div></td>
+<td class="news_subject" id="news_content_tr-639"><b>【平台公告】教師研習時數暫停傳送</b></td>
+<td class="viewNum_639"><div align="center">1439</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-639" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;"><span style='font-family:"新細明體", serif;'>各位學員好：</span><span></span></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;"><span>   </span><span style='font-family:"新細明體", serif;'>為配合高師大「全國教師在職進修網」系統進行維護作業，作業期間會有系統不穩定的狀況發生。故本平台預計將於</span><font color="#ff0000"><span>2015/1/26(</span><span style='font-family:"新細明體", serif;'>一</span><span>)~1/29(</span><span style='font-family:"新細明體", serif;'>四</span><span>)</span></font><span style='font-family:"新細明體", serif;'><font color="#ff0000">停止傳送時數至「全國教師在職進修網」</font>，以免發生封包遺失的狀況。</span><span></span></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;"><span>   </span><span style='font-family:"新細明體", serif;'>預計將於</span><font color="#ff0000"><span>2015/01/30(</span><span style='font-family:"新細明體", serif;'>五</span><span>)</span></font><span style='font-family:"新細明體", serif;'>恢復研習時數的傳送，特此公告。</span><span></span></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;"><span> </span></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;text-indent:12pt;"><span style='font-family:"新細明體", serif;'>數位學習服務平台</span> <span style='font-family:"新細明體", serif;'>敬上</span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2015/01/15</div></td>
+<td class="news_subject" id="news_content_tr-638"><b>【重要通知】平台停機時間更正!!!</b></td>
+<td class="viewNum_638"><div align="center">1358</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-638" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="text-indent:12pt;"><span style='font-family:"新細明體", serif;'>為配合教育部機房水塔更換開關閥作業時間調整，更正停機時間為</span><strong><span style="font-size:11pt;font-family:Arial, sans-serif;color:#FF0000;">1/16(</span></strong><strong><span style='font-size:11pt;font-family:"新細明體", serif;color:#FF0000;'>五</span></strong><strong><span style="font-size:11pt;font-family:Arial, sans-serif;color:#FF0000;">)</span></strong><strong><span style='font-size:11pt;font-family:"新細明體", serif;color:#FF0000;'>夜間</span></strong><strong><span style="font-size:11pt;font-family:Arial, sans-serif;color:#FF0000;">12</span></strong><strong><span style='font-size:11pt;font-family:"新細明體", serif;color:#FF0000;'>點至</span></strong><strong><span style="font-size:11pt;font-family:Arial, sans-serif;color:#FF0000;">1/17(</span></strong><strong><span style='font-size:11pt;font-family:"新細明體", serif;color:#FF0000;'>六</span></strong><strong><span style="font-size:11pt;font-family:Arial, sans-serif;color:#FF0000;">)</span></strong><strong><span style='font-size:11pt;font-family:"新細明體", serif;color:#FF0000;'>凌晨</span></strong><strong><span style="font-size:11pt;font-family:Arial, sans-serif;color:#FF0000;">3</span></strong><strong><span style='font-size:11pt;font-family:"新細明體", serif;color:#FF0000;'>點</span></strong><span style='font-family:"新細明體", serif;'>，作業過程中本平台網路將中斷連線，造成不便敬請見諒。</span><span></span></p> <p class="MsoNormal" style="text-indent:12pt;"><span> </span></p> <p class="MsoNormal" style="text-indent:12pt;"><span style='font-family:"新細明體", serif;'>數位學習服務平台</span> <span style='font-family:"新細明體", serif;'>敬上</span><span></span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2015/01/14</div></td>
+<td class="news_subject" id="news_content_tr-637"><b>1/17日(六)平台停機公告</b></td>
+<td class="viewNum_637"><div align="center">1354</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-637" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;text-indent:12pt;"><span style='font-family:"新細明體", serif;'>為配合教育部機房水塔更換開關閥作業，將於</span><strong><span>1/17</span><span style='font-family:"新細明體", serif;'>日</span><span>(</span><span style='font-family:"新細明體", serif;'>六</span><span>)</span><span style='font-family:"新細明體", serif;'>夜間</span><span>12</span><span style='font-family:"新細明體", serif;'>點至</span><span>1/18</span><span style='font-family:"新細明體", serif;'>日</span><span>(</span><span style='font-family:"新細明體", serif;'>日</span><span>)</span><span style='font-family:"新細明體", serif;'>凌晨</span><span>3</span></strong><span style='font-family:"新細明體", serif;'><strong>點進行停機</strong>，作業過程中本平台網路將中斷連線，造成不便敬請見諒。</span><span></span></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;text-indent:12pt;"><span> </span></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;text-indent:12pt;"><span style='font-family:"新細明體", serif;'>數位學習服務平台</span> <span style='font-family:"新細明體", serif;'>敬上</span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/12/24</div></td>
+<td class="news_subject" id="news_content_tr-633"><b>平台中斷連線公告</b></td>
+<td class="viewNum_633"><div align="center">1353</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-633" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="font-size: 12.8000001907349px"><span>為配合教育雲平台網路設備升級作業，預計將於</span><span>12</span><span>月</span><span>26</span><span>日</span><span>(</span><span>星期五</span><span>)PM20:00~23:00 </span><span>進行網路設備模組更換，作業過程中本平台將中斷連線無法登入，造成不便敬請見諒。</span></p><p class="MsoNormal" style="font-size: 12.8000001907349px"><span>數位學習服務平台</span> <span>敬上</span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/12/08</div></td>
+<td class="news_subject" id="news_content_tr-631"><b>【客服公告】電話系統異常</b></td>
+<td class="viewNum_631"><div align="center">1349</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-631" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;"><span style='font-family:"新細明體", serif;'>由於數位學習服務平台計畫團隊辦公室(中正大學資工系)近期內全面更新電話系統設備，今日上午出現系統異常導致線路無法接通。連絡廠商後已在緊急修復當中，預估於今日下午完工。若有任何問題請改用客服信箱與我們聯絡，我們會盡快回覆，造成不便，敬請見諒。</span><span></span></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;"><span> </span></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:small;"><span style='font-family:"新細明體", serif;'>數位學習服務平台</span> <span style='font-family:"新細明體", serif;'>敬上</span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/12/03</div></td>
+<td class="news_subject" id="news_content_tr-629"><b>[系統公告]配合「全國教師在職進修資訊網」停機作業，暫停傳送研習時數事宜</b></td>
+<td class="viewNum_629"><div align="center">1357</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-629" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div class="gmail_default" style="color:#222222;font-family:arial, sans-serif;font-size:small;"><font color="#000000"><span style="font-size:14.3999996185303px;">為配合「全國教師在職進修資訊網」於103/12/17~</span><span style="font-size:14.3999996185303px;">103/12/23全面停機 (詳情請參閱連結網址</span><a href="http://www2.inservice.edu.tw/script/News_View.aspx?Title=235" target="_blank">http://www2.inservice.edu.tw/script/News_View.aspx?Title=235</a><span style="font-size:14.3999996185303px;">)。</span></font></div><div style="color:#222222;font-family:arial, sans-serif;font-size:14.3999996185303px;"><font color="#000000"><img alt="cleardot.gif" border="0" class="CToWUd" src="https://ci6.googleusercontent.com/proxy/RnNZfQn2o2xpggJQqefCOervMbPIci5mujDPJnvl43kv6Rtxjyh5gHN_JKVzeU-aaGz3pePFgxfoAAtZJZNx8mveVTc-11j98EfuAJVcumUenA=s0-d-e1-ft#https://ssl.gstatic.com/ui/v1/icons/mail/images/cleardot.gif"/></font></div><div style="color:#222222;font-family:arial, sans-serif;font-size:14.3999996185303px;"><font color="#000000"></font><div class="gmail_default" style="font-size:small;"><span style="font-size:14.3999996185303px;">本平台於103/12/17~103/12/23期間，</span><span style="font-size:14.3999996185303px;">暫停傳送教師研習時數至「全國教師在職進修資訊網」(</span><span style="font-size:14.3999996185303px;">平台其他功能則照常提供服務)。若此</span><span style="font-size:14.3999996185303px;">期間有教師研習時數的需求，請務必於</span><strong style="color:#ff0000;font-family:arial;">103/12/16</strong><span style="font-size:14.3999996185303px;">前完成課程研習。</span></div><font color="#000000"></font><div class="gmail_default" style="font-size:small;"><br/><span style="font-size:14.3999996185303px;">若對「全國教師在職進修資訊網」的預計停機期程有任何問題，</span><span style="font-size:14.3999996185303px;">請逕洽「全國教師在職進修資訊網」服務專線： (07)7258600或「全國教師在職進修資訊網」服務信箱：</span><a href="mailto:inservice@nknucc.nknu.edu.tw" target="_blank">inservice@nknucc.nknu.edu.tw</a><span style="font-size:14.3999996185303px;">。</span><br/><span style="font-size:14.3999996185303px;"> </span><br/><br/><span style="font-size:14.3999996185303px;">數位學習服務平台 敬上</span></div></div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://www2.inservice.edu.tw/script/News_View.aspx?Title=235" target="_blank">
+
+			http://www2.inservice.edu.tw/script/News_View.aspx?Title=235</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/11/07</div></td>
+<td class="news_subject" id="news_content_tr-627"><b>配合教育部整合教育體系之雲端學習資源與服務政策，帳號整合事宜</b></td>
+<td class="viewNum_627"><div align="center">1393</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-627" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div style="color:#222222;font-family:arial, sans-serif;font-size:14px;"><font color="#ff0000">使用者您好<br/><br/>為配合教育部整合教育體系之雲端學習資源與服務政策，將透過教育體系的單一帳號登入，串連使用各縣市建置分享的雲端服務，享受開放式的學習資源。<br/><br/>往後「教育雲入口網」<a href="http://cloud.edu.tw/" target="_blank">http://cloud.edu.tw/</a> 將為唯一登入介面，若無縣市單一簽入帳號之會員，請註冊新帳號。系統會將您在平臺上的學習歷程對應到新的帳號。<br/><br/>為避免使用者無法即時申請帳號，原平</font><span style="color:#ff0000;">臺</span><font color="#ff0000">帳號登入功能將維持至104年1月31日晚間12點59分，使用者可選擇用原平</font><span style="color:#ff0000;">臺</span><font color="#ff0000">登入方式或至教育雲入口網申請新帳號登入；104年2月1日凌晨0點起，平</font><span style="color:#ff0000;">臺</span><font color="#ff0000">首頁之豋入功能將取消，改至「教育雲入口網」統一登入。</font></div><div style="color:#222222;font-family:arial, sans-serif;font-size:14px;"><font color="#ff0000"><br/></font></div><div style="color:#222222;font-family:arial, sans-serif;font-size:14px;"><font color="#ff0000">若有任何問題請洽</font><span style="font-size:12px;text-align:center;background-color:#e6ebef;">聯絡專線：05-2720411 分機：33131 或 23141(週一至週五 9:00~12:00 13:30~17:30)</span></div><div style="color:#222222;font-family:arial, sans-serif;font-size:14px;"><div style="text-align:center;"><span style="font-size:12px;background-color:#e6ebef;"> E-mail：<a href="mailto:ups_moe@mail.moe.gov.tw" target="_blank">ups_moe@mail.moe.gov.tw</a></span></div><font color="#ff0000"><br/>教育部數位學習服務平台 敬上</font></div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/09/01</div></td>
+<td class="news_subject" id="news_content_tr-625"><b>2014年9月12日、9月19日，103-104數位學習服務平台維護與推廣計畫-推廣說明會</b></td>
+<td class="viewNum_625"><div align="center">1346</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-625" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">本計畫即將舉辦 「教育部數位學習服務平台」推廣說明會，為推廣本平臺服務，讓使用者對平臺相關功能有更多的認識與瞭解，本年度舉辦兩場次推廣說明會，歡迎踴躍參加。</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">以下為場次詳細資料，敬請提早報名避免向隅。</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff"><br/></font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">場次：一、(北區)</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">日期：103年 9月 12 日 ( 星期五 )</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">地點：國立台北科技大學 共同科館 313電腦教室</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff"><br/></font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">場次：二、(南區)</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">日期：103年 9月 19 日 ( 星期五 )</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">地點：國立中山大學 圖書與資訊大樓 B1 PC03教室</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><br/></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">※各場活動相關交通資訊詳見報名網站。</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff"><br/></font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">報名方式：</font><span style="color: #0000ff">研習活動採網路線上報名，報名網址為<a href="../signup/upsmoe103" target="_blank">https://ups.moe.edu.tw/signup/upsmoe103</a></span></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff"></font><div>1.即日起開放網路報名，報名人數每場40人，敬請提早報名以免向隅。</div><div>2.於截止日期前，若報名人數額滿即截止，各場次報名截止日期如下：</div><div>(1) 北區場：至 103年 9 月 10 日（三）晚上 12 時整截止報名。</div><div>(2) 南區場：至 103年 9 月 17 日（三）晚上 12 時整截止報名。</div></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff"> </font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">洽詢專線：（05）2720411 # 33131 </font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><font color="#0000ff">E-mail：<a href="mailto:ups_moe@mail.moe.gov.tw" target="_blank">ups_moe@mail.moe.gov.tw</a>。</font></div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsmoe103/document.pdf" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsmoe103/document.pdf</a><br/>
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/625_4c25bbf421ac42fdd38134cf64c1ae15.pdf" target="_blank">
+
+			數位學習服務平台推廣活動公文.pdf </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/08/18</div></td>
+<td class="news_subject" id="news_content_tr-624"><b>數位學習服務平台 - 停機公告</b></td>
+<td class="viewNum_624"><div align="center">1345</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-624" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:14px;"><font color="#000000"><span>為配合</span><span style='font-family:"新細明體", serif;'>教育部資科司預定</span><span style='font-family:"新細明體", serif;'>於</span><span style="font-family:Arial, sans-serif;">103</span><span style='font-family:"新細明體", serif;'>年</span><span style="font-family:Arial, sans-serif;">8</span><span style='font-family:"新細明體", serif;'>月</span><span style="font-family:Arial, sans-serif;">19</span><span style='font-family:"新細明體", serif;'>日</span><span style="font-family:Arial, sans-serif;">(</span><span style='font-family:"新細明體", serif;'>星期二</span><span style="font-family:Arial, sans-serif;">)</span><span style='font-family:"新細明體", serif;'>夜間</span><span style="font-family:Arial, sans-serif;">10</span><span style='font-family:"新細明體", serif;'>點至隔日凌晨</span><span style="font-family:Arial, sans-serif;">2</span><span style='font-family:"新細明體", serif;'>點進行</span><span style='font-family:"新細明體", serif;'>之</span><span style='font-family:"新細明體", serif;'>機房電力維護。</span><span style='font-family:"新細明體", serif;'>本平台於</span><span style="font-family:Arial, sans-serif;">103</span><span style='font-family:"新細明體", serif;'>年</span><span style="font-family:Arial, sans-serif;">8</span><span style='font-family:"新細明體", serif;'>月</span><span style="font-family:Arial, sans-serif;">20</span><span style='font-family:"新細明體", serif;'>日</span><span style="font-family:Arial, sans-serif;">(</span><span style='font-family:"新細明體", serif;'>星期三</span><span style="font-family:Arial, sans-serif;">)</span><span style='font-family:"新細明體", serif;'>凌晨傳送之教師研習時數至全國教師在職進修資訊網需延宕一天，若有不便之處敬請見諒！</span></font></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:14px;"><span><font color="#000000"> </font></span></p><p class="MsoNormal" style="margin:0px;color:#222222;font-family:arial, sans-serif;font-size:14px;"><font color="#000000"><span style='font-family:"新細明體", serif;'>數位學習服務平台</span> <span style='font-family:"新細明體", serif;'>敬上</span></font></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/07/31</div></td>
+<td class="news_subject" id="news_content_tr-623"><b>【停機公告】教育部機房8/2凌晨將進行維護</b></td>
+<td class="viewNum_623"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-623" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<span style='font-size:14px;color:#0000ff;font-family:"新細明體", serif;'>教育部資科司</span><span style='font-size:14px;color:#0000ff;font-family:"新細明體", serif;'>於今</span><span style="font-size:14px;color:#0000ff;font-family:Arial, sans-serif;">103</span><span style='font-size:14px;color:#0000ff;font-family:"新細明體", serif;'>年</span><span style="font-size:14px;color:#0000ff;font-family:Arial, sans-serif;">8</span><span style='font-size:14px;color:#0000ff;font-family:"新細明體", serif;'>月</span><span style="font-size:14px;color:#0000ff;font-family:Arial, sans-serif;">2</span><span style='font-size:14px;color:#0000ff;font-family:"新細明體", serif;'>日</span><span style="font-size:14px;color:#0000ff;font-family:Arial, sans-serif;">(</span><span style='font-size:14px;color:#0000ff;font-family:"新細明體", serif;'>星期六</span><span style="font-size:14px;color:#0000ff;font-family:Arial, sans-serif;">)</span><span style='color:#500050;font-size:14px;font-family:"新細明體", serif;'><font color="#0000ff">凌晨</font><span style="color:#0000ff;font-family:Arial, sans-serif;">0</span><span style="color:#0000ff;">時至凌晨</span><span style="color:#0000ff;font-family:Arial, sans-serif;">4</span><span style="color:#0000ff;">時進行本部第三辦公室機房不斷電系統維護，</span></span><span style='color:#0000ff;font-size:14px;font-family:"新細明體", serif;'>配合教育部內機房系統維修，本平台於</span><span style="color:#0000ff;font-size:14px;font-family:Arial, sans-serif;">103</span><span style='color:#0000ff;font-size:14px;font-family:"新細明體", serif;'>年</span><span style="color:#0000ff;font-size:14px;font-family:Arial, sans-serif;">8</span><span style='color:#0000ff;font-size:14px;font-family:"新細明體", serif;'>月</span><span style="color:#0000ff;font-size:14px;font-family:Arial, sans-serif;">2</span><span style='color:#0000ff;font-size:14px;font-family:"新細明體", serif;'>日</span><span style="color:#0000ff;font-size:14px;font-family:Arial, sans-serif;">(</span><span style='color:#0000ff;font-size:14px;font-family:"新細明體", serif;'>星期六</span><span style="color:#0000ff;font-size:14px;font-family:Arial, sans-serif;">)</span><span style='color:#0000ff;font-size:14px;font-family:"新細明體", serif;'>凌晨傳送之教師研習時數至全國教師在職進修資訊網需延宕一天，若有不便之處敬請見諒！</span></p><p class="MsoNormal" style="margin:0px;color:#500050;font-family:arial, sans-serif;font-size:14px;"><span><font color="#0000ff"> </font></span></p><p class="MsoNormal" style="margin:0px;color:#500050;font-family:arial, sans-serif;font-size:14px;"><font color="#0000ff"><span style='font-family:"新細明體", serif;'>數位學習服務平台</span> <span style='font-family:"新細明體", serif;'>敬上</span></font></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/07/09</div></td>
+<td class="news_subject" id="news_content_tr-622"><b>有關教師研習時數配合全國教師在職進修資訊網停機事宜</b></td>
+<td class="viewNum_622"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-622" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p><span style="font-size:11.5pt;color:#0000FF;">配合新北市政府教育局</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">101</span><span style="font-size:11.5pt;color:#0000FF;">年</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">1</span><span style="font-size:11.5pt;color:#0000FF;">月</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">1</span><span style="font-size:11.5pt;color:#0000FF;">日至</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">103</span><span style="font-size:11.5pt;color:#0000FF;">年</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">6</span><span style="font-size:11.5pt;color:#0000FF;">月</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">13</span><span style="font-size:11.5pt;color:#0000FF;">日間資訊傳報資料異動，「全國教師在職進修資訊網」需自</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">103</span><span style="font-size:11.5pt;color:#0000FF;">年</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">7</span><span style="font-size:11.5pt;color:#0000FF;">月</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">11</span><span style="font-size:11.5pt;color:#0000FF;">日起連續</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;">5</span><span style="font-size:11.5pt;color:#0000FF;">個週末停機，進行比對資料庫及與各單位資訊傳報資料庫內所有資料差異，本平台每日傳送通過之教師研習時數至全國教師在職進修資訊網將於停機後之下個工作日進行，不便之處敬請見諒！</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p><span style="font-size:11.5pt;color:#006699;">全國教師在職進修資訊網</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'> </span><span style="font-size:11.5pt;color:#006699;">停機時間如下</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>7/11-13(</span><span style="font-size:11.5pt;color:#006699;">星期五</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>-</span><span style="font-size:11.5pt;color:#006699;">日</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>)</span><span style="font-size:11.5pt;color:#006699;">全天</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>7/19-20(</span><span style="font-size:11.5pt;color:#006699;">星期六</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>-</span><span style="font-size:11.5pt;color:#006699;">日</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>)</span><span style="font-size:11.5pt;color:#006699;">全天</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>7/26-27(</span><span style="font-size:11.5pt;color:#006699;">星期六</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>-</span><span style="font-size:11.5pt;color:#006699;">日</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>)</span><span style="font-size:11.5pt;color:#006699;">全天</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>8/2-3(</span><span style="font-size:11.5pt;color:#006699;">星期六</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>-</span><span style="font-size:11.5pt;color:#006699;">日</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>)</span><span style="font-size:11.5pt;color:#006699;">全天</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>8/9-10(</span><span style="font-size:11.5pt;color:#006699;">星期六</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>-</span><span style="font-size:11.5pt;color:#006699;">日</span><span style='font-size:11.5pt;font-family:"Times New Roman", serif;color:#006699;'>)</span><span style="font-size:11.5pt;color:#006699;">全天</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p><span style="font-size:11.5pt;color:#0000FF;">數位學習服務平台</span><span style="font-size:11.5pt;font-family:Arial, sans-serif;color:#0000FF;"> </span><span style="font-size:11.5pt;color:#0000FF;">敬上</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/05/09</div></td>
+<td class="news_subject" id="news_content_tr-619"><b>【緊急公告】有關近日時數無法傳送到全國教師在職進修網的問題</b></td>
+<td class="viewNum_619"><div align="center">1346</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-619" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>因日前平台系統升級後發現部分功能不穩定，導致教師研習時數無法順利傳送至高師大資訊網。</div><div>目前系統已經修復完成，未送出的時數皆由工程師立即手動重新傳送至高師大資訊網，傳送時間可能需要幾個小時，敬請耐心等候，傳送日期會壓在2014年5月9日。</div><div><br/></div><div>造成您的不便與困擾，我們深感抱歉，若有發現任何問題請立即來電客服專線，將由專人為您服務。</div><div><br/></div><div>祝  順心</div><div><br/></div><div>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　教育部數位學習服務平台  敬上</div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/04/28</div></td>
+<td class="news_subject" id="news_content_tr-618"><b>【停機公告】平臺將於5月6日(二)00:00至5月7日(三)23:00 進行系統升級事宜</b></td>
+<td class="viewNum_618"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-618" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p style='font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;text-transform:none;word-spacing:0px;color:#006699;font-family:"Times New Roman";font-size:13.6364px;text-indent:28pt;'><span style='font-size:14pt;font-family:"標楷體";'>為提升效能，教育部數位學習服務平臺將於103年5月6日（週二）凌晨0時起進行系統升級，預計至103年5月7日（週三）晚間23時重新開放。</span></p><p style='font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;text-transform:none;word-spacing:0px;color:#006699;font-family:"Times New Roman";font-size:13.6364px;text-indent:28pt;'><span style='font-size:14pt;font-family:"標楷體";'>請各位使用者於103年5月5日（週一）下午晚間時前請先行儲存相關資訊並完成課程登出。維護期間，系統因停機而無法使用，造成您的不便，敬請見諒。</span></p><p style='font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;text-transform:none;word-spacing:0px;color:#006699;font-family:"Times New Roman";font-size:13.6364px;text-indent:322pt;'><span style='font-size:14pt;font-family:"標楷體";'>教育部數位學習服務平臺 敬上</span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2014/03/13</div></td>
+<td class="news_subject" id="news_content_tr-613"><b>【停機公告】平臺將於3月15日(六)00:00至3月16日(日)23:00 進行系統升級事宜</b></td>
+<td class="viewNum_613"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-613" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p style='color:#222222;font-family:"Times New Roman";font-size:13.63636302947998px;text-indent:28pt;'><font color="#0000ff"><span style='font-size:14pt;font-family:"標楷體";'>為提升效能，教育部數位學習服務平臺將於103年3月15日（週六）凌晨0時起進行系統升級，預計至103年3月16日（週日）晚間23時重新開放。</span><span style='font-size:10pt;font-family:"Times New Roman", serif;'></span></font></p><p style='color:#222222;font-family:"Times New Roman";font-size:13.63636302947998px;margin-bottom:12pt;text-indent:28pt;'><font color="#0000ff"><span style='font-size:14pt;font-family:"標楷體";'>請各位使用者於103年3月14日（週五）下午晚間時前先行結束課程登出。維護期間，系統因停機而無法使用，造成您的不便，敬請見諒。</span><span style='font-size:10pt;font-family:"Times New Roman", serif;'></span></font></p><p style='color:#222222;font-family:"Times New Roman";font-size:13.63636302947998px;text-align:right;'><span style='font-size:14pt;font-family:"標楷體";'><font color="#0000ff">教育部數位學習服務平臺 敬上</font></span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/12/17</div></td>
+<td class="news_subject" id="news_content_tr-609"><b>【公告】有關近日閱讀時數紀錄錯誤問題</b></td>
+<td class="viewNum_609"><div align="center">1347</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-609" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal"><span style="font-size: 16pt">各位研習學員好：<span></span></span></p> <p class="MsoNormal" style="text-indent: 24pt"><span style="font-size: 16pt">前日因雲端設備問題，造成部分課程閱讀時數計算錯誤，目前已全面修復中。若仍有問題之老師，請與本平台客服聯絡。客服專線：<span>(05)2720411#33131</span>、<span>23141</span></span></p> <p class="MsoNormal"><span style="font-size: 16pt">   </span><span style="font-size: 16pt">祝<span>  </span>順心<span></span></span></p> <p class="MsoNormal"><span style="font-size: 16pt">      </span><span style="font-size: 16pt">數位學習服務平台 敬上<span></span></span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/11/12</div></td>
+<td class="news_subject" id="news_content_tr-606"><b>2013年11月15日，101-102數位學習服務平台經營與推廣計畫-教師工作坊，歡迎報名參加。</b></td>
+<td class="viewNum_606"><div align="center">1345</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-606" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>本計畫即將舉辦 「教育部數位學習服務平台」教師工作坊，為促使教師對數位學習平臺開課流程及平臺課程教材管理能夠操作更加熟悉，特此舉辦平台教師開課、課程教材管理之教育訓練。</div><div>以下為場次詳細資料，敬請提早報名避免向隅。</div><div><br/></div><div>時間：102年11月15日（星期五），上午9時30分至下午4時20分。</div><div>地點：國立中山大學 圖書與資訊大樓地下一樓 PC03 教室</div><div>       高雄市鼓山區蓮海路 70 號</div><div><br/></div><div>※各場活動相關交通資訊詳見報名網站。</div><div> </div><div>研習活動採網路線上報名，報名網址為http://ups.moe.edu.tw/signup/upsteach102d/</div><div><strong style="text-align:center;">   </strong></div><div><strong><span style='font-size:12pt;font-family:"新細明體", serif;color:#FF0000;'>※</span><span style='font-size:12pt;font-family:"新細明體", serif;color:#FF0000;'>目前報名人數尚未額滿，歡迎踴躍報名。</span></strong> </div><div>  </div><div>洽詢專線：（05）2720411 # 33131 </div><div>E-mail：ups_moe@mail.moe.gov.tw。</div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsteach102d/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsteach102d/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/11/07</div></td>
+<td class="news_subject" id="news_content_tr-602"><b>【停機公告】平臺將於11月11日(一)00:00至11月12日(二)18:00 進行系統維護事宜</b></td>
+<td class="viewNum_602"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-602" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p style="text-indent:28pt;"><span style='font-size:14pt;font-family:"標楷體";color:#222222;'>為調整效能，教育部數位學習服務平臺將於<span>102</span>年<span>11</span>月<span>11</span>日（週一）凌晨<span>0</span>時起進行系統維護，預計至<span>102</span>年<span>11</span>月<span>12</span>日（週二）下午<span>6</span>時重新開放。</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p style="margin-bottom:12pt;text-indent:28pt;"><span style='font-size:14pt;font-family:"標楷體";color:#222222;'>請各位使用者於<span>102</span>年<span>11</span>月<span>10</span>日（週日）下午晚間時前先行結束課程登出。維護期間，系統因停機而無法使用，造成您的不便，敬請見諒。</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p align="right" style="text-align:right;"><span style='font-size:14pt;font-family:"標楷體";color:#222222;'>教育部數位學習服務平臺 敬上</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/10/28</div></td>
+<td class="news_subject" id="news_content_tr-600"><b>【停機公告】平台將於10月28日(一)17:30 -10月28日(一)18:00 進行系統維護事宜</b></td>
+<td class="viewNum_600"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-600" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal"><span style='font-size:16pt;font-family:"標楷體";'>    教育部數位學習服務平台將於<span>102</span>年<span>10</span>月<span>28</span>日（週一）下午<span>05</span>時<span>30</span>分進行系統維護，預計到至<span>102</span>年<span>10</span>月<span>28</span>日（週一）下午<span>06</span>時<span>00</span>分重新開放；系統維護期間可能導致系統不穩定，請各位使用者於<span>10</span>月<span>28</span>日（週一）下午<span>5</span>時<span>00</span>分前先行結束課程，若造成各學員的不便，敬請見諒。<span></span></span></p> <p class="MsoNormal"><span style='font-size:16pt;font-family:"標楷體";'> </span></p> <p class="MsoNormal"><span style='font-size:16pt;font-family:"標楷體";'>教育部數位學習服務平台 管理者敬上<span></span></span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/10/25</div></td>
+<td class="news_subject" id="news_content_tr-599"><b>【有關近日平臺負載量高，導致連線緩慢問題】</b></td>
+<td class="viewNum_599"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-599" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<!--[if gte mso 9]><xml>  <o:OfficeDocumentSettings>   <o:AllowPNG/>  </o:OfficeDocumentSettings> </xml><![endif]--> </p><p class="MsoNormal" style="text-align: justify; text-indent: 32.15pt"><span style="font-size: 16pt; font-family: 標楷體">近日有教師反映，在使用本平臺上有緩慢的情形，經查係同一時間有大量教師同時上線造成系統負載過重，可能導致連線變慢或資料錯誤等狀況，耽誤您的研習進度，請各位參加線上研習的老師見諒。平臺服務團隊刻正進行平臺效能提升作業，並將安排停機維護日期。<span></span></span></p> <p class="MsoNormal" style="text-align: justify; text-indent: 32.2pt"><strong><span style="font-size: 16pt; font-family: 標楷體">平日下午<span>5</span>時後屬離峰時段，運作穩定，請老師可適度運用。<span></span></span></strong></p> <p align="right" class="MsoNormal" style="text-align: right"><span style="font-size: 16pt; font-family: 標楷體">數位學習服務平臺 敬上<span></span></span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/10/24</div></td>
+<td class="news_subject" id="news_content_tr-598"><b>關於『有效教學策略』線上課程移轉問題</b></td>
+<td class="viewNum_598"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-598" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="margin-bottom: 12pt"><span style="font-size: 14pt; font-family: 標楷體; color: #222222">關於有效教學線上課程遇到移轉的問題，</span><span style="font-size: 14pt; font-family: 標楷體; color: #222222">再加上本署<span>102</span>年<span>10</span>月<span>7</span>日以臺教國署國字第<span>1020100855</span>號所發公文，有提供未完成時數的教師名單，因此造成許多老師擔心研習完卻拿不到時數的問題，請確認以下動作即可放心<span><br/> 1.</span>如果在研習畫面上看到完成時數為【<span>3</span>小時】的老師就代表你已經完成。<span><br/> 2.</span>如果有進行性平、本語研習時數，因為這兩部分只有<span>1</span>小時，老師要另外在完整上完一個【領域】才可以拿到全部的時數，屆時則會累計<span>4</span>小時的研習。<span><br/> <br/> 102</span>年<span>9</span>月<span>30</span>日前有在新竹縣所建置的【全國國民中學教師有效教學線上研習入口網】（<span><a href="http://effective.hcc.edu.tw/" target="_blank"><span style="color: blue">http://effective.hcc.edu.tw/</span></a></span>）研習的老師，請務必於<span>102</span>年<span>10</span>月<span>30</span>日前完成，其餘教師要上有效教學線上研習的請進入教育部數位學習服務平臺研習（<span><a href="..//" target="_blank"><span style="color: blue">http://ups.moe.edu.tw/</span></a></span>或<span><a href="http://163.28.10.29/" target="_blank"><span style="color: blue">http://163.28.10.29/</span></a></span>，以下稱<span>UPS</span>）<span><br/> </span>在兩處完整研習並取得時數皆可採納，請老師們不用擔心，屆時兩處的研習時數都會彙整到全國教師在職進修資訊網。除新竹縣教師，建議其他老師進入教育部數位學習服務平臺研習比較不會有流量問題。<span><br/> <br/> </span>除非發現完成研習而研習時數不對再向承辦單位詢問，以上說明，感謝。<span></span></span></p> <p class="MsoNormal"><span style="font-size: 14pt; font-family: 標楷體; color: #222222">國教署：<span><a href="tel:02-77367450" target="_blank"><span style="color: blue">02-77367450</span></a><br/> </span>若研習時數有問題，請將所屬縣市、學校、新竹縣數位平臺帳號、身分證字號、學習領域及大約完成的日期，寄至<span><a href="mailto:bqtsay@gmail.com" target="_blank"><span style="color: blue">bqtsay@gmail.com</span></a></span>，俾利新竹縣協助查詢。</span><span style="color: #222222; font-family: 標楷體; font-size: 14pt"></span></p><p class="MsoNormal"><span style="color: #222222; font-family: 標楷體; font-size: 14pt">以上內容由國教署發佈，如有相關疑義，</span><span style="color: #222222; font-family: 標楷體; font-size: 14pt">請聯繫國教署：</span><span style="color: #222222; font-family: 標楷體; font-size: 14pt">02-77367450</span><span style="color: #222222; font-family: 標楷體; font-size: 14pt">，謝謝！</span></p><p> </p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/10/16</div></td>
+<td class="news_subject" id="news_content_tr-597"><b>2013年10月25日，101-102數位學習服務平台經營與推廣計畫-教師工作坊，歡迎報名參加。</b></td>
+<td class="viewNum_597"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-597" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>本計畫即將舉辦 「教育部數位學習服務平台」教師工作坊，為促使教師對數位學習平臺開課流程及平臺課程教材管理能夠操作更加熟悉，特此舉辦平台教師開課、課程教材管理之教育訓練。</div><div>以下為場次詳細資料，敬請提早報名避免向隅。</div><div><br/></div><div>時間：102年10月25日（星期五），上午9時30分至下午4時20分。</div><div>地點：中國文化大學推廣教育部 大夏館208電腦教室</div><div>      臺北市建國南路二段231號</div><div><br/></div><div>※各場活動相關交通資訊詳見報名網站。</div><div> </div><div>研習活動採網路線上報名，報名網址為https://ups.moe.edu.tw/signup/upsteach102c/</div><div> </div><div>洽詢專線：（05）2720411 # 33131 </div><div>E-mail：ups_moe@mail.moe.gov.tw。 </div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsteach102c/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsteach102c/</a><br/>
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/597_bcba89c128376a7741186c5180bc9b43.pdf" target="_blank">
+
+			1021025公文抄件(含附件).pdf </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/10/14</div></td>
+<td class="news_subject" id="news_content_tr-595"><b>『有效教學策略』教師研習課程正式上線</b></td>
+<td class="viewNum_595"><div align="center">1345</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-595" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal"><span style="font-size: 13.5pt">敬愛的教師您好：<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">「十二年國民基本教育中等學校教師教學專業能力研習五堂課」第二堂「有效教學策略」已於<span>102</span>年<span>10</span>月<span>9</span>日正式上線，包括</span><span style="font-size: 13.5pt">有效教學理念1小時（不分領域）及各學習領域/議題教學策略實作與示例分享2小時，請各位教師能依據所屬領域進入觀看並完成測驗題目始完成3小時線上研習課程，並鼓勵大家能進一步觀看本土語、性別及人權議題影片。</span><span style="font-size: 13.5pt"></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">當您登入平臺後，請進入左側主選單之「課程總覽」，點選「課程狀態」：依課程性質」，選取子項目：<strong>「</strong></span><span style="font-size: 13.5pt">十二年國民基本教育類</span><strong><span style="font-size: 13.5pt">」</span></strong><span style="font-size: 13.5pt">，即可看見相關課程（詳如下表），再點選右方「選課」，選課成功後，請進入主選單之「我的課表」，即可點選所需課程研習。<span></span></span></p> <p align="center" class="MsoNormal" style="text-align: center"> </p> <p class="MsoNormal"><span style="font-size: 13.5pt">國教署研習公文如下附加檔案，請參考，謝謝。<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">附加檔案<span>1</span>：臺教國署國字第<span>1020100855</span>號<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">附加檔案<span>2</span>：操作手冊</span></p><p class="MsoNormal"><span style="font-size: 18px">附加檔案3</span><span style="font-size: 18px">：</span><font size="4">國教署有效教學策略課程認證時數及通過條件一覽表</font> </p> <p class="MsoNormal"><span style="font-size: 13.5pt">敬祝<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">　<span>  </span>教安<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">教育部數位學習服務平臺團隊 敬上<span></span></span></p>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/595_224d11bc62cfcdbf8842f463b0d6ef84.pdf" target="_blank">
+
+			 附件1_1021007_國教署有效教學課程發文.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/595_50a71af33d15117f6def81bdaeb40fb4.pdf" target="_blank">
+
+			 附件2_ups平臺操作手冊_有效教學策略.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/595_41e9670341c39b8e649ddad8d55e7a39.pdf" target="_blank">
+
+			 平臺公告1009_國教署有效教學課程認證時數及通過條件一覽表.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/10/14</div></td>
+<td class="news_subject" id="news_content_tr-594"><b>歡迎選讀『藝術及美感教育』教師研習課程</b></td>
+<td class="viewNum_594"><div align="center">1346</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-594" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal"><span style="font-size: 13.5pt">敬愛的教師您好：<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">為提升教師及行政人員美感素養，教育部師資藝教司業向文化部及行政院人事行政總處公務人力發展中心取得「生活美學概論」等<span>10</span>堂藝術及美感教育相關課程授權。<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">當您登入平臺後，請進入左側主選單之「課程總覽」，點選「課程狀態」：依課程性質」，選取子項目：</span><strong><span style="font-size: 13.5pt">「藝術及美感教育類」</span></strong><span style="font-size: 13.5pt">，即可看見相關課程（詳如附件），再點選右方「選課」，選課成功後，請進入主選單之「我的課表」，即可點選所需課程研習。</span></p><p class="MsoNormal"><span style="font-size: 13.5pt"></span><span style="font-size: 13.5pt; text-align: center">國教署研習公文如下附加檔案，請參考，謝謝。</span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">附加檔案：1.臺教師<span>(</span>一<span>)</span>字第<span>1020125806</span>號</span> </p><p class="MsoNormal"><span style="font-size: 13.5pt">               2.</span><font size="4">「藝術及美感教育數位研習課程」認證時數及通過認證條件一覽表</font>  </p> <p class="MsoNormal"><span style="font-size: 13.5pt">敬祝<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">　<span>  </span>教安<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">教育部數位學習服務平臺團隊 敬上<span></span></span></p>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/594_a6ac42f7b68cb513890256c05be35921.pdf" target="_blank">
+
+			 1師資藝教司0822推廣公文.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/594_aecdd321b38b415af962a100c3df4481.pdf" target="_blank">
+
+			2附件1_認證時數.pdf </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/10/14</div></td>
+<td class="news_subject" id="news_content_tr-593"><b>歡迎選讀『國中適性輔導』教師研習課程</b></td>
+<td class="viewNum_593"><div align="center">1345</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-593" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal"><span style="font-size: 13.5pt">敬愛的教師您好：</span><span style="font-size: 10pt"></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">「十二年國民基本教育中等學校教師教學專業能力研習五堂課」<strong>第<span>5</span>堂課</strong>：</span><strong><span style="font-size: 13.5pt">「國中適性輔導」</span></strong><span style="font-size: 13.5pt">數位研習課程已於<span>102</span>年<span>7</span>月<span>23</span>日上線，歡迎您選課學習。<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">依國教署<span>102</span>年<span>7</span>月<span>23</span>日函文（如附檔）所示：本課程達標值為<span>102</span>年<span>12</span>月<span>31</span>日為<span>80%</span>、<span>103</span>年<span>7</span>月<span>31</span>日前<span>100%</span>，中等學校編制內正式教師及<span>3</span>個月以上長期代理教師皆需上線測驗通過。未完成本課程的教師，請儘速安排時間上線選課研習。<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">當您登入平臺後，請進入左側主選單之「課程總覽」，點選「課程狀態」：依課程性質」，選取子項目：<strong>「十二年國民基本教育類」</strong>，即可</span><span style="font-size: 13.5pt">​</span><span style="font-size: 13.5pt">看見<strong>「國中適性輔導」</strong>，再點選右方「選課」，選課成功後，請進入主選單之「我的課表」，即可點選所需課程研習。<span></span></span></p> <p class="MsoNormal" style="margin-bottom: 12pt"><span style="font-size: 13.5pt">若教師您已參加過國中適性輔導相關研習課程，亦可進入教材畫面後，直接點選上方「線上測驗」功能，通過測驗後，即為完成本堂課，本平臺將為您匯入教師研習時數<span>3</span>小時至全國教師在職進修資訊網。</span><span style="font-size: 10pt"></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">國教署研習公文如下附加檔案，請參考，謝謝。</span><span style="font-size: 10pt"></span></p> <p class="MsoNormal" style="margin-bottom: 12pt"><span style="font-size: 13.5pt">附加檔案：<u>臺教授國字第<span>1020067233</span>號</u></span><span style="font-size: 10pt"></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">敬祝</span><span style="font-size: 10pt"></span></p> <p class="MsoNormal" style="margin-bottom: 12pt"><span style="font-size: 13.5pt">　<span>  </span>教安</span><span style="font-size: 10pt"></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">教育部數位學習服務平臺團隊 敬上<span></span></span></p>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/593_6fbb0b2b4b655990b63f93965ade5ebb.pdf" target="_blank">
+
+			 0724_國教署國中適性輔導課程_發文.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/08/16</div></td>
+<td class="news_subject" id="news_content_tr-592"><b>【停機公告】教育部數位學習服務平臺將於8月18日(日)下午7時至8月18日(日)下午9時進行系統維護</b></td>
+<td class="viewNum_592"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-592" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="text-indent:28pt;"><span style='font-size:14pt;font-family:"標楷體";color:#222222;'>教育部數位學習服務平臺將於<span>102</span>年<span>8</span>月<span>18</span>日（週日）下午<span>7</span>時起進行系統維護，預計至<span>102</span>年<span>8</span>月<span>18</span>日（週日）下午<span>9</span>時重新開放。</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p class="MsoNormal" style="margin-bottom:12pt;text-indent:28pt;"><span style='font-size:14pt;font-family:"標楷體";color:#222222;'>請各位使用者於<span>8</span>月<span>18</span>日（週日）下午<span>6</span>時前先行結束課程登出。維護期間，系統因停機而無法使用，造成您的不便，敬請見諒。</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p> <p class="MsoNormal"><span style='font-size:14pt;font-family:"標楷體";color:#222222;'>教育部數位學習服務平臺 敬上</span><span style='font-size:10pt;font-family:"Times New Roman", serif;color:#006699;'></span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/06/24</div></td>
+<td class="news_subject" id="news_content_tr-568"><b>【停機公告】教育部數位學習服務平臺將於6月28日(五)下午6時至6月29日(六)下午6時進行系統維護</b></td>
+<td class="viewNum_568"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-568" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="text-indent:28pt;"><span style='font-size:14pt;font-family:"標楷體";color:#222222;'>教育部數位學習服務平臺將於<span>102</span>年<span>6</span>月<span>28</span>日（週五）下午<span>6</span>時起進行系統維護，預計至<span>102</span>年<span>6</span>月<span>29</span>日（週六）下午<span>6</span>時重新開放。<span></span></span></p> <p class="MsoNormal" style="text-indent:28pt;"><span style='font-size:14pt;font-family:"標楷體";color:#222222;'>請各位使用者於<span>6</span>月<span>28</span>日（週五）下午<span>5</span>時前先行結束課程登出。維護期間，系統因停機而無法使用，造成您的不便，敬請見諒。<span><br/><br/></span></span></p> <p class="MsoNormal"><span style='font-size:14pt;font-family:"標楷體";color:#222222;'>教育部數位學習服務平臺 敬上<span></span></span></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/06/24</div></td>
+<td class="news_subject" id="news_content_tr-567"><b>『高中職適性輔導』教師研習課程正式上線</b></td>
+<td class="viewNum_567"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-567" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal"><span style="font-size: 13.5pt">敬愛的教師您好：<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt"> </span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">​​</span><span style="font-size: 13.5pt">「十二年國民基本教育中等學校教師教學專業能力研習五堂課」<strong>第<span>5</span>堂課</strong>：<strong>「高中職適性輔導」</strong>數位研習課程已經正式上線，</span><span style="font-size: 13.5pt">歡迎您的參與。<span><br/><br/></span>當您登入平臺後，請進入左側主選單之「課程總覽」，點選「課程狀態」：依課程性質」，選取子項目：「十二年國民基本教育類」，即可</span><span style="font-size: 13.5pt">​</span><span style="font-size: 13.5pt">看見「</span><span style="font-size: 13.5pt">高中職適性輔導</span><span style="font-size: 13.5pt">」，再點選右方「選課」，選課成功後，請進入主選單之「我的課表」，即可點選所需課程研習。<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt"> </span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">依國教署來函（如文末附加檔案：臺教授國字第<span>1020058319</span>號）所示，若教師您已</span><span style="font-size: 13.5pt">參加過高中適性輔導相關研習課程，亦可進入教材畫面後，直接點選上方「線上測驗」功能，通過測驗</span><span style="font-size: 13.5pt">後，即為完成本堂課，本平臺將為您匯入</span><span style="font-size: 13.5pt">教師研習時數<span>3</span>小時至全國教師在職進修資訊網。<span><br/><br/></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">國教署研習公文如下附加檔案，請參考，謝謝。<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">附加檔案：</span><u><span style="font-size: 13.5pt">臺教授國字第<span>1020058319</span>號</span></u><span style="font-size: 13.5pt"><br/><br/></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">敬祝<span></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">　<span>  </span>教安<span><br/><br/></span></span></p> <p class="MsoNormal"><span style="font-size: 13.5pt">教育部數位學習服務平臺團隊 敬上<span></span></span></p>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/567_5e6b943bd2a91e98226dee8c0226ac90.pdf" target="_blank">
+
+			 20130624104011073.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/05/23</div></td>
+<td class="news_subject" id="news_content_tr-552"><b>【停機取消】平台原將於5月23日(四)17:30 -5月25日(六)00:00 進行系統維護事宜取消</b></td>
+<td class="viewNum_552"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-552" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>教育部數位學習服務平台原定將於102年5月23日（週四）下午05時30分進行系統維護，因故延期，屆時停機會再公告時間，若造成各學員的不便，敬請見諒。</div><div> </div><div>教育部數位學習服務平台 管理者敬上</div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/05/23</div></td>
+<td class="news_subject" id="news_content_tr-551"><b>【停機公告】平台將於5月23日(四)17:30 -5月25日(六)00:00 進行系統維護事宜</b></td>
+<td class="viewNum_551"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-551" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>教育部數位學習服務平台將於102年5月23日（週四）下午05時30分進行系統維護，預計到至102年5月25日（週六）凌晨00時00分重新開放；系統維護期間可能導致系統不穩定，請各位使用者於5月23日（週四）下午5時00分前先行結束課程，若造成各學員的不便，敬請見諒。</div><div> </div><div>教育部數位學習服務平台 管理者敬上</div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/05/09</div></td>
+<td class="news_subject" id="news_content_tr-549"><b>查詢帳密新功能上線</b></td>
+<td class="viewNum_549"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-549" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px">各位使用者好：</div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><br/></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px">1、鑒於近日來有許多使用者皆有忘記個人帳號或密碼的困擾，為了讓使用者能順利登入系統研習課程，本平台將「查詢密碼」功能改版，方便使用者查詢個人的帳號密碼。</div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><br/></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px">2、本平台擬於2013年5月9日 上午12時00分 正式啟用新版功能，使用者到本平台首頁(<a href="..//" target="_blank">http://ups.moe.edu.tw</a>)左上方按下「查詢密碼」鍵，輸入「帳號」及「註冊時填寫的E-mail信箱」，系統會重設一組新密碼寄到您的信箱。若還是忘記個人帳號及信箱，按下網頁下方「忘記帳號及e-mail」鍵，可跳轉至另一查詢網頁自行輸入<strong>「姓名」</strong>及<strong>「身分證字號」</strong>，即可將個人帳密資料寄到指定信箱，方便使用者快速登入本平台，節省致電詢問帳密的時間。</div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><br/></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px">3、<font color="#ff0000">請注意!! 「姓名」、「身分證字號」、「E-mail信箱」等系統要求之資料，填寫時請務必注意內容及格式正確，否則資料庫無法進行查詢作業。</font></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><br/></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px">4、詳細操作步驟請參考網頁連結<a href="../Registration/forgetaccount.php" target="_blank">http://ups.moe.edu.tw/Registration/forgetaccount.php</a>，歡迎多加利用。</div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14px"><div>若有任何問題，請撥空於上午 9:00-12:00 或下午 13:30-17:30，撥打 05-2720411 轉 33131、23141，</div><div>將有專人為您服務，謝謝。</div><div><br/></div><div><br/></div><div>祝</div><div>　　順心</div><div>　　教育部 數位學習服務平台團隊  敬啟</div></div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/Registration/forgetaccount.php" target="_blank">
+
+			http://ups.moe.edu.tw/Registration/forgetaccount.php</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/04/09</div></td>
+<td class="news_subject" id="news_content_tr-517"><b>十二年國民基本教育理念與實施策略數位研習課程已正式上線</b></td>
+<td class="viewNum_517"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-517" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal"><span style="font-family: 標楷體">發文日期：中華民國102年4月2日</span></p> <p class="MsoNormal"><span style="font-family: 標楷體">發文字號：臺教師(三)字第1020045307號</span></p> <div><span style="font-family: 標楷體; font-size: 12pt">速別：普通件</span> </div><div> </div><div><span style="font-family: 標楷體; font-size: 16pt">主旨：案係「十二年國民基本教育中等學校教師教學專業能力研習五堂課」第一堂課、十二年國民基本教育理念與實施策略數位研習課程已正式上線一案，請依說明事項辦理，請查照。</span> </div><div> </div><div>一、為利教師了解十二年國民基本教育理念與實施策略，爰製作旨揭數位研習課程，並已掛置於本部數位學習平臺（<a href="..//" target="_blank">http://ups.moe.edu.tw/</a>），<span style="font-family: 標楷體; font-size: 18pt; line-height: 24pt; text-align: justify; text-indent: 24pt"><strong><em>如需研習此門課程，請經線上註冊成為本平台之會員，且完成帳號確認程序後，可至平台選課進行學習</em></strong></span><span style="font-size: 13px">，課程包含以下3個部分：</span><span style="font-size: 13px"> </span></div><div> </div><div>(一)「共同參與21世紀國家希望大工程- 12年國民基本教育」專題演講。</div><div><br/></div><div>(二)十二年國民基本教育入學方式宣導講綱。</div><div><br/></div><div>(三)線上測驗。</div><div><br/></div><div>二、因十二年國民基本教育理念與實施策略實體宣導研習，已經辦理眾多場次，因此本課程可直接進入測驗，測驗通過即為完成本堂課，並匯入1小時教師研習時數至全國教師在職進修資訊網。</div><div><br/></div><div>三、本案達標值為102年12月31日為60%、103年7月31日前100%的中等學校編制內正式教師及3個月以上長期代理教師皆需上線測驗通過，爰請 貴局（府、署）轉知所屬教師上線研習、測驗。</div><div><br/></div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/Registration/joinArticle.php?t=0" target="_blank">
+
+			http://ups.moe.edu.tw/Registration/joinArticle.php?t=0</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/04/08</div></td>
+<td class="news_subject" id="news_content_tr-516"><b>2013年5月17日，101-102 數位學習服務平台經營與推廣計畫-教師工作坊 ，歡迎</b></td>
+<td class="viewNum_516"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-516" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>本計畫即將舉辦 「教育部數位學習服務平台」教師工作坊，為促使教師對數位學習平台開課流程及平台課程教材管理能夠操作更加熟悉，特此舉辦平台教師開課、課程教材管理之教育訓練。</div><div>以下為場次詳細資料，敬請提早報名避免向隅。</div><div><br/></div><div>時間：102年5月17日（星期五），上午9時30分至下午4時20分。</div><div>地點：國立臺灣師範大學 進修推廣學院 S004教室</div><div>      台北市大安區和平東路一段129號</div><div><br/></div><div>※各場活動相關交通資訊詳見報名網站。</div><div> </div><div>研習活動採網路線上報名，報名網址為https://ups.moe.edu.tw/signup/upsteach102b/</div><div> </div><div>洽詢專線：（05）2720411 # 33131 </div><div>E-mail：ups_moe@mail.moe.gov.tw。 </div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsteach102b" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsteach102b</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/03/07</div></td>
+<td class="news_subject" id="news_content_tr-488"><b>2013年4月19日&amp;5月10日，101-102 數位學習服務平台經營與推廣計畫-推廣說明會</b></td>
+<td class="viewNum_488"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-488" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>本計畫即將舉辦 「教育部數位學習服務平台」推廣說明會，為推廣本平台服務，促使各界對平台相關功能有更多的認識與瞭解，舉辦北部與南部兩場次推廣說明會，歡迎各界踴躍參加。</div><div><br/></div><div>以下為場次詳細資料，敬請提早報名避免向隅。</div><div><br/></div><div>第一場推廣說明研習會(北區)</div><div>時間： 2013 年 4 月 19 日（星期五），上午9時30分至下午4時20分。</div><div>地點： 國立臺灣師範大學 進修推廣學院 S004教室</div><div>台北市大安區和平東路一段129號</div><div><br/></div><div>第二場推廣說明研習會(南區)</div><div>時間： 2013 年 5 月 10 日（星期五），上午9時30分至下午4時20分。</div><div>地點： 國立中山大學圖書與資訊大樓地下一樓PC03教室</div><div>高雄市鼓山區蓮海路70號</div><div><br/></div><div>※各場活動相關交通資訊詳見報名網站。</div><div> </div><div>研習活動採網路線上報名，報名網址為https://ups.moe.edu.tw/signup/upsmoe102/</div><div> </div><div>洽詢專線：（05）2720411 # 33131 </div><div>E-mail：ups_moe@mail.moe.gov.tw。 </div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsmoe102/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsmoe102/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/02/08</div></td>
+<td class="news_subject" id="news_content_tr-487"><b>本平台客服人員102年農曆春節休假 公告</b></td>
+<td class="viewNum_487"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-487" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div style="color: #222222; font-family: arial, sans-serif; font-size: 14.166666030883789px">102年2月9日(六)~2月17日(日)為春節連假，若您有任何問題，歡迎以E-MAIL (<a href="mailto:ups_moe@mail.moe.gov.tw" target="_blank">ups_moe@mail.moe.gov.tw</a>)告知，團隊將會於上班日(2/18)第一時間與您連絡、處理，感謝您！</div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14.166666030883789px"><br/></div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14.166666030883789px">不便之處，敬請見諒 !!  </div><div style="color: #222222; font-family: arial, sans-serif; font-size: 14.166666030883789px">敬 祝     新 春 佳 節 愉 快 </div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2013/02/05</div></td>
+<td class="news_subject" id="news_content_tr-486"><b>2013年3月8日，101-102 數位學習服務平台經營與推廣計畫-管理者維護，歡迎報名參加。</b></td>
+<td class="viewNum_486"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-486" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>本計畫即將舉辦 「教育部數位學習服務平台」管理者維護，為促使教師對數位學習平台開課流程及平台課程管理能夠操作更加熟悉，特此舉辦平台教師開課、課程管理及平台系統管理操作之教育訓練。</div><div>以下為場次詳細資料，敬請提早報名避免向隅。</div><div><br/></div><div>時間：2013年3月8日（星期五），上午9時30分至下午4時20分。</div><div>地點：台南市教育局資訊中心3F電腦教室</div><div>      台南市中西區五妃街236-1號</div><div><br/></div><div>※各場活動相關交通資訊詳見報名網站。</div><div> </div><div>研習活動採網路線上報名，報名網址為https://ups.moe.edu.tw/signup/upsteach102a</div><div> </div><div>洽詢專線：（05）2720411 # 33131 </div><div>E-mail：ups_moe@mail.moe.gov.tw。 </div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://https://ups.moe.edu.tw/signup/upsteach102a" target="_blank">
+
+			http://https://ups.moe.edu.tw/signup/upsteach102a</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/12/26</div></td>
+<td class="news_subject" id="news_content_tr-479"><b>2013年01月04日，大專校院通識課程數位教材教學實施計畫成果交流分享會</b></td>
+<td class="viewNum_479"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-479" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>本期「大專校院通識課程數位教材推廣及教學應用計畫」的最後一場活動將於102年01月04日（五）於高雄美麗島會廊二聖廳辦理，歡迎有興趣運用數位教材之教師踴躍參與。</div><div><br/></div><div>此次辦理之成果交流分享會，為申請教育部「101學年度大專校院通識課程數位教材教學實施計畫」之28校70門課程的開課教師，發表101學年度第一學期之教學成果，將邀請12位授課教師分享運用教材教學經驗，除了提供教師們一個高互動實務討論機會，並鼓勵大專校院教師實際運用6門通識數位教材，促進數位學習課程資源共享及教學品質提升。</div><div><br/></div><div>活動議程請參見附件，全程參與將核發研習證書。</div><div><br/></div><div>時間：102年01月04日（五）09：30~16：00</div><div>地點：高雄美麗島會廊（高雄捷運美麗島站/穹頂大廳 往出口11）二聖廳</div><div><br/></div><div>報名資訊（一律採線上報名）：http://goo.gl/Rj1eY</div><div>聯絡人：黃慧君</div><div>洽詢專線：（05）2720411 # 23149 </div><div>E-mail：huangsisley@gmail.com</div><div><br/></div><div>參加對象：</div><div>  A. 具六門大專通識數位課程相關領域教學或課程開設經驗之大專院校教師或行政人員。</div><div>  B. 對大專通識數位教材教學應用有興趣之大專校院教師、助教、助理等。</div><div>  C. 教育部補助之101學年度大專校院通識課程數位教材推廣及教學實施計畫之課程教師。</div><div><br/></div><div>主辦單位：教育部電子計算機中心</div><div>承辦單位：國立中正大學資工系 游寶達計畫團隊、銘傳大學 通識教育中心</div>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/479_4b89b3af8e2321635d7241c602c6a765.pdf" target="_blank">
+
+			 101學年度第一學期大專校院通識課程數位教材教學實施計畫 活動議程.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://goo.gl/Rj1eY" target="_blank">
+
+			http://goo.gl/Rj1eY</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/12/07</div></td>
+<td class="news_subject" id="news_content_tr-466"><b>2012年12月25日，成果發表會（觀點對談─數位教材的導入教學x應用授課），歡迎報名參加。</b></td>
+<td class="viewNum_466"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-466" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>執行近一年的「教育部大專校院通識課程數位教材推廣及教學應用計畫」將於2013年1結案，為分享本計畫之年度成果，擴散6門數位教材使用範圍，深耕數位教材教學應用成效，提供大專校院教師更便利豐富的教學資源，並應用於多元教學媒介，團隊將於12月25日於銘傳大學基河校區辦理成果發表會。</div><div><br/></div><div>本成果發表會將邀請本年度協助計畫導入與應用數位教材授課之12位教師分享教學成果，包括由深耕教師分享導入至少4週數位教學應用模式課程（25分鐘），以及種子教師分享執行6單元數位教材之課程授課（15分鐘），並安排教學經驗對談。期望藉由本成果發表會，進一步達到大專通識課程品質一致與教材優質化應用之效，也敬邀大專校院通識教育中心教師，以及對數位教材教學有興趣的教職員生報名參加。</div><div><br/></div><div>時間：101年12月25日（二）08：40~16：30</div><div>地點：銘傳大學 基河校區（臺北市基河路130號）J616會議室</div><div><br/></div><div>報名資訊（一律採線上報名）：http://goo.gl/Rj1eY</div><div>洽詢專線：（05）2720411 # 23149 </div><div>E-mail：huangsisley@gmail.com</div><div><br/></div><div>參加對象：</div><div>  A. 具六門大專通識數位課程相關領域教學或課程開設經驗之大專院校教師或行政人員。</div><div>  B. 對大專通識數位教材教學應用有興趣之大專校院教師、助教、助理等。</div><div>  C. 教育部補助之101學年度大專校院通識課程數位教材推廣及教學實施計畫之課程教師。</div><div><br/></div><div>主辦單位：教育部電子計算機中心</div><div>承辦單位：國立中正大學資工系 游寶達計畫團隊、銘傳大學 通識教育中心</div><div><br/></div><div>活動議程請參見附件；全程參與者核發6小時研習時數。</div><div><br/></div>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/466_5380c4bcbbc954ac2c0a5b06246ba51a.pdf" target="_blank">
+
+			 成果發表會議程.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://goo.gl/Rj1eY" target="_blank">
+
+			http://goo.gl/Rj1eY</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/10/23</div></td>
+<td class="news_subject" id="news_content_tr-437"><b>敬邀參加10/26(五)教育部大專校院數位學習成果發表會</b></td>
+<td class="viewNum_437"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-437" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div style="color:#222222;font-family:arial, sans-serif;font-size:14.399999618530273px;"><span style='font-family:"標楷體";'><font size="4">敬啟者，您好<span>:</span></font></span></div><div style="color:#222222;font-family:arial, sans-serif;font-size:14.399999618530273px;"><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><span></span></font></span> </p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4">　　由教育部與國立宜蘭大學所主辦的「教育部大專校院數位學習成果發表會」，</font></span><span style='font-family:"標楷體";'><font size="4">訂於<span>101</span>年<span>10</span>月<span>26</span>日上午<span>10</span>時於台北市科技大樓<span>1</span>樓展場開幕，活動內容包</font></span><span style='font-family:"標楷體";'><font size="4">含七項主題：</font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><span></span></font></span> </p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font color="#000080">　<span>(1)</span>大專校院通識課程數位教材推廣及教學應用<span></span></font></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font color="#000080">　<span>(2)</span>數位學習碩士在職專班辦理成果<span></span></font></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font color="#000080">　<span>(3)</span>開放式課程<span></span></font></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font color="#000080">　<span>(4)</span>大專校院數位學習人才培訓及推廣服務<span></span></font></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font color="#000080">　<span>(5)</span>數位學習認證作業<span></span></font></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font color="#000080">　<span>(6)</span>數位學習服務平台經營與推廣<span></span></font></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font color="#000080">　<span>(7)</span>數位學伴線上課業輔導服務<span></span></font></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"></font></span> </p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font size="4">　　</font>除專班成果發表及專題座談外，場內設有<span>18</span>個攤位，將以海報、影音資料、文</font></span><span style='font-family:"標楷體";'><font size="4">宣品、網頁展示來推廣數位學習成果，讓參與人員實際瞭解分享的數位資源以及</font></span><span style='font-family:"標楷體";'><font size="4">數位學習平台，靜態數位學習成果展示除了活動當天外，亦於<span>10</span>月<span>29</span>日至<span>31</span>日</font></span><font size="4"><span style='font-family:"標楷體";'>16</span><span style='font-family:"標楷體";'>時止持續開放參觀。</span></font></p><p class="MsoNormal" style="margin:0px;"><font size="4"><span style='font-family:"標楷體";'><span></span></span></font> </p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font size="4">　　</font>數位學習具有超越空間、時間、互動性高的便利，因此數位學習趨勢日漸蓬勃，</font></span><span style='font-family:"標楷體";'><font size="4">為目前國人重要的學習管道之一。</font></span><span style='font-family:"標楷體";'><font size="4">此次活動除了有宜蘭大學、中正大學、政治大學、</font></span><span style='font-family:"標楷體";'><font size="4">逢甲大學、文化大學、淡江大學</font></span><span style='font-family:"標楷體";'><font size="4">等校數位學習專班成員成果發表及</font></span><span style='font-family:"標楷體";'><font size="4">展示數位學習專</font></span><span style='font-family:"標楷體";'><font size="4">班認證、課程教學、</font></span><span style='font-family:"標楷體";'><font size="4">教材製作、支援服務...外，另邀請多個與數位學習相關的團隊</font></span><span style='font-family:"標楷體";'><font size="4">到場參展，</font></span><span style='font-family:"標楷體";'><font size="4">期望藉由各團隊與教師們之經驗分享與來賓相互討論，而產生不</font></span><span style='font-family:"標楷體";'><font size="4">同的想法與火花。<span></span></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"> </font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4">　　歡迎全國各大專校院數位學習碩士在職專班相關人員、遠距課程授課教師與助</font></span><span style='font-family:"標楷體";'><font size="4">教以及對數位學習有興趣之教師、行政人員、教學助理、一般民眾均可踴躍報名參加！<span></span></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"> </font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><strong><font color="#ff0000">活動時間<span>:101</span>年<span>10</span>月<span>26</span>日<span></span></font></strong></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><strong><font color="#ff0000">活動地址<span>: </span>台北市和平東路二段<span>106</span>號<span>1</span>樓東側展場<span></span></font></strong></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4">地圖網址<span>: http://goo.gl/maps/XGP8Z   </span></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4">詳細議程<span>:</span>如附件<span></span></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"></font></span> </p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4">本次活動提供：公務人員時數認證<span>:5</span>小時<span></span></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4">　　　　　　　教師人員時數認證<span>:5</span>小時<span></span></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4">詳情及報名資訊可查活動網址：<span><a href="http://ncsexp.niu.edu.tw/ncs" target="_blank">http://ncsexp.niu.edu.tw/ncs</a><span style="color:#1f497d;"></span></span></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";color:#008000;'><font size="4"></font></span> </p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";color:#008000;'><font size="4">備註：<span></span></font></span></p><p style="margin-left:24pt;"><font size="4"><span style="font-family:Wingdings;color:#008000;">l<span style='font-size:7pt;font-family:"Times New Roman";'>   </span></span><span style='font-family:"標楷體";color:#008000;'>活動事先報名有提供中午便當<span></span></span></font></p><p style="margin-left:24pt;"><font size="4"><span style="font-family:Wingdings;color:#008000;">l<span style='font-size:7pt;font-family:"Times New Roman";'>   </span></span><span style='font-family:"標楷體";color:#008000;'>凡參加活動將於會後發放研習證明<span></span></span></font></p><p style="margin-left:24pt;"><font size="4"><span style="font-family:Wingdings;color:#008000;">l<span style='font-size:7pt;font-family:"Times New Roman";'>   </span></span><span style='font-family:"標楷體";color:#008000;'>活動當天將有交通車於宜蘭大學發車，發車時間為<span>10/26</span>上午<span>8:20</span>校門口發車</span></font></p><p style="margin-left:24pt;"><font size="4"><span style='font-family:"標楷體";color:#008000;'></span></font><font size="4"><span style='font-family:"標楷體";color:#008000;'>　<font size="4">若有意搭車的老師請於報名系統上勾選，<font size="4">如有其他疑問可致電(03)931<span>7322</span>黃小姐詢問<span></span></font></font></span></font></p><span></span><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";font-size:11pt;'><font size="4"> </font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"> </font></span></p><p class="MsoNormal" style="margin:0px;"><font size="4"><font color="#800080"><span style='font-family:"標楷體";'>                       </span><span style='font-family:"標楷體";'>祝 安康<span>  </span>順心<span></span></span></font></font></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font color="#800080" size="4"> </font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font color="#800080" size="4"> </font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font color="#800080">　　　　　　　　　　　　　　教　 育 　部<span></span></font></font></span></p><p class="MsoNormal" style="margin:0px;"><span style='font-family:"標楷體";'><font size="4"><font color="#800080">　　　　　　　　　　　　　　國立宜蘭大學　　敬邀</font></font></span></p></div>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/437_e8fe9a6a9ec076cb3e09b677fb64fee7.rar" target="_blank">
+
+			 邀請卡&amp;活動資訊.rar </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://ncsexp.niu.edu.tw/ncs" target="_blank">
+
+			http://ncsexp.niu.edu.tw/ncs</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/10/01</div></td>
+<td class="news_subject" id="news_content_tr-415"><b>2012年10月18-19日，「生命文化」數位教材教學應用教師工作坊，歡迎報名參</b></td>
+<td class="viewNum_415"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-415" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><pre>為推廣教育部已完成之「生命文化」數位教材，10月18-19日將於中正大學舉辦「生命文化」數位教材教學應用教師工作坊。 </pre><pre>「生命文化」數位教材，涵括了「生命議題、養生保健、藝術、醫療科技、文化」等領域的專業性與通識性的豐富內容，</pre><pre>教師於通識教育中心開設相關課程，「生命文化」數位教材是一門可靈活運用的多元教材，歡迎有興趣運用此門數位教材授課之教師踴躍參與，</pre><pre>深入了解教材之內容設計。 </pre><pre> </pre><pre>研習工作坊邀請了新生醫護管理專科學校學務處 劉易齋主任擔任主講人，介紹「生命文化」18週多媒體教材與如何應用數位教材教學；</pre><pre>並邀集已運用數位教材的授課教師：吳鳳科技大學通識教育中心 劉淑娟副教授、中華科技大學通識教育中心 曾麗玉講師、</pre><pre>國立屏東科技大學技術及職業教育研究所 張碧如副教授，分享其教學應用模式與實際教學經驗，並安排綜合座談讓與會者與主講人進行討論交流。 </pre><pre> </pre><pre>此外，工作坊亦安排專題演講，探討如何經營具學術根基的通識課程，通識教育又能帶給學生甚麼學習內容？以及從科學、音樂等角度，探討生活中無所不在的議題。</pre><pre>1. 通識與專業的融通：經營具學術根基的通識課程。／主講人：國立中正大學通識教育中心 黃俊儒副教授</pre><pre>2. 理解科學：以解讀媒體中的科學為例。／主講人：國立中正大學通識教育中心 黃俊儒副教授</pre><pre>3. 音樂治療：聆聽生命的樂音。／主講人：國立中正大學通識教育中心 謝馥年講師 </pre><pre> </pre><pre>期能透過研習工作坊讓大專校院通識教育中心教師，以及對數位教材教學有興趣的教職員生，瞭解如何運用數位教材融入教學、數位學習進行方式，</pre><pre>以及更多元領略生命文化相關議題與知能，誠摯邀請對通識教育及數位教與學有興趣的大專院校教職員生參加。 活動議程請參見附件，全程出席者將核發研習證明。</pre><pre> </pre><pre>時間：101年10月18日（四）-19日（五）08：40~16：40</pre><pre>地點：國立中正大學 圖書館視聽教室116 （62102 嘉義縣民雄鄉大學路一段168號）</pre><pre>報名資訊（一律採線上報名）：http://sco.cs.ccu.edu.tw/event/ </pre><pre>洽詢專線：（05）2720411 # 23149 </pre><pre>E-mail：huangsisley@gmail.com</pre><pre> </pre><pre>參加對象：</pre><pre>  A. 具六門大專通識數位課程相關領域教學或課程開設經驗之大專院校教師或行政人員。</pre><pre>  B. 對大專通識數位教材教學應用有興趣之大專校院教師、助教、助理等。</pre><pre>  C. 教育部補助之100學年度及101學年度大專校院通識課程數位教材推廣及教學實施計畫之課程教師。</pre><pre> </pre><pre>主辦單位：教育部電子計算機中心</pre><pre>承辦單位：國立中正大學資工系 游寶達計畫團隊、銘傳大學 通識教育中心</pre>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/415_86619003ad99cc9ff5608947d667f320.pdf" target="_blank">
+
+			 1018-19 生命文化工作坊議程.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://sco.cs.ccu.edu.tw/event/" target="_blank">
+
+			http://sco.cs.ccu.edu.tw/event/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/08/27</div></td>
+<td class="news_subject" id="news_content_tr-411"><b>【敬邀】0912-14 數位學習「同步與非同步」研習課程(國立中正大學資工系承</b></td>
+<td class="viewNum_411"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-411" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><pre>親愛的老師您好，  </pre><pre>我們是教育部「數位學習人才培訓及推廣服務計畫(南區)」團隊，為提升國內各大專校院教師之數位教學能力， </pre><pre>將於本年度舉辦「數位學習『同步與非同步』研習課程」，僅此一場，請各位老師踴躍報名參加。  </pre><pre>研習名稱：數位學習「同步與非同步」研習課程 </pre><pre>研習時間/地點： </pre><pre>1. 100年9月12日(三)國立中正大學 資訊工程學系 206教室 </pre><pre>2. 101年9月13日(四) 線上同步會議室(網址於第一次上課後公告) </pre><pre>3. 101年9月14日(五) 線上會議室與非同步平台(網址於第一次上課後公告) </pre><pre>研習人數：30人 </pre><pre>研習對象：國各大專校院對數位學習推動與經營有興趣之教師、行政人員與助教 </pre><pre>活動費用：免費  </pre><pre>活動議程：http://sco.cs.ccu.edu.tw/index1.php?p=101seminar03 </pre><pre>報名網址：http://sco.cs.ccu.edu.tw/event/  </pre><pre>備註：本研習發給研習證明與時數   </pre><pre>活動聯絡人： 國立中正大學 資訊工程學系 蕭秀卉小姐 </pre><pre>連絡電話：05-2720411(分機23148) </pre><pre>Email：fayeccu@gmail.com</pre>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://sco.cs.ccu.edu.tw/event/" target="_blank">
+
+			http://sco.cs.ccu.edu.tw/event/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/08/23</div></td>
+<td class="news_subject" id="news_content_tr-407"><b>2012年9月6-7日，「資訊素養與倫理」數位教材教學應用教師工作坊，歡迎報名參加。</b></td>
+<td class="viewNum_407"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-407" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>為推廣教育部已完成之「資訊素養與倫理」數位教材，9月6-7日將於國立宜蘭大學舉辦「資訊素養與倫理」數位教材教學應用教師工作坊。</div><div><br/></div><div>研習工作坊將邀請國立交通大學教育研究所 周倩教授擔任主講人，介紹「資訊素養與倫理」18週多媒體教材與如何應用數位教材教學；並邀集已運用數位教材的授課教師：致理技術學院應用英語系鍾良怡老師、環球科技大學通識教育中心謝東倫老師、大同大學通識教育中心張迺貞老師，講述其運用數位教材教學之應用模式與實際教學經驗，並安排綜合座談讓與會者與主講人進行課程教學的討論交流。</div><div><br/></div><div>此外，工作坊亦安排兩場專題演講：</div><div>由國立新竹教育大學數位學習科技研究所 林秋斌所長，主講「創新科技融入教學之應用」以及「網路合作學習社群之經營」，</div><div>以及邀請台灣觀光學院 張瑞雄校長，主講「網路時代資訊素養與能力」。</div><div><br/></div><div>期能透過研習工作坊讓大專校院通識教育中心教師，以及對數位教材教學有興趣的教職員生，瞭解如何運用數位教材融入教學、數位學習進行方式，誠摯邀請對通識教育及數位教與學有興趣的大專院校教職員生參加。</div><div><br/></div><div>活動議程請參見附件，全程出席者將核發研習證明。</div><div><br/></div><div>時間：101年9月6日（四）-7日（五）08：40~16：30</div><div>地點：國立宜蘭大學（宜蘭縣宜蘭市神農路一段一號）格致大樓三樓　電資學院多媒體視聽室</div><div><br/></div><div>報名資訊（一律採線上報名）：http://sco.cs.ccu.edu.tw/event/</div><div>洽詢專線：（05）2720411 # 23149 </div><div>E-mail：huangsisley@gmail.com</div><div><br/></div><div>參加對象：</div><div>  A. 具六門大專通識數位課程相關領域教學或課程開設經驗之大專院校教師或行政人員。</div><div>  B. 對大專通識數位教材教學應用有興趣之大專校院教師、助教、助理等。</div><div>  C. 教育部補助之100學年度及101學年度大專校院通識課程數位教材推廣及教學實施計畫之課程教師。</div><div><br/></div><div>主辦單位：教育部電子計算機中心</div><div>承辦單位：國立中正大學資工系 游寶達計畫團隊、銘傳大學 通識教育中心</div>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/407_36aebf4ab76d60c54d37588aea14686d.pdf" target="_blank">
+
+			 0906-07 資訊素養與倫理工作坊議程.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://sco.cs.ccu.edu.tw/event/" target="_blank">
+
+			http://sco.cs.ccu.edu.tw/event/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/08/20</div></td>
+<td class="news_subject" id="news_content_tr-406"><b>2012年8月30-31日，「環境變遷與永續發展」數位教材教學應用教師工作坊，歡迎報名參加。</b></td>
+<td class="viewNum_406"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-406" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>為推廣「數位學習國家型科技計畫」的數位學習示範課程所建構之「環境變遷與永續發展」數位學習課程，8月30-31日將於銘傳大學舉辦「環境變遷與永續發展」數位教材教學應用教師工作坊。</div><div><br/></div><div>研習工作坊將邀請執行『環境變遷與永續發展』數位學習課程計畫的國立台灣師範大學環境教育研究所 張子超老師擔任主講人，介紹課程內容，以及如何運用融入教學中。同時亦將邀請已運用本數位學習課程的授課教師：銘傳大學觀光系林青蓉老師、台中科技大學通識教育中心何昕家老師、南華大學自然生物科技學系林俊宏老師，講述其運用數位教材教學之應用模式與實際教學經驗，並安排綜合座談讓與會者與主講人進行課程教學的討論交流。</div><div><br/></div><div>第二天的活動議程，將邀請東吳大學資訊管理學系朱蕙君老師，主講「行動與無所不在學習於教學上之運用」；利用行動載具讓學習者直接於現場學習，是很不一樣的學習經驗，朱老師從事「行動與無所不在學習」研究多年，亦會以案例介紹實際運用於教學上的成果。</div><div>此外，第二場專題演講則邀請了主婦聯盟環境保護基金會陳曼麗董事長，主講「綠色生活與環境教育」，致力於倡議生活環保、綠色消費...將請陳董事長從實際從事環教事務及推動行動議題上的經驗與老師們分享。</div><div>下午，則規劃一場戶外活動，由台灣昆蟲生態保育協會林柏昌秘書長帶領大家一起到「芝山岩」從事生態觀測，林秘書長有豐富的生態導覽經驗，透過他的解說和導引，讓老師實地生態觀察，以及學習如何生態攝影。請自備相機、蝴蝶圖鑑、望遠鏡、帽子...等配備。</div><div><br/></div><div>歡迎大專校院通識教育中心教師，以及對數位教材教學有興趣的教職員生報名參加。活動議程請參見附件，全程出席者將核發研習證明。</div><div><br/></div><div>時間：101年8月30日（四）-31日（五）08：40~16：30</div><div>地點：銘傳大學 基河校區（臺北市基河路130號）J317教室</div><div><br/></div><div>報名資訊（一律採線上報名）：http://sco.cs.ccu.edu.tw/event/</div><div>洽詢專線：（05）2720411 # 23149 </div><div>E-mail：huangsisley@gmail.com</div><div><br/></div><div>參加對象：</div><div>  A. 具六門大專通識數位課程相關領域教學或課程開設經驗之大專院校教師或行政人員。</div><div>  B. 對大專通識數位教材教學應用有興趣之大專校院教師、助教、助理等。</div><div>  C. 教育部補助之100學年度及101學年度大專校院通識課程數位教材推廣及教學實施計畫之課程教師。</div><div><br/></div><div>主辦單位：教育部電子計算機中心</div><div>承辦單位：國立中正大學資工系 游寶達計畫團隊、銘傳大學 通識教育中心</div>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/406_bf69314b0dd48bb2e8bdfbf7cb992cf4.pdf" target="_blank">
+
+			 0830-31 環境變遷與永續發展工作坊議程.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://sco.cs.ccu.edu.tw/event/" target="_blank">
+
+			http://sco.cs.ccu.edu.tw/event/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/08/01</div></td>
+<td class="news_subject" id="news_content_tr-401"><b>2012年8月9-10日，「健康與生活」數位教材教學應用教師工作坊，歡迎報名參加。</b></td>
+<td class="viewNum_401"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-401" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	為推廣教育部已完成之「健康與生活」數位教材，8月9-10日將於國立高雄應用科技大學舉辦「健康與生活」數位教材教學應用教師工作坊。<br/><br/>研習工作坊邀請了國立聯合大學 高淑芳組長擔任主講人，介紹「健康與生活」18週多媒體教材；並邀集已運用數位教材的授課教師：國立高雄應用科技大學 鄭建民教授、國立聯合大學 高淑芳組長、中華醫事科技大學 洪明全主任、長榮大學 宋瑩珠副教授，主講其運用「健康與生活」數位教材的教學應用模式與實際教學經驗，並安排綜合座談讓與會者與主講人進行討論交流。<br/><br/>此外，工作坊亦安排了一場專題實作課程與一場體驗活動課程：邀請了開南大學保健營養學系 江易原助理教授，主講「著作權免驚—合法免費教材與軟體隨你用！」，介紹自由教材之運用，提供老師們在準備教材上的一項免費資源，並安排電腦實作讓老師上機學習；另外，體驗活動課程則邀請了國立高雄應用科技大學 鄭建民教授，主講「打造健康人生，數位養生動一動」，先於課堂上介紹教學平台影音資料庫及傳統醫學養生與飲食保健概念，再帶引與會者一起進行「西式的體適能」和「中式的香功」體驗活動，讓大家一起健康動一動。<br/><br/>「健康與生活」數位教材教學應用教師工作坊歡迎大專校院通識教育中心教師，以及對數位教材教學有興趣的教職員生踴躍參加，瞭解如何運用數位教材融入教學、數位學習進行方式，以及數位教學相關知能。活動議程請參見附件，全程出席者將核發研習證明。<br/><br/>時間：101年8月9日（四）-10日（五）<br/>地點：國立高雄應用科技大學 建工校區<br/> <br/>報名資訊（一律採線上報名）：http://sco.cs.ccu.edu.tw/event/<br/>洽詢專線：（05）2720411 # 23149 <br/>E-mail：huangsisley@gmail.com<br/><br/>參加對象：<br/>  A. 具六門大專通識數位課程相關領域教學或課程開設經驗之大專院校教師或行政人員。<br/>  B. 對大專通識數位教材教學應用有興趣之大專校院教師、助教、助理等。<br/>  C. 教育部補助之100學年度及101學年度大專校院通識課程數位教材推廣及教學實施計畫之課程教師。<br/><br/>主辦單位：教育部電子計算機中心<br/>承辦單位：國立中正大學資工系 游寶達計畫團隊、銘傳大學 通識教育中心
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/401_941851e5409e1a5a4e8eb2b5558e9d30.pdf" target="_blank">
+
+			 0809-10 健康與生活工作坊議程.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://sco.cs.ccu.edu.tw/event/" target="_blank">
+
+			http://sco.cs.ccu.edu.tw/event/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/07/09</div></td>
+<td class="news_subject" id="news_content_tr-400"><b>2012年7月19-20日，「資訊法律」數位教材教學應用教師工作坊，歡迎報名參加。</b></td>
+<td class="viewNum_400"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-400" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	為推廣教育部已完成之「資訊法律」數位教材，7月19-20日將於銘傳大學舉辦「資訊法律」數位教材教學應用教師工作坊。<br/><br/>研習工作坊邀請了國立高雄第一科技大學 科技法律研究所 智慧財產權中心 周天主任擔任主講人，介紹「資訊法律」18週多媒體教材與如何應用數位教材教學；並邀集已運用數位教材的授課教師：國立體育大學通識教育中心 施碧霞副教授、亞洲大學財金法律學系 吳尚儒助理教授、高雄海洋科技大學 紀永昌老師，分享其教學應用模式與實際教學經驗，並安排綜合座談讓與會者與主講人進行討論交流。<br/><br/>「資訊法律」數位教材，包羅了專業性與通識性的豐富內容，教師於通識教育中心開設「資訊應用教育」相關課程中，包括資訊法律、圖書資訊應用、資訊素養與倫理等三門數位教材，其教材內容能提供教師活用搭配融入教學授課中，歡迎有興趣運用「資訊法律」數位教材授課之教師踴躍參與，深入了解教材之內容設計。<br/><br/>此外，工作坊亦安排兩場專題演講，邀請國立高雄第一科技大學 周天主任，主講「數位教材製作與智慧財產權」，以及新竹教育大學數位學習科技研究所 計惠卿副教授，主講「如何活用數位學習」。期能透過研習工作坊讓大專校院通識教育中心教師，以及對數位教材教學有興趣的教職員生，瞭解如何運用數位教材融入教學、數位學習進行方式，以及數位教學相關知能，誠摯邀請對數位教與學有興趣的大專院校教職員生參加。<br/><br/>全程出席者將核發研習證明。<br/><br/>時間：101年7月19日（四）-20日（五）<br/>地點：銘傳大學 基河校區 通識教育中心 J317教室<br/> <br/>報名資訊（一律採線上報名）：http://sco.cs.ccu.edu.tw/event/<br/>洽詢專線：（05）2720411 # 23149 <br/>E-mail：huangsisley@gmail.com<br/><br/>參加對象：<br/>  A. 具六門大專通識數位課程相關領域教學或課程開設經驗之大專院校教師或行政人員。<br/>  B. 對大專通識數位教材教學應用有興趣之大專校院教師、助教、助理等。<br/>  C. 教育部補助之100學年度及101學年度大專校院通識課程數位教材推廣及教學實施計畫之課程教師。<br/><br/>主辦單位：教育部電子計算機中心<br/>承辦單位：國立中正大學資工系 游寶達計畫團隊、銘傳大學 通識教育中心
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/400_ef444ed325813e1f6b433ae1975029bc.pdf" target="_blank">
+
+			 0719-20 資訊法律工作坊議程.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://sco.cs.ccu.edu.tw/event/" target="_blank">
+
+			http://sco.cs.ccu.edu.tw/event/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/07/03</div></td>
+<td class="news_subject" id="news_content_tr-399"><b>2012年7月12-13日，「圖書資訊應用」數位教材教學應用教師工作坊，歡迎報名參加。</b></td>
+<td class="viewNum_399"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-399" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	為推廣教育部已完成之「圖書資訊應用」數位教材，7月12-13日將於銘傳大學舉辦「圖書資訊應用」數位教材教學應用教師工作坊。<br/>研習工作坊邀請了國立臺灣師範大學圖書資訊學研究所 吳美美教授擔任主講人，介紹18週多媒體教材與如何應用數位教材教學；以及已運用數位教材的授課教師：宜蘭大學吳寂絹組長、大同大學張迺貞副教授、臺北醫學大學邱子恆副教授，分享其教學應用模式與實際教學經驗，並安排綜合座談讓與會者與主講人進行討論交流。<br/>此外，工作坊亦安排兩場專題演講，分別邀請了國立台灣大學圖書資訊學系暨研究所 謝寶煖副教授，主講「資訊素養（圖書資訊應用）之教與學」，以及銘傳大學通識教育中心 楊錦潭主任，主講「國際數位學習未來的發展趨勢」。期能透過研習工作坊讓大專校院通識教育中心，以及對數位教材教學有興趣的教職員生，瞭解如何運用數位教材融入教學和數位學習進行方式，誠摯邀請對數位教材和數位教學有興趣的大專院校教職員生參加。全程出席者將核發研習證明。<br/><br/>時間：101年7月12日（四）-13日（五）<br/>地點：銘傳大學 基河校區 通識教育中心 J317教室<br/> <br/>報名資訊（一律採線上報名）：http://sco.cs.ccu.edu.tw/event/<br/>洽詢專線：（05）2720411 # 23149 <br/>E-mail：huangsisley@gmail.com<br/><br/>參加對象：<br/>  A. 具六門大專通識數位課程相關領域教學或課程開設經驗之大專院校教師或行政人員。<br/>  B. 對大專通識數位教材教學應用有興趣之大專校院教師、助教、助理等。<br/>  C. 教育部補助之100學年度及101學年度大專校院通識課程數位教材推廣及教學實施計畫之課程教師。<br/><br/>主辦單位：教育部電子計算機中心<br/>承辦單位：國立中正大學資工系 游寶達計畫團隊<br/>          銘傳大學 通識教育中心<br/><br/>[活動預告]<br/>由於教育部已完成之數位教材共有六門：圖書資訊應用、資訊法律、資訊素養與倫理、環境變遷與永續發展、健康與生活、生命文化，亦歡迎師長們踴躍參與不同教材之工作坊，教學上可靈活運用多門數位教材融入課程中。<br/>更多研習場次請參見：https://sites.google.com/site/520elearning/events-1<br/>
+</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/399_2a3e63149386bd567d169c1f57c2120b.pdf" target="_blank">
+
+			 0712-13 圖書資訊應用工作坊議程.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://sco.cs.ccu.edu.tw/event/" target="_blank">
+
+			http://sco.cs.ccu.edu.tw/event/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/07/03</div></td>
+<td class="news_subject" id="news_content_tr-398"><b>自學式、教導式課程線上問卷調查</b></td>
+<td class="viewNum_398"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-398" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal"><span style='font-family:"標楷體";'>敬愛的老師</span><span style='font-family:"Times New Roman", serif;'> </span><span style='font-family:"標楷體";'>您好：</span><span style='font-family:"Times New Roman", serif;'></span></p> <p class="MsoNormal"><span style='text-indent:24pt;font-family:"標楷體";'>  為提升數位學習平台的服務效能，平台依不同身分別將於</span><span style='text-indent:24pt;font-family:"Times New Roman", serif;'>2012/07/03</span><span style='text-indent:24pt;font-family:"標楷體";'>至</span><span style='text-indent:24pt;font-family:"Times New Roman", serif;'>09/15</span><span style='text-indent:24pt;font-family:"標楷體";'>開放研習學員與開課教師線上問卷調查的填寫作業，相關填寫位置如附檔所示，敬請卓參。本問卷主要目的是希望了解研習學員與開課教師對於使用教育部數位學習服務平台的使用狀況，以彙整各方意見作為將來改善服務品質的方針。</span></p><p class="MsoNormal"><span style='text-indent:24pt;font-family:"標楷體";'></span><span style='text-indent:24pt;font-family:"標楷體";'>  本問卷之資料將只供整體分析參考用，絕不做個別之披露，懇請您花少許的時間，依實際情況撥冗幫團隊完成此問卷之填答，並請</span><span style='text-indent:24pt;font-family:"Times New Roman", serif;'> </span><span style='text-indent:24pt;font-family:"標楷體";'>賜覆，以為後續服務之參考。由衷的感謝您的協助，提供寶貴的意見與建議。</span></p><p class="MsoNormal"><span style='font-family:"標楷體";'>填寫期限：</span><span style='font-family:"Times New Roman", serif;'>2012</span><span style='font-family:"標楷體";'>年</span><span style='font-family:"Times New Roman", serif;'>07</span><span style='font-family:"標楷體";'>月</span><span style='font-family:"Times New Roman", serif;'>03</span><span style='font-family:"標楷體";'>日</span><span style='font-family:"Times New Roman", serif;'>00</span><span style='font-family:"標楷體";'>時</span><span style='font-family:"Times New Roman", serif;'>00</span><span style='font-family:"標楷體";'>分～</span><span style='font-family:"Times New Roman", serif;'>2012</span><span style='font-family:"標楷體";'>年</span><span style='font-family:"Times New Roman", serif;'>09</span><span style='font-family:"標楷體";'>月</span><span style='font-family:"Times New Roman", serif;'>15</span><span style='font-family:"標楷體";'>日</span><span style='font-family:"Times New Roman", serif;'>23</span><span style='font-family:"標楷體";'>時</span><span style='font-family:"Times New Roman", serif;'>59</span><span style='font-family:"標楷體";'>分</span><span style='font-family:"Times New Roman", serif;'> </span><span style='font-family:"標楷體";'>為止</span> </p> <p class="MsoNormal"><span style='font-family:"標楷體";'>敬祝</span><span style='font-family:"Times New Roman", serif;'> </span><span style='font-family:"標楷體";'>身體健康、萬事如意</span><span style='font-family:"Times New Roman", serif;'> </span><span style='font-family:"標楷體";'>國立中正大學</span><span style='font-family:"Times New Roman", serif;'> </span><span style='font-family:"標楷體";'>資工系團隊</span><span style='font-family:"Times New Roman", serif;'> </span><span style='font-family:"標楷體";'>敬啟</span><span style='font-family:"Times New Roman", serif;'></span></p> <p class="MsoNormal"> </p>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/398_28cb47c7abb3238f75ba576e8479019b.docx" target="_blank">
+
+			 線上問卷.docx </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/06/13</div></td>
+<td class="news_subject" id="news_content_tr-395"><b>6/29（五）大專校院通識課程數位教材教學實施計畫成果交流分享會，歡迎報名參加。</b></td>
+<td class="viewNum_395"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-395" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	為讓大專校院通識教育中心及共同教育中心瞭解數位學習進行方式，並擴散推廣教育部數位學習計畫成果之應用，本活動邀集了運用「資訊素養與倫理」、「資訊法律」、「圖書資訊應用」、「環境變遷與永續發展」、「健康與生活」、「生命文化」等六門大專通識數位教材之開課教師，進行教學成果分享與經驗交流，以促進數位學習課程資源共享及提升教學品質。全程出席者將核發研習證明。<br/><br/>時間：2012年6月29日（星期五），上午9時30分至下午4時30分<br/>地點：銘傳大學 基河校區（教室 J415 ＆ J417）臺北市基河路130號4樓<br/> <br/>報名網址：http://sco.cs.ccu.edu.tw/event/<br/>洽詢專線：（05）2720411 # 23149 <br/>E-mail：huangsisley@gmail.com<br/><br/>參加對象：<br/>  A. 教育部補助100學年度大專校院通識課程數位教材推廣及教學實施計畫之24校71課程教師。<br/>  B. 具六門大專通識數位課程相關領域教學或課程開設經驗之大專院校教師或行政人員。<br/>  C. 對大專通識數位教材教學應用有興趣之大專校院教師、助教、助理等。<br/><br/>主辦單位：教育部電子計算機中心<br/>承辦單位：國立中正大學資工系 游寶達計畫團隊
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/395_f835b46b0831f527b0449319bfed905c.pdf" target="_blank">
+
+			 0629 成果分享交流會議程.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://sco.cs.ccu.edu.tw/event/" target="_blank">
+
+			http://sco.cs.ccu.edu.tw/event/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/05/22</div></td>
+<td class="news_subject" id="news_content_tr-389"><b>教育訓練研習會[南區]將於2012年6月8日舉辦於國立中山大學，歡迎報名參加!</b></td>
+<td class="viewNum_389"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-389" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>第三場教育訓練研習會 （南區）</div><div><br/></div><div>時間： 2012年6月8日（星期五），上午9時30分至下午4時20分。</div><div>地點： 國立中山大學  圖書與資訊大樓地下一樓PC03教室</div><div>         高雄市鼓山區蓮海路70號</div><div><br/></div><div>※各場活動相關交通資訊詳見報名網站。</div><div> </div><div>研習活動採網路線上報名，報名網址為https://ups.moe.edu.tw/signup/upsteach101/</div><div> </div><div>洽詢專線：（05）2720411 # 33131 </div><div>E-mail：ups_moe@mail.moe.gov.tw。 </div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsteach101/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsteach101/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/05/02</div></td>
+<td class="news_subject" id="news_content_tr-387"><b>教育訓練研習會[中區]將於2012年5月18日舉辦於國立中正大學，電算中心216教</b></td>
+<td class="viewNum_387"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-387" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>本計畫即將舉辦 「教育部數位學習服務平台」教育訓練研習會，為促使教師對數位學習平台開課流程及平台課程管理能夠操作更加熟悉，特此舉辦平台教師開課、課程管理及平台系統管理操作之教育訓練。以下為場次詳細資料，敬請提早報名避免向隅。</div><div><br/></div><div>第二場教育訓練研習會 （中區）</div><div><br/></div><div>時間：2012年5月18日（星期五），上午9時30分至下午4時20分。</div><div>地點：國立中正大學 電算中心216教室</div><div>        嘉義縣民雄鄉大學路168號</div><div><br/></div><div>※各場活動相關交通資訊詳見報名網站。</div><div> </div><div>研習活動採網路線上報名，報名網址為https://ups.moe.edu.tw/signup/upsteach101/</div><div> </div><div>洽詢專線：（05）2720411 # 33131 </div><div>E-mail：ups_moe@mail.moe.gov.tw。 </div><div><br/></div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsteach101/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsteach101/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/04/30</div></td>
+<td class="news_subject" id="news_content_tr-386"><b>2012年4月6日平台推廣說明研習會，課程講義已公告至推廣說明會報名網站，</b></td>
+<td class="viewNum_386"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-386" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div><br/></div><div>平台推廣說明研習會，課程講義已可至推廣說明會報名網站下載參考。</div><div><br/></div><div>推廣說明會報名網址為https://ups.moe.edu.tw/signup/upsmoe101/</div><div> </div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsmoe101/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsmoe101/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/03/21</div></td>
+<td class="news_subject" id="news_content_tr-368"><b>平台推廣說明研習會將於4/6舉辦於國立臺灣師範大學 進修推廣學院 S004教室</b></td>
+<td class="viewNum_368"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-368" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>本計畫即將舉辦 「教育部數位學習服務平台」推廣說明研習會，內容以結合數位學習教學策略，邀請專家教授進行演講，共計1天的系統平台使用之推廣活動研習，歡迎報名參與活動，以下為場次詳細資料，敬請提早報名避免向隅。</div><div><br/></div><div>1.活動場次：推廣說明研習會</div><div>(1)     時間：4月6日（星期五），上午09時30分至下午4時20分。</div><div>(2)     地點：國立臺灣師範大學 進修推廣學院 S004教室 </div><div>        台北市大安區和平東路一段129號</div><div><br/></div><div>※各場活動相關交通資訊詳見報名網站。</div><div><br/></div><div>2.研習活動採網路線上報名，報名網址為https://ups.moe.edu.tw/signup/upsmoe101/</div><div><br/></div><div>3.洽詢專線：（05）2720411 # 33131 </div><div>E-mail：ups_moe@mail.moe.gov.tw。</div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsmoe101/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsmoe101/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/02/24</div></td>
+<td class="news_subject" id="news_content_tr-344"><b>101年03月02日：100學年度大專校院通識課程數位教材教學實施計畫成果交流分享說明會</b></td>
+<td class="viewNum_344"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-344" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal"> </p><p class="MsoNormal"> </p><p class="MsoNormal" style="font-size:21px;"><font face="標楷體"></font></p><p class="MsoNormal"><font face="標楷體">一、為讓大專校院通識教育中心及共同教育中心瞭解數位學習進行方式 ，擴散本部數位學習相關計畫成果之應用，促進數位學習課程資源共享及教學品質提升，於本（101）年3月2日（星期五）9時30分假國立中興大學中科校區 (台中市西屯區科園路19號2樓) 舉行「100學年度大專校院通識課程數位教材教學實施計畫成果交流分享說明會」。</font></p><p class="MsoNormal"><font face="標楷體"><br/></font></p><p class="MsoNormal"><font face="標楷體">二、本活動規劃以「資訊素養與倫理」、「資訊法律」、「圖書資訊應用」、「環境變遷與永續發展」、「健康與生活」、「生命文化」通識課程成果交流分享，數位教材之著作權觀念與授權介紹等活動，報名詳如網址</font></p><p class="MsoNormal"><font face="標楷體"><br/></font></p><p class="MsoNormal"><font face="標楷體">http://ile.cs.ccu.edu.tw:8090/r520/ILE/event/，全程出席者將核發6小時公務人員研習時數。</font></p><p class="MsoNormal"><font face="標楷體"><br/></font></p><p class="MsoNormal"><font face="標楷體">三、有關本活動洽詢專線（05）2720411 ext 23149國立中正大學資工系黃慧君專案助理。</font></p><p> </p><p> </p><p> </p>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/344_f48e7e518909d756c760dbf423d03d0b.docx" target="_blank">
+
+			 100學年度大專校院通識課程數位教材教學實施計畫成果交流分享說明會.docx </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2012/02/24</div></td>
+<td class="news_subject" id="news_content_tr-343"><b>平台教育訓練研習將於3/23、5/18、6/8舉辦於北、中、南，歡迎報名參加！</b></td>
+<td class="viewNum_343"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-343" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p style="color: #006699"><span style="border-collapse: separate; font-family: Arial; font-size: medium; color: #000000"><span style="border-collapse: collapse; color: #006699; font-size: 13px">本計畫即將舉辦 「教育部數位學習服務平台」教育訓練研習會</span></span>，近日將於北、中、南各舉辦一場教育訓練活動，內容以『開課教師功能介紹』及『管理者功能介紹』為主，若貴單位需要採用UPS原始碼架設平台或希望在本平台上開設課程，歡迎報名參與以下三場之教育訓練活動，每場活動報名名額有限，每場上限為30人，敬請提早報名避免向隅。</p><p style="color: #006699"><span style="border-collapse: separate; font-family: Arial; font-size: medium; color: #000000"><span style="border-collapse: collapse; color: #006699; font-size: 13px">1. </span></span>研習活動採網路線上報名，報名網址:<a href="../signup/upsteach101/" target="_blank">https://ups.moe.edu.tw/signup/upsteach101/</a></p><p style="color: #006699">2. 洽詢專線：（05）2720411 # 33131 </p><p style="color: #006699">E-mail：<a href="mailto:ups_moe@mail.moe.gov.tw" target="_blank">ups_moe@mail.moe.gov.tw</a>。</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/12/07</div></td>
+<td class="news_subject" id="news_content_tr-336"><b>【停機公告】平台將於12月08日(四)20:00 -12月09日(五)00:00 進行系統維護事宜</b></td>
+<td class="viewNum_336"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-336" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<span class="style2"></span></p><p> <strong>公告發佈者：</strong><br/><span style='text-align:left;text-transform:none;background-color:#ffffff;text-indent:0px;letter-spacing:normal;font:13px "Times New Roman";color:#006699;word-spacing:0px;'></span></p><div><strong>教育部數位學習服務平台將於100年12月08日（週四）下午08時00分進行系統功能更新，預計到至100年12月09日（週五）凌晨00時00分重新開放；系統維護期間可能導致系統不穩定</strong><strong>，請各位使用者於12月08日（週四）下午7時30分前先行結束課程，若造成各學員的不便，敬請見諒。</strong></div><strong> <br/>教育部數位學習服務平台 管理者敬上</strong>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/12/02</div></td>
+<td class="news_subject" id="news_content_tr-335"><b>【停機公告】平台將於今日12月02日16:30~17:00進行系統維護事宜</b></td>
+<td class="viewNum_335"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-335" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div><div><div>各位使用者，大家好：</div><div><br/></div><div>平台將於下午16:30~17:00進行系統維護事宜，可能會導致系統不穩定。</div><div>請各位使用者於下午四點半前先結束課程。</div><div><br/></div><div>造成不便，敬請見諒。</div><div><br/></div><div>　　　　教育部數位學習服務平台敬上</div></div></div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/12/02</div></td>
+<td class="news_subject" id="news_content_tr-334"><b>平台教材瀏覽異常</b></td>
+<td class="viewNum_334"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-334" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	[緊急公告] 因系統硬碟部份有誤，如進入本平台之開課教師和研習學員無法於課程中瀏覽教材，請於下週一（12/5），再進入本平台研習，如造成您的不便，敬請見諒。
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/09/24</div></td>
+<td class="news_subject" id="news_content_tr-288"><b>【停機公告】平台將於9月25日(日)20:00 -9月25日(日)01:00 進行系統維護事宜</b></td>
+<td class="viewNum_288"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-288" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<span class="Apple-style-span" style='text-align:left;text-transform:none;background-color:#ffffff;text-indent:0px;letter-spacing:normal;font:13px "Times New Roman";color:#006699;word-spacing:0px;'></span></p><div><strong>教育部數位學習服務平台將於100年9月25日（週日）下午8時00分進行系統功能更新，預計到至100年9月25日（週日）下午11時00分重新開放；系統維護期間可能導致系統不穩定</strong><strong>，請各位使用者於9月25日（週日）下午7時59分前先行結束課程，若造成各學員的不便，敬請見諒。</strong></div><strong> <br/>教育部數位學習服務平台 管理者敬上</strong>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/09/23</div></td>
+<td class="news_subject" id="news_content_tr-287"><b>大專通識課程「健康與生活」教師教材製作競賽活動</b></td>
+<td class="viewNum_287"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-287" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p>本次教育部計畫將舉辦數位學習課程成果發表會暨教師教材製作競賽活動，</p><p>歡迎對「健康與生活」相關領域之數位學習應用有興趣的全國大專校院教</p><p>師來參加活動，本活動將請多位初次製作數位教材之大專院校教師分享其</p><p>製作心得，另外也將分享如何應用「健康與生活」數位教材在實體課程與</p><p>遠距課程當中，由執行教師親自現場分享教學經驗。</p><p>※ 研習時間：100年9月29日(四)</p><p>※ 研習地點：仁德醫護管理專科學校國際會議廳</p><p>※ 報名網站：http://140.123.105.16/health/</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://140.123.105.16/health/" target="_blank">
+
+			http://140.123.105.16/health/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/08/15</div></td>
+<td class="news_subject" id="news_content_tr-278"><b>教育部大專校院通識課程「生命文化」數位教材推廣及教學應用計畫成果發</b></td>
+<td class="viewNum_278"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-278" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>教育部已完成推廣大專校院通識課程「生命文化」數位教材及教學應用第二期計畫，特舉辦成果發表會，分享已開發之數位教材及教學應用成果，以集思廣益，期望促進大專校院教師數位教材教學能力，使「生命文化」通識課程之實施品質更上層樓。</div><div>參加對象：</div><div>1.全國大專校院教授「生命文化」課程有興趣之教師<br/>2.對數位教學有興趣之全國大專校院教師、助教、助理<br/></div><div>主辦單位：教育部電子計算機中心<br/></div><div>承辦單位：景文科技大學通識教育中心<br/></div><div>協辦單位：旭聯科技股份有限公司<br/></div><div>計畫名稱：教育部大專校院通識課程「生命文化」數位教材推廣及教學應用<br/></div><div>計畫主持人：景文科技大學「通識教育中心」曾潔明副教授</div><div>注意事項： </div><div>(1) 報名對象為全國大專校院教師、助教、助理，全程免費。</div><div>(2) 全程參加者可獲得3小時研習證書。</div><div>(3) 推廣說明：人數以30人為限，額滿為止。第二場次報名截止日期為8月26日（五）12:00前。</div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/278_399cfb1b18a718b8892bd3c67cb5ad9e.doc" target="_blank">
+
+			生命文化第2場次成果發表會議程和報名表 (1).doc </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/08/08</div></td>
+<td class="news_subject" id="news_content_tr-277"><b>【停機公告】平台將於8月8日(一)21:00 -8月9日 01:00 (二) 進行系統維護事宜</b></td>
+<td class="viewNum_277"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-277" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<font size="3"><span style='font-family:"新細明體", serif;'>公告發佈者：</span><span></span></font><span><font face="Calibri" size="3"> </font></span><span><font face="Calibri" size="3"></font></span><font size="3"><span style='font-family:"新細明體", serif;'>教育部數位學習服務平台將於</span><span><font face="Calibri">100</font></span><span style='font-family:"新細明體", serif;'>年</span><span><font face="Calibri">8</font></span><span style='font-family:"新細明體", serif;'>月</span><span><font face="Calibri">8</font></span><span style='font-family:"新細明體", serif;'>日（週一）下午</span><span><font face="Calibri">9</font></span><span style='font-family:"新細明體", serif;'>時</span><span><font face="Calibri">00</font></span><span style='font-family:"新細明體", serif;'>分進行系統功能更新，預計至</span><span><font face="Calibri">100</font></span><span style='font-family:"新細明體", serif;'>年</span><span><font face="Calibri">8</font></span><span style='font-family:"新細明體", serif;'>月</span><span><font face="Calibri">9</font></span><span style='font-family:"新細明體", serif;'>日（週二）上午</span><span><font face="Calibri">01</font></span><span style='font-family:"新細明體", serif;'>時</span><span><font face="Calibri">00</font></span><span style='font-family:"新細明體", serif;'>分重新開放；系統維護期間可能導致系統不穩定，請各位使用者於</span><span><font face="Calibri">8</font></span><span style='font-family:"新細明體", serif;'>月</span><span><font face="Calibri">8</font></span><span style='font-family:"新細明體", serif;'>日（週一）下午</span><span><font face="Calibri">8</font></span><span style='font-family:"新細明體", serif;'>時</span><span><font face="Calibri">59</font></span><span style='font-family:"新細明體", serif;'>分前先行結束課程，若造成各學員的不便，敬請見諒。</span><span></span></font><span><font face="Calibri"><font size="3"><span> </span></font></font></span><font size="3"><span style='font-family:"新細明體", serif;'>教育部數位學習服務平台</span><font face="Calibri"> </font><span style='font-family:"新細明體", serif;'>管理者敬上</span></font><span></span>
+</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/08/05</div></td>
+<td class="news_subject" id="news_content_tr-275"><b>「呼朋引伴!!有加有保佑」抽獎活動得獎名單</b></td>
+<td class="viewNum_275"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-275" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p class="MsoNormal" style="margin:0cm 0cm 0pt;"><span style='font-family:"新細明體", serif;font-size:10pt;'>各位學員大家好：</span></p><span style='font-family:"新細明體", serif;font-size:10pt;'></span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'></span>  <p class="MsoNormal" style="margin:0cm 0cm 0pt;"><span style='font-family:"新細明體", serif;font-size:10pt;'>「呼朋引伴</span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'>!!</span><span style='font-family:"新細明體", serif;font-size:10pt;'>有加有保佑」抽獎活動已於</span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'>100</span><span style='font-family:"新細明體", serif;font-size:10pt;'>年</span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'>8</span><span style='font-family:"新細明體", serif;font-size:10pt;'>月</span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'>5</span><span style='font-family:"新細明體", serif;font-size:10pt;'>日結束。</span></p><span style='font-family:"新細明體", serif;font-size:10pt;'></span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'></span>  <p class="MsoNormal" style="margin:0cm 0cm 0pt;"><span style='font-family:"新細明體", serif;font-size:10pt;'>本次我們特別邀請國立中正大學法律系教授暨國際交流事務中心施慧玲主任見證此次平台活動「呼朋引伴</span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'>!!</span><span style='font-family:"新細明體", serif;font-size:10pt;'>有加有保佑」抽獎過程。</span></p><span style='font-family:"新細明體", serif;font-size:10pt;'></span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'></span> <span style='font-family:"新細明體", serif;font-size:10pt;'>在此恭喜盧信彰老師成為這次活動獎品</span><strong><span style='font-family:"Times New Roman", serif;background:#f4f4f4;color:#FF0000;font-size:10pt;'>iPad 2(</span></strong><strong><span style='font-family:"新細明體", serif;background:#f4f4f4;color:#FF0000;font-size:10pt;'>白色</span></strong><strong><span style='font-family:"Times New Roman", serif;background:#f4f4f4;color:#FF0000;font-size:10pt;'>) Wi-Fi 16GB</span></strong><span style='font-family:"Times New Roman", serif;background:#f4f4f4;color:#FF0000;font-size:10pt;'> </span><span style='font-family:"新細明體", serif;font-size:10pt;'>幸運得主。</span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'><br/></span><span style='font-family:"新細明體", serif;font-size:10pt;'>　　</span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'></span> <p class="MsoNormal" style="margin:0cm 0cm 0pt;"><span style='font-family:"新細明體", serif;font-size:10pt;'>抽獎過程連結如下：</span></p><a href="http://www.youtube.com/watch?v=wKhb7-GzKtc" target="_blank"><span style='font-family:"新細明體", serif;font-size:10pt;'><font face="Verdana">「呼朋引伴!!有加有保佑」</font></span><span style='font-family:Verdana, "sans-serif";font-size:10pt;'></span></a> <p class="MsoNormal" style="margin:0cm 0cm 0pt;"> </p><p class="MsoNormal" style="margin:0cm 0cm 0pt;">上方網址如無法點選，請複製以下網址至網址列觀看。 </p><p class="MsoNormal" style="margin:0cm 0cm 0pt;">http://www.youtube.com/watch?v=wKhb7-GzKtc</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://www.youtube.com/watch?v=wKhb7-GzKtc" target="_blank">
+
+			http://www.youtube.com/watch?v=wKhb7-GzKtc</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/08/01</div></td>
+<td class="news_subject" id="news_content_tr-274"><b>(更正)「呼朋引伴！有加有保佑」活動，得獎名單已出爐！</b></td>
+<td class="viewNum_274"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-274" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>本平台之「呼朋引伴！有加有保佑」活動，得獎名單已出爐，欲得知得獎名單，請至下列網址觀看。</div><div><strong>提醒您：若未詳填個人資料（如：電話、地址等），將失去抽獎資格，請於１００年８月３日前補登相關資料，以免損失您的權益。</strong></div><div> </div><div>抽獎日期將由１００年８月３日延至１００年８月５日，統計截止日期不變。</div><div><br/></div><div> 得獎名單網址 http://ups.moe.edu.tw/Activities/inviteYourFriendsAdmin.php </div>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/Activities/inviteYourFriendsAdmin.php" target="_blank">
+
+			http://ups.moe.edu.tw/Activities/inviteYourFriendsAdmin.php</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/08/01</div></td>
+<td class="news_subject" id="news_content_tr-273"><b>「呼朋引伴！有加有保佑」活動，得獎名單已出爐！</b></td>
+<td class="viewNum_273"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-273" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<font size="3"><span style='font-family:"新細明體", serif;'>本平台之「呼朋引伴！有加有保佑」活動，得獎名單已出爐，欲得知得獎名單，請至下列網址觀看。<strong>提醒您：若未詳填個人資料（如：電話、地址等），將失去抽獎資格，請於１００年８月３日前補登相關資料，以免損失您的權益。</strong></span><span></span></font><span><font face="Calibri" size="3"> </font></span><span style='font-family:"新細明體", serif;'><font size="3">抽獎日期將由１００年８月３日延至１００年８月５日，統計截止日期不變。</font></span><span></span>
+</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/Activities/inviteYourFriendsAdmin.php" target="_blank">
+
+			http://ups.moe.edu.tw/Activities/inviteYourFriendsAdmin.php</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/07/21</div></td>
+<td class="news_subject" id="news_content_tr-272"><b>【停機公告】平台將於7月24日21:00 -7月25日 00:00 (星期日) 進行系統維護事宜</b></td>
+<td class="viewNum_272"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-272" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<span class="Apple-style-span" style='text-transform:none;text-indent:0px;letter-spacing:normal;border-collapse:separate;font:medium "Times New Roman";color:#000000;word-spacing:0px;'><span class="Apple-style-span" style="text-align:left;border-collapse:collapse;color:#006699;font-size:13px;"></span></span></p><div><strong>教育部數位學習服務平台將於100年7月24日（週日）下午9時00分進行系統功能更新，預計到至100年7月25日（週一）上午00時00分重新開放；系統維護期間可能導致系統不穩定</strong><strong>，請各位使用者於7月24日（週日）下午8時59分前先行結束課程，若造成各學員的不便，敬請見諒。</strong></div><strong> <br/>教育部數位學習服務平台 管理者敬上</strong>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/07/21</div></td>
+<td class="news_subject" id="news_content_tr-271"><b>【停機公告】平台將於7月24日21:00 -7月25日 00:00 (星期日) 進行系統維護事宜</b></td>
+<td class="viewNum_271"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-271" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<span class="Apple-style-span" style='border-collapse:collapse;color:#006699;font:normal normal normal medium/normal "Times New Roman";'> </span></p><div><strong>教育部數位學習服務平台將於100年7月24日（週日）下午9時00分進行系統功能更新，預計到至100年7月25日（週一）上午00時00分重新開放；系統維護期間可能導致系統不穩定</strong><strong>，請各位使用者於7月24日（週日）下午8時59分前先行結束課程，若造成各學員的不便，敬請見諒。</strong></div><strong> <br/>教育部數位學習服務平台  管理者敬上</strong>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/07/21</div></td>
+<td class="news_subject" id="news_content_tr-270"><b>【停機公告】平台將於7月24日21:00 -7月25日 00:00 (星期日) 進行系統維護事宜</b></td>
+<td class="viewNum_270"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-270" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<span class="Apple-style-span" style='text-transform:none;text-indent:0px;letter-spacing:normal;border-collapse:separate;font:medium "Times New Roman";color:#000000;word-spacing:0px;'><span class="Apple-style-span" style="text-align:left;border-collapse:collapse;color:#006699;font-size:13px;"></span></span></p><div><strong>教育部數位學習服務平台將於100年7月24日（週日）下午9時00分進行系統功能更新，預計到至100年7月25日（週一）上午00時00分重新開放；系統維護期間可能導致系統不穩定</strong><strong>，請各位使用者於7月24日（週日）下午8時59分前先行結束課程，若造成各學員的不便，敬請見諒。</strong></div><strong> <br/>教育部數位學習服務平台 管理者敬上</strong>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/07/01</div></td>
+<td class="news_subject" id="news_content_tr-265"><b>【停機公告】平台將於100年7月3日下午九點至十二點進行系統維護作業</b></td>
+<td class="viewNum_265"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-265" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+<span class="Apple-style-span" style='text-transform:none;text-indent:0px;border-collapse:separate;font:medium "Times New Roman";letter-spacing:normal;color:#000000;word-spacing:0px;'><span class="Apple-style-span" style="text-align:left;border-collapse:collapse;color:#006699;font-size:13px;"></span></span></p><div><strong>教育部數位學習服務平台將於100年7月3日（週日）下午9時00分進行系統調校，預計到至100年7月4日（週一）上午00時00分重新開放；系統維護期間可能導致系統不穩定</strong><strong>，請各位使用者於7月3日（週日）下午8時59分前先行結束課程，若造成各學員的不便，敬請見諒。</strong></div><strong> <br/>教育部數位學習服務平台 管理者敬上</strong>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/06/21</div></td>
+<td class="news_subject" id="news_content_tr-264"><b>全程參與 6月24日推廣說明會即可參加「呼朋引伴！有加有保佑」抽獎</b></td>
+<td class="viewNum_264"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-264" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p>「數位學習服務平台」提供跨平台、跨網站之數位課程、教學與學習整合性服務，於100年6月24日於假高雄師範大學和平校區電算中心大樓辦理推廣活動說明會，為推廣數位學習課程，及分享數位學習相關資源。</p><p>現結合平台「呼朋引伴！有加有保佑」線上活動，若您報名參加 第四場推廣說明研習會（南區）- 加開場次並全程參與說明會者，活動結束後即擁有抽獎資格 (獎品：<u><strong>iPad 2(白色) Wi-Fi 16GB</strong></u>) 。</p><p>推廣活動報名網址：http://ups.moe.edu.tw/signup/upsmoe100/<br/>(若網址無法點選，請將此網址複製於網址列送出即可查看。)</p><p>「呼朋引伴！有加有保佑」活動傳單：https://ups.moe.edu.tw/ups-poster.pdf<br/>(若網址無法點選，請將此網址複製於網址列送出即可查看。)</p><p>報名人數有限，欲報從速。</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsmoe100/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsmoe100/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/06/20</div></td>
+<td class="news_subject" id="news_content_tr-263"><b>本平台舉辦「呼朋引伴！有加有保佑」活動，借此希望能讓更多的使用者能在數位學習服務平台一同參與及學習，</b></td>
+<td class="viewNum_263"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-263" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	活動說明如下:<br/>(一) 活動對象分為(推薦人)原有會員以及(被推薦人)新會員，依不同對象滿足下列條件後可獲得抽獎機會一次。<br/>(二) 原有會員(推薦人)於活動期間推薦好友成功加入「教育部數位學習服務平台」(底下簡稱UPS)，推薦數達五人以上(含五人)，即可於活動結束後，參加抽獎(每人僅一次抽獎機會)。<br/>     此外，依照推薦完成時間的先後順序(依第五個人註冊成功且完成帳號開通為達成條件)，前200名可獲得4G USB隨身碟一隻。<br/>(三) 新會員(被推薦人)，若於活動期間在UPS平台上完成任一門課程研習，並瀏覽該教材總時數達3小時以上，即可於活動結束後參加抽獎，每人僅一次抽獎機會。<br/>(四) 詳細活動辦法公告於平台首頁-右方處(平台活動)。<br/> 
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/06/16</div></td>
+<td class="news_subject" id="news_content_tr-260"><b>【平台代​發】「線上助教研習工作坊」即將開始，歡迎踴躍報名參加！</b></td>
+<td class="viewNum_260"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-260" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div>淡江大學承辦教育部「大專校院數位學習人才培訓及推廣服務計畫(北區)」，<br/></div> <div>將於6/23.24(四、五)舉辦第一梯次「線上助教研習工作坊」，<br/></div> <div>開設PPT簡報製作、Powercam數位教材製作、Moodle平台操作、線上帶領技巧等課程，<br/></div> <div>即日起至6/20採線上報名<a href="http://enroll.tku.edu.tw/" target="_blank">http://enroll.tku.edu.tw</a>，歡迎有興趣的老師、助教等踴躍報名參加！</div>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/260_04335618a656175be4f95a0e76da4fbc.pdf" target="_blank">
+
+			 線上助教研習培訓(淡江大學).pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/06/13</div></td>
+<td class="news_subject" id="news_content_tr-259"><b>【停機公告】平台將於明日6月14日20:00 -6月15日 01:00進行系統維護事宜</b></td>
+<td class="viewNum_259"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-259" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	教育部數位學習服務平台將於100年6月14日（週二）下午8時00分因平台活動需求進行系統維護，預計到至100年6月15日（週三）上午01時00分重新開放；系統維護期間平台頁面將無法連線，請各位使用者於明日下午八點前先行結束課程，若造成各學員的不便，敬請見諒。<br/> <br/>教育部數位學習服務平台 管理者敬上 
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/06/09</div></td>
+<td class="news_subject" id="news_content_tr-256"><b>平台推廣說明會與教育訓練研習會時數核發資訊，及加開推廣活動說明，歡</b></td>
+<td class="viewNum_256"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-256" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p>本計畫已於今年4月1、6、9日辦理北、中、南各一場推廣活動說明會，並於今年4月18、22、25日辦理北、中、南各一場教育訓練研習會，此六場與會者之研習時數皆已核發完畢，紙本研習證明皆已寄至報名時填寫之單位，公務人員及教師研習時數亦已核發至「公務人員終身學習網」及「全國教師在職進修網」，感謝大家熱情參與。</p><p>近期將加辦一場推廣活動說明會，歡迎大家踴躍上網報名，相關資訊如下：</p><p>第四場推廣說明研習會（南區）- 加開場次 </p><p>(1) 時間： 100年6月24日（星期五），上午10時至下午5時。 <br/>(2) 地點： 假國立高雄師範大學 和平校區 電算中心大樓 7403教室<br/>　　　　　（高雄市苓雅區和平一路116號）</p><p>此研習會內容著重於平台使用者實際操作說明，本場研習場地有二，若需實際操作者備有電腦教室共同研習，於同步演講廳備有無線網路，學員可自行攜帶筆電參與研習，電腦教室座位有限，敬請盡早入席，謝謝。</p><p><br/>2.推廣活動一律採網路線上報名，報名網址為<a href="../signup/upsmoe100" target="_blank"><font color="#663366">http://ups.moe.edu.tw/signup/upsmoe100</font></a></p><p>3.洽詢專線：（05）2720411 # 33131 蘇筱惠小姐<br/>E-mail：<a href="mailto:ups_moe@mail.moe.gov.tw" target="_blank">ups_moe@mail.moe.gov.tw</a>。</p><p>敬請提早報名避免向隅。</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsmoe100" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsmoe100</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/05/31</div></td>
+<td class="news_subject" id="news_content_tr-253"><b>【停機公告】平台將於今日5月31日20:00 -6月1日 01:00進行系統維護事宜</b></td>
+<td class="viewNum_253"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-253" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><div><strong>教育部數位學習服務平台將於100年5月31日（週二）下午8時00分因平台活動需求進行系統維護，預計到至100年6月1日（週三）上午01時00分重新開放；系統維護期間平台頁面將無法連線，請各位使用者於今日下午八點前先行結束課程，若造成各學員的不便，敬請見諒。</strong></div> <strong> <br/>教育部數位學習服務平台 管理者敬上 </strong>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/05/18</div></td>
+<td class="news_subject" id="news_content_tr-252"><b>『99-100教育部數位學習服務平台經營與推廣計畫』-推廣活動與教育訓練簡報下載</b></td>
+<td class="viewNum_252"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-252" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	您好:<br/><br/>『99-100教育部數位學習服務平台經營與推廣計畫』-推廣活動與教育訓練的簡報資料檔案彙整於附檔中<br/>提供您做為參考資料<br/>謝謝您<br/><br/>祝<br/>　　順心<br/>　　教育部 數位學習服務平台團隊  敬上<br/>
+</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/252_4e66bffa8d0ce6aea0fc2bacb49d1c33.pdf" target="_blank">
+
+			 99_100_promo.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/252_5743afd2df7002da7f73b9b46c10e6da.pdf" target="_blank">
+
+			 99_100_teach.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/04/27</div></td>
+<td class="news_subject" id="news_content_tr-238"><b>【平台代​發】5/4、5/6、5/11「健康與生活」教師專業工​作坊開始報名！</b></td>
+<td class="viewNum_238"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-238" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p>本次教育部計畫舉辦之教師工作坊將說明「健康與生活」此數位教材之教學設計與內容規劃，並將分享如何應用此數位教材在實體課程與遠距課程當中，由執行教師與設計師親自在現場分享相關經驗。</p><p>※ 研習時間：100年5月4日(三)、6日(五) 、11日(三)</p><p>※ 研習地點：南台科技大學資訊傳播系505教室 </p><p>※ 報名網站：<a href="http://140.123.105.16/health/" target="_blank">http://140.123.105.16/health/</a></p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://140.123.105.16/health/" target="_blank">
+
+			http://140.123.105.16/health/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/04/26</div></td>
+<td class="news_subject" id="news_content_tr-236"><b>【平台代發】5/12、5/13大專通識課程「圖書資訊應用」教師專業工作坊開始報名！</b></td>
+<td class="viewNum_236"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-236" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p>想了解如何在課程中運用數位教材嗎？數位教材該如何設計與製作？<br/> 著作權與創用CC對於數位教材的設計使用有什麼影響呢？<br/> 敬請參加在台南大學舉辦的「圖書資訊應用」教師專業工作坊！</p><strong style="font-weight:normal;">※ 研習時間：</strong>100年5月12日(四)-5月13日(五)  <p><strong style="font-weight:normal;">※ </strong><strong style="font-weight:normal;">研習地點：</strong>國立臺南大學 </p><strong style="font-weight:normal;">※ </strong><span><span>議程及報名表請參閱附件</span></span><br/><br/><strong style="font-weight:normal;">※ </strong><span><span>計畫網站：</span></span><a href="http://sites.google.com/site/moeteachershare/" target="_blank">http://sites.google.com/site/moeteachershare/</a>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/236_b167caf9cacf5d0209fcce75734c2d6f.doc" target="_blank">
+
+			 圖書資訊應用計畫第四場工作坊議程(5月12-13日).doc </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/04/19</div></td>
+<td class="news_subject" id="news_content_tr-233"><b>【修正公告】平台教育訓練公文勘誤</b></td>
+<td class="viewNum_233"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-233" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p>平台推廣說明會公文附件第一頁第三項「研習時間及地點」，更正地區區別項目，其舉辦地點無誤，造成困擾深感抱歉，歡 迎各位熱情參與，謝謝。 </p><p>(一)<strong>北區</strong>：100年4月18日(星期一)，假國立臺灣科技大學 電資學院IB712教室。</p><p>(二)<strong>中區</strong>：100年4月22日(星期五)，假嘉義市蘭潭國小 達觀樓3樓PC教室。 </p><p>(三)<strong>南區</strong>：100年4月25日(星期一)，假國立中山大學 圖書與資訊大樓地下一樓PC03教室。</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsteach100/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsteach100/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/04/12</div></td>
+<td class="news_subject" id="news_content_tr-216"><b>【平台代發】大專通識課程「資訊素養與倫理」工作坊(線上達人篇)開放報名囉！ </b></td>
+<td class="viewNum_216"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-216" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：Unknow</strong><br/>
+</p><p>數位課程專業工作坊─線上達人篇 為推廣「資訊素養與倫理」數位課程及培養數位教材教學應用能力， 透過Workshop方式傳授線上經營計劃擬定與模擬操作， 推展線上課程帶領與社群經營的知識 。 </p><p>※ 時間、地點：2011年4月21日(四)~4月22日(五) 國立宜蘭大學 </p><p>※ 活動相關報名網頁：<a href="http://ile.cs.ccu.edu.tw/" target="_blank">http://ile.cs.ccu.edu.tw/</a> </p><p>※ 相關活動EDM：<a href="http://ile.cs.ccu.edu.tw:8090/r520/ILE/edm/workshop_edm.html" target="_blank">http://ile.cs.ccu.edu.tw:8090/r520/ILE/edm/workshop_edm.html</a></p><p> </p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/04/11</div></td>
+<td class="news_subject" id="news_content_tr-215"><b>平台教育訓練研習將於4/18、4/22、4/25舉辦於北、中、南，歡迎報名參加！</b></td>
+<td class="viewNum_215"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-215" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p><span class="Apple-style-span" style="text-transform: none; text-indent: 0px; border-collapse: separate; font: normal normal normal medium/normal Arial; letter-spacing: normal; color: #000000; word-spacing: 0px"><span class="Apple-style-span" style="text-align: left; border-collapse: collapse; color: #006699; font-size: 13px">本計畫即將舉辦 「教育部數位學習服務平台」教育訓練研習會</span></span>，近日將於北、中、南各舉辦一場教育訓練活動，內容以『開課教師功能介紹』及『管理者功能介紹』為主，若貴單位需要採用UPS原始碼架設平台或希望在本平台上開設課程，歡迎報名參與以下三場之教育訓練活動，每場活動報名名額有限，每場上限為30人，以下為場次詳細資料，敬請提早報名避免向隅。</p><p><span class="Apple-style-span" style="text-transform: none; text-indent: 0px; border-collapse: separate; font: normal normal normal medium/normal Arial; letter-spacing: normal; color: #000000; word-spacing: 0px"><span class="Apple-style-span" style="text-align: left; border-collapse: collapse; color: #006699; font-size: 13px">1. 活動場次</span></span></p><p>A.      第一場推廣說明研習會 （北區）<br/>(1)     時間：100年4月18日（星期一），上午10時至下午5時。<br/>(2)     地點：國立台灣科技大學　電資學院 IB712教室<br/>     台北市大安區基隆路 4 段 43 號<br/>B.      第二場推廣說明研習會 （中區）<br/>(1)     時間：100年4月22日（星期五），上午10時至下午5時。<br/>(2)     地點：嘉義市蘭潭國民小學 達觀樓3樓 PC教室<br/>     嘉義市東區蘭潭里小雅路419號<br/>C.      第三場推廣說明研習會（南區）<br/>(1)     時間：100年4月25日（星期一 ），上午10時至下午5時。<br/>(2)     地點：國立中山大學圖書與資訊大樓地下一樓PC03教室<br/>     高雄市鼓山區蓮海路70號</p><p>※各場活動相關交通資訊詳見報名網站。</p><span class="Apple-style-span" style="text-transform: none; text-indent: 0px; border-collapse: separate; font: normal normal normal medium/normal Arial; letter-spacing: normal; color: #000000; word-spacing: 0px"><span class="Apple-style-span" style="text-align: left; border-collapse: collapse; color: #006699; font-size: 13px"></span></span><p>2.研習活動採網路線上報名，報名網址為<a href="../signup/upsmoe100" target="_blank">http://ups.moe.edu.tw/signup/upsteach100/</a></p><p>3.洽詢專線：（05）2720411 # 33131 蘇筱惠小姐<br/>E-mail：<a href="mailto:ups_moe@mail.moe.gov.tw" target="_blank">ups_moe@mail.moe.gov.tw</a>。</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsteach100/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsteach100/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/04/08</div></td>
+<td class="news_subject" id="news_content_tr-213"><b>【平台代發】歡迎參加「生命文化」數位教材專業教師工作坊！</b></td>
+<td class="viewNum_213"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-213" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：Unknow</strong><br/>
+</p><p>辦理生命文化數位教材推廣第四場專業教師工作坊(台中場次)及報名表相關資訊如下： </p><p>1. 教師專業工作坊(台中場次) </p><p>(1) 時間： 100年4月22、23日（星期五、星期六），上午9時至下午4時。</p><p> (2) 地點： 國立中興大學雲平樓B17教室（台中市402南區國光路250號）</p><p>2.研習活動採E_mail及傳真報名（研習議程及報名表格如附件） </p><p>3.洽詢專線：（02）82122000轉2580 昝先生E-mail：<a href="mailto:tzaancv@gmail.com" target="_blank">tzaancv@gmail.com</a> </p><p>4.報名截止日：100年4月19日止</p><p> 5.外部網址：http://comedu.just.edu.tw/files/15-1031-7686,c664-1.php</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://comedu.just.edu.tw/files/15-1031-7686,c664-1.php" target="_blank">
+
+			http://comedu.just.edu.tw/files/15-1031-7686,c664-1.php</a><br/>
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/213_19531c8902b19a3b0c9122e7ff476fc9.doc" target="_blank">
+
+			第四場專業教師工作坊.doc </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/03/30</div></td>
+<td class="news_subject" id="news_content_tr-209"><b>【修正公告】平台推廣說明會公文附件勘誤</b></td>
+<td class="viewNum_209"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-209" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：Unknow</strong><br/>
+
+        
+        	平台推廣說明會公文附件第一頁第三項「會議資訊」中，活動場次之表格說明第一場推廣說明研習會(中區)，日期部份有誤，原為 100 年 4 月 1 日(星期一)，現更正為 <strong>100 年 4 月 1 日(星期五)</strong> ，造成困擾深感抱歉，歡迎各位熱情參與，謝謝。
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsmoe100/" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsmoe100/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/03/24</div></td>
+<td class="news_subject" id="news_content_tr-205"><b>平台北中南三場推廣說明會將於4/1、4/6、4/9舉辦，歡迎報名參加！</b></td>
+<td class="viewNum_205"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-205" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：Unknow</strong><br/>
+</p><p>本計畫即將舉辦 「教育部數位學習服務平台」推廣說明會，歡迎大家踴躍上網報名，相關資訊如下：</p><p>1. 活動場次<br/>　A. 第一場推廣說明研習會 （中區）</p><p>　　(1) 時間： 100年4月1日（星期五），上午10時至下午5時。 <br/>　　(2) 地點： 國立中正大學工學院一館　資工系206教室<br/>　　　　　 嘉義縣民雄鄉三興村大學路一段168號</p><p>　B. 第二場推廣說明研習會 （南區） </p><p>　　(1) 時間： 100年4月6日（星期三），上午10時至下午5時。 <br/>　　(2) 地點：國立中山大學圖書與資訊大樓地下一樓PC03教室<br/>　　　　　　高雄市鼓山區蓮海路70號 </p><p>　C. 第三場推廣說明研習會（北區） </p><p>　　(1) 時間： 100年4月9日（星期六），上午10時至下午5時。 <br/>　　(2) 地點： 國立臺灣師範大學 校本部(圖書館校區) 教育學院402教室<br/>　　　　　　 台北市大安區和平東路一段162號 </p><p><br/>2.研習活動採網路線上報名，報名網址為<a href="../signup/upsmoe100" target="_blank">http://ups.moe.edu.tw/signup/upsmoe100</a></p><p>3.洽詢專線：（05）2720411 # 33131 蘇筱惠小姐<br/>E-mail：<a href="mailto:ups_moe@mail.moe.gov.tw" target="_blank">ups_moe@mail.moe.gov.tw</a>。</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/signup/upsmoe100" target="_blank">
+
+			http://ups.moe.edu.tw/signup/upsmoe100</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/03/16</div></td>
+<td class="news_subject" id="news_content_tr-199"><b>教育部大專通識課程「健康與生活」教師入門工作坊活動(台北場)開放報名！</b></td>
+<td class="viewNum_199"><div align="center">1348</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-199" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：Unknow</strong><br/>
+</p><p>為推展大專校院資訊科技融入教學，提升教學品質與效能。教育部於98年起結合大專教師、<br/>醫界等共同分工，齊力開發完成大專校院通識課程「健康與生活」數位教材。整套教材是以大專<br/>學生為對象，透過對『睡眠』、『休息』、『飲食』、『情緒』、『運動』、『休閒』六領域的認識，促使<br/>大專學生了解健康促進的精神。 </p><p>　　本次教育部計畫舉辦之教師入門工作坊培訓活動，將於100年3月26日(六)在台北大學台北校<br/>區辦理，歡迎對健康與生活相關領域之數位學習應用有興趣的全國大專校院教師來參與研習，會<br/>中將說明這套完整教材之教學設計與內容規劃，並將分享如何應用此數位教材在實體課程與遠距<br/>課程當中，由執行教師親自現場分享教學經驗。 </p><p>　　敬請提早網路報名避免向隅，詳情請見報名網站：<a href="http://140.123.105.16/health/" target="_blank">http://140.123.105.16/health/</a><br/> <br/>       中正大學數位教材製作團隊 敬邀<br/>       聯絡人：陳正釧(05-2720411 #15701)</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/02/24</div></td>
+<td class="news_subject" id="news_content_tr-182"><b>新增5門大專通識課程教師社群專區服務</b></td>
+<td class="viewNum_182"><div align="center">1346</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-182" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p>各位平台使用者，您好： </p><p>　　因應大專通識課程計畫推廣需求，平台增設圖書資訊、健康與生活、資訊法律、資訊倫理與素養與生命文化等5門大專通識課程『教師社群專區』，分別由其執行計畫團隊管理與經營，歡迎對大專通識課程教學有興趣的老師們申請參與。 </p><p>　　對上述課程有興趣之老師們，請先申請「平台教師」帳號，再向各課程提出申請，經課程負責團隊審核通過，即可進入該課程之『教師社群專區』互動，交流教學經驗與分享教學資源。</p><p>　　詳細申請流程與『教師社群專區』使用手冊，請參閱平台首頁右側『教師社群專區』（<a href="../Other/teacher.php" target="_blank">https://ups.moe.edu.tw/Other/teacher.php</a>），如有任何問題歡迎來信平台服務信箱<a href="mailto:ups_moe@mail.moe.gov.tw" target="_blank">ups_moe@mail.moe.gov.tw</a>，或撥打平台服務專線05-2720411＃33131，我們將竭誠為您服務。 </p><p align="right">Ups教育部數位學習服務平台團隊敬上</p>
+<p></p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2011/02/24</div></td>
+<td class="news_subject" id="news_content_tr-180"><b>教育部大專通識課程研習活動開放報名，歡迎踴躍報名參加！</b></td>
+<td class="viewNum_180"><div align="center">1345</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-180" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+</p><p>　　教育部於民國97年起，為提昇各大專校院教師之教學應用，陸續開發「環境變遷與永續發展」、「資訊素養與倫理」、「資訊法律」、「圖書資訊應用」、「健康與生活」及「生命文化」等優質通識課程數位教材，目前已建置於本部數位學習服務平台(<a href="ups.moe.edu.tw" target="_blank">http://ups.moe.edu.tw</a>)供教師們參考使用，平台並建有社群專區等功能，提供教師們進行討論及分享，歡迎各大專校院教師參考與教學引用。</p><p>　　為推廣本部開發之通識數位教材，並養成教師數位教學應用能力，特别委託國立中正大學、國立高雄第一科技大學、國立臺灣師範大學、景文科技大學等學校規劃辦理大專校院教師專業工作坊系列相關研習及推廣活動。</p><p>　　自99年起各門通識課程研習活動已辦理17場次，培訓人數達835人次，兹列出今年三至五月份之研習活動資訊，歡迎各大專校院相關教職人員、助教等，把握機會共襄盛舉。</p>
+<p></p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/180_f746f2715009b768f4a40e0cac1b5e67.doc" target="_blank">
+
+			3-5月通識活動訊息.doc </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/180_0689c3c0f9daea198a8644d5ddd3298d.doc" target="_blank">
+
+			活動議程.doc </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/11/26</div></td>
+<td class="news_subject" id="news_content_tr-142"><b>【平台代發】 教育部大專通識課程「生命文化」研習及推廣活動開放報名！</b></td>
+<td class="viewNum_142"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-142" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	各位老師，您好：<br/>
+<br/>
+<br/>
+為提昇各大專校院教師之教學應用、數位教材推動與經營能力，教育部委託景文科技大學於99年12月辦理「生命文化」教師專業工作坊2場及推廣活動1場，歡迎各位有興趣的老師均可踴躍報名參與。<br/>
+<br/>
+本次各項研習及活動提供全程參與者終身學習時數，研習資訊、報名表及交通資訊，請詳見附件說明。<br/>
+<br/>
+<br/>
+活動場次列示如下：<br/>
+<br/>
+1.第一場專業教師工作坊：12月1日(三)、12月2日(四)<br/>
+<br/>
+2.第二場專業教師工作坊：12月15日(三)、12月17日(五)<br/>
+<br/>
+3.推廣說明會：12月3日(五)<br/>
+<br/>
+聯 絡 人：昝先生，聯絡電話：0917-135493<br/>
+報名方式：（各項活動於活動開始日前，均開放e-mail報名）<br/>
+　(1)e-mail報名：請填寫報名表後逕寄tzaancv@gmail.com<br/>
+　(2)傳真報名：02-8212-2850轉2581<br/>
+通訊地址：景文科技大學通識中心(台北縣新店市安忠路99號)
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/142_c7b86b88a17deb61d9f389d40fe68c97.zip" target="_blank">
+
+			生命文化推廣.zip </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/11/09</div></td>
+<td class="news_subject" id="news_content_tr-136"><b>【停機公告】平台將於11/10凌晨1:00~5:00進行系統維護作業。</b></td>
+<td class="viewNum_136"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-136" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	各位使用者，大家好：<br/>
+<br/>
+為使平台使用更順暢與穩定，<br/>
+平台將於11/10(星期三)凌晨進行系統維護事宜，屆時將會關閉系統。<br/>
+請各位使用者於凌晨前先結束課程。<br/>
+<br/>
+若有不便深感抱歉。<br/>
+<br/>
+　　　　教育部數位學習服務平台敬上
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/" target="_blank">
+</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/11/08</div></td>
+<td class="news_subject" id="news_content_tr-135"><b>【停機公告】平台將於下午4:00~5:00進行系統維護事宜</b></td>
+<td class="viewNum_135"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-135" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	各位使用者，大家好：<br/>
+<br/>
+平台將於下午4:00~5:00進行系統維護事宜，可能會導致系統不穩定。<br/>
+請各位使用者於下午四點前先結束課程。<br/>
+<br/>
+若有不便深感抱歉。<br/>
+<br/>
+　　　　教育部數位學習服務平台敬上
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/10/21</div></td>
+<td class="news_subject" id="news_content_tr-112"><b>收不到認證信問題與連線速度過慢。</b></td>
+<td class="viewNum_112"><div align="center">1364</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-112" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	由於近期教育部發文至全國各級中小學教師平台研習相關訊息，<br/>
+全國教師註冊人數踴躍，<br/>
+為提供更快速的服務及精確紀錄帳號與電話紀錄帳號之不明確，及提供更好服務。<br/>
+<br/>
+若有相關　『帳號開通』　或　『無收到認證信』、　『e-mail填寫錯誤無法收信』　等問題，<br/>
+請於首頁下方『未收到認證信回報細統』留下您的帳號及簡單資訊，無需等待認證信或回覆，<br/>
+在24小時內，會由系統人員協助，手動幫您啟用。<br/>
+<br/>
+啟用後您可直接以註冊帳號登入平台，<br/>
+若有e-mail填寫不正確問題，可於登入後於功能列表中－個人資料中做修改。<br/>
+<br/>
+由於目前系統人數眾多，在上班時間系統負荷過大，目前正在緊急處理中，若您發現連線速度過慢，建議您更改至較非尖峰時間研習。<br/>
+<br/>
+造成您的不便深感抱歉!!
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/report/" target="_blank">
+
+			http://ups.moe.edu.tw/report/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/10/15</div></td>
+<td class="news_subject" id="news_content_tr-130"><b>『防制學生藥物濫用』數位課程研習</b></td>
+<td class="viewNum_130"><div align="center">1411</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-130" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	歡迎全國高中職、中小學老師使用本平台進行學習，相關資訊依課程搜尋、新學員註冊、研習資訊、其他等四點依序說明如下，謝謝。 課程搜尋： 1、本課程學員（高中職、中小學教師）登入平台後，請由左方選單欄進入『 課程總覽 』專區，然後於課程狀態選擇『依課程性質』-&gt;『防制學生藥物濫用-數位學習類』即可瀏覽此系列課程。 2、亦可於於課程屬性選擇『全部』或『自學』-&gt;輸入課程名稱，即可瀏覽此系列課程。『防制學生藥物濫用』系列9門課程名稱如下： 1.物質與藥物濫用 2. 學生藥物濫用原因分析 3. 學生藥物濫用的行為表徵與辨識 4. 學校如何處理學生藥物濫用問題 5. 學生藥物濫用相關法規 6. 認識防制學生藥物濫用三級預防 7. 防制藥物濫用拒絕技巧 8. 校園特定人員尿液篩檢 9. 藥物濫用學生輔導資源與轉介服務 新學員註冊：首次使用本平台之教師，請您於首頁左上方『加入會員』，填妥所需資料後（id、電子信箱、身份證字號、教師證號等），請前往信箱收取帳號確認信，點選啟動連結，即可正式登入平台使用。（因部分電子信箱系統會有無法收到系統確認信，如果您30分鐘內沒有收到，請點選首頁下方『未收到認證信回報』，先由平台營運團隊為您啟動） 研習資訊：一、發佈日期為99年10月4日（台軍（二）字第099167060號）二、為因應學生藥物濫用年輕化與普及化之趨勢，教育部結合數位學習趨勢，開發「防制學生藥物濫用」數位學習課程以提供教師不受時空限制之學習。三、本(99) 學年度每學期上網修習本系列課程至少2小時，以提昇防制學生藥物濫用相關知能，共同營造健康安全之校園環境。四、原公文提供之操作手冊附件（http://140.111.34.206/upload/eb8f23f5-711f-4648-bc4c-316947016c37.pdf）可於教育部軍訓處網頁（http://140.111.34.206/internet/main/00home/home.aspx）下載參考，教師學習後將取得個人研習時數。 其他：關於對本平台相關使用建議，或會員資料設定錯誤、電子信箱輸入錯誤等其他問題，可透過右方『留言板』，或透過教育部 E-mail: ups_moe@mail.moe.gov.tw與我們聯繫，教育部數位學習服務平台團隊將熱誠地與您回覆！預祝您收穫滿載，使用愉快，謝謝。 操作手冊請點選以下連結網址
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://140.111.34.206/upload/eb8f23f5-711f-4648-bc4c-316947016c37.pdf" target="_blank">
+
+			http://140.111.34.206/upload/eb8f23f5-711f-4648-bc4c-316947016c37.pdf</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/05/25</div></td>
+<td class="news_subject" id="news_content_tr-113"><b>【停機公告】平台將於99年5月26日（週三）中午12時00分進行系統維護</b></td>
+<td class="viewNum_113"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-113" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	教育部數位學習服務平台將於99年5月26日（週三）中午12時00分進行系統維護，預計到至99年5月27日（週四）上午8時00分重新開放；系統維護期間平台頁面將無法連線，若造成各學員的不便，敬請見諒。<br/>
+<br/>
+教育部數位學習服務平台 管理者敬上
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/05/06</div></td>
+<td class="news_subject" id="news_content_tr-111"><b>開放平台原始碼下載服務</b></td>
+<td class="viewNum_111"><div align="center">1344</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-111" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	已開放平台原始碼下載服務，<br/>
+有需求者可於此連結網址申請下載。<br/>
+<br/>
+下載人或下載單位需填寫基本資料，<br/>
+填妥送出後即會寄發下載驗證碼至您填寫的e-mail中，<br/>
+輸入此驗證碼及可進行下載。<br/>
+<br/>
+（您所填寫的資料僅供存查統計使用。）
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://ups.moe.edu.tw/project_home/" target="_blank">
+
+			http://ups.moe.edu.tw/project_home/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/05/03</div></td>
+<td class="news_subject" id="news_content_tr-110"><b>本平台提供中小學教師資訊課程之研習時數相關訊息</b></td>
+<td class="viewNum_110"><div align="center">1453</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-110" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	   本平台提供符合一般民眾、中小學教師及大專校院師生等身分之自學課程進行學習，其中9門中小學教師資訊課程為具備中小學教師研習時數課程，其研習時數如下方所示，歡迎平台上所有學員進行選課。<br/>
+<br/>
+    若當初註冊登錄身分類別為國民中小學教師或高中職教師者，經由選課且在完成課程學習時數及通過平台上測驗後，即可獲得該門課程研習時數，本平台將每天定時將資料（此九門課程中已取得研習時數之學員名單）上傳至全國教師在職進修資訊網。<br/>
+<br/>
+1.資訊倫理 3門<br/>
+（1）資訊倫理-校長主任篇，研習時數為3小時。<br/>
+（2）資訊倫理_輔導教師篇，研習時數為3小時。<br/>
+（3）資訊倫理_教師篇，研習時數為3小時。<br/>
+<br/>
+2. 資訊融入教學 3門 <br/>
+（1）資訊科技融入教學方法與規劃，研習時數為6小時。<br/>
+（2）科技媒體選擇與應用，研習時數為6小時。<br/>
+（3）數位教學資源應用與分享，研習時數為6小時。<br/>
+<br/>
+3. 資訊技能3門 <br/>
+（1）數位教學面面觀，研習時數為6小時。 <br/>
+（2）製作多媒體教材-工具篇，研習時數為9小時。 <br/>
+（3）製作多媒體教材-應用篇，研習時數為10小時。
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/04/30</div></td>
+<td class="news_subject" id="news_content_tr-109"><b>平台新增1門大專院校通識課程</b></td>
+<td class="viewNum_109"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-109" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	新增「圖書資訊應用 」1門大專院校通識課程，歡迎大家選課。
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/04/23</div></td>
+<td class="news_subject" id="news_content_tr-108"><b>【預覽提示】平台新增2門大專院校通識課程(請先以"訪客"登入)</b></td>
+<td class="viewNum_108"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-108" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	若想先預覽「資訊法律」及「健康與生活」2門大專院校通識課程，首先請到左側點選「以訪客身份登入」後，然後再點選「課程總覽」。<br/>
+<br/>
+其課程目錄裡的第9頁和第10頁便是「資訊法律」及「健康與生活」2門課程的所在頁面，歡迎各位訪客線上瀏覽。
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/04/23</div></td>
+<td class="news_subject" id="news_content_tr-107"><b>【更正啟事】平台目前開放16門課程，</b></td>
+<td class="viewNum_107"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-107" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	目前平台開放16門自學課程供訪客身分進行課程瀏覽，欲瀏覽未開放課程者，請加入平台會員並進行選課，即可瀏覽課程內容，<br/>
+<br/>
+開放訪客瀏覽之課程名單如下：<br/>
+<br/>
+1.一般民眾5門<br/>
+（1）國中小英文千字e學習(其它類)<br/>
+（2）電腦基礎認識-銀髮族篇(電腦入門)<br/>
+（3）電腦基礎認識-勞工篇(電腦入門)<br/>
+（4）電腦基礎認識-新住民篇(電腦入門)<br/>
+（5）電腦基礎認識-婦女篇(電腦入門)<br/>
+<br/>
+2.中小學教師3門<br/>
+（1）資訊倫理-教師篇(資訊倫理類)<br/>
+（2）數位教學資源應用與分享(資訊融入教學類)<br/>
+（3）製作多媒體教材-工具篇(資訊技能類)<br/>
+<br/>
+3.大專院校8門<br/>
+（1）環境變遷與永續發展(其它類)<br/>
+（2）數位華語文教學之知能與資源(其它類)<br/>
+（3）數位學習概論與導入(其它類)<br/>
+（4）數位教學的設計與評鑑(其它類)<br/>
+（5）數位教材的設計(其它類)<br/>
+（6）資訊法律(其它類)<br/>
+（7）健康與生活(其它類)<br/>
+（8）資訊素養與倫理系列一：資訊素養的意涵與重要性(資訊倫理類)<br/>
+<br/>
+<br/>
+[標題誤植] 本公告標題誤植，感謝 Tang Nan-pyn 老師撥空指正。
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://" target="_blank">
+
+			http://</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/04/23</div></td>
+<td class="news_subject" id="news_content_tr-106"><b>平台新增2門大專院校通識課程</b></td>
+<td class="viewNum_106"><div align="center">1345</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-106" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	新增「資訊法律」及「健康與生活」2門大專院校通識課程，歡迎大家選課。
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/04/22</div></td>
+<td class="news_subject" id="news_content_tr-105"><b>平台原始碼下載事宜</b></td>
+<td class="viewNum_105"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-105" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	有關教育訓練課程講義(05_Install_Procedure_.ppt )下載網址部分，目前暫不提供平台原始碼下載服務；預計5月將提供原<br/>
+始碼下載服務，屆時將公告於平台【最新消息】--&gt;【其它】。<br/>
+<br/>
+</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/04/14</div></td>
+<td class="news_subject" id="news_content_tr-101"><b>教育訓練簡報下載(修訂版)</b></td>
+<td class="viewNum_101"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-101" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	教育訓練簡報修訂版(office2003)已上傳至平台，請各位有需要的訪客登入下載。
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/101_c90521769c5aca3eadeef4b19008a38b.pdf" target="_blank">
+
+			數位教學平台系統需求與功能書20100224.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/101_6f5cccbbd1302ee944e2c1f49e372601.doc" target="_blank">
+
+			01議程.doc </a><br/>
+
+        
+		
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/101_6c7d9ac420759eab5242b17efab4b45c.ppt" target="_blank">
+
+			02數位學習平台簡介(教育訓練).ppt </a><br/>
+
+        
+		
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/101_e44f5bf70b005387dfcd12f07704553d.ppt" target="_blank">
+
+			03_99.03.26 - 平台教師功能實際操作說明.ppt </a><br/>
+
+        
+		
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/101_d7dba53e16fbd8a62412f5b98bdfbc0b.ppt" target="_blank">
+
+			04cyber2_0302.ppt </a><br/>
+
+        
+		
+
+        
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/101_001600d5c8225d54d7a12ff889d3b588.ppt" target="_blank">
+
+			05_Install_Procedure_.ppt </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/04/07</div></td>
+<td class="news_subject" id="news_content_tr-88"><b>系統功能維護，誤發課程公告啟事</b></td>
+<td class="viewNum_88"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-88" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	各位學員，您好：<br/>
+    本平台於今日下午2時至3時進行系統公告功能維護，期間誤發課程公告信件造成各學員收信不便與困擾，敬請包涵與見諒。<br/>
+<br/>
+                          教育部數位學習服務平台  管理員<br/>
+</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/04/06</div></td>
+<td class="news_subject" id="news_content_tr-80"><b>【停機公告】有關本日下午平台因系統進行維護暫時服務事宜</b></td>
+<td class="viewNum_80"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-80" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	各位使用者，大家好：<br/>
+<br/>
+    今天下午2點30分至5點30分，本平台臨時緊急進行平台維護，導致平台無法進行所有連線服務，目前已經恢復正常營運及服務，若造成各位的不便，也請大家多多包涵與見諒。<br/>
+<br/>
+<br/>
+                                數位學習服務平台團隊
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/03/22</div></td>
+<td class="news_subject" id="news_content_tr-79"><b>推廣說明會簡報已上線，歡迎下載</b></td>
+<td class="viewNum_79"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-79" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	  數位學習服務平台北中南三場說明會已圓滿落幕，感謝大家<br/>
+  撥空前來參與，活動簡報於公告附加檔，提供各位下載。
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/79_46e2b23780c67d67041e28cda4fb9a0c.pdf" target="_blank">
+
+			說明會簡報檔.pdf </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/03/12</div></td>
+<td class="news_subject" id="news_content_tr-78"><b>平台開課及管理『教育訓練課程』將於3/26.4/09.4/11舉辦，歡迎大家報名參加</b></td>
+<td class="viewNum_78"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-78" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	繼教育部數位學習服務平台推廣說明會後，本計畫將舉辦『平台開課及平台管理教育訓練研習課程』，歡迎大家踴躍上網報名，相關資訊如下：<br/>
+<br/>
+1. 活動場次<br/>
+(1)北區：99年3月26日（星期五）<br/>
+   教育部電子計算機中心   <br/>
+   科技大樓13樓1301電腦教室 <br/>
+<br/>
+(2)南區：99年4月9日（星期五）<br/>
+   國立中山大學圖書與資訊大樓地下一樓PC01教室<br/>
+<br/>
+(3)中區：99年4月11日（星期日）<br/>
+    國立中正大學圖書資訊大樓電算中心215教室<br/>
+<br/>
+2.研習活動採網路線上報名，報名網址為http://140.123.105.16/upsteach/<br/>
+<br/>
+3.洽詢專線：（02）7712-9085蔡詩韻小姐<br/>
+E-mail：ups_moe@mail.moe.gov.tw。<br/>
+<br/>
+4. 全程參與者核發研習時數8小時。
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/78_4b7736b42e7082f69338b843aa889adb.pdf" target="_blank">
+
+			教育訓練資料.pdf </a><br/>
+
+        
+		
+
+        
+		
+        
+		
+
+        
+			外部網址：<a href="http://140.123.105.16/upsteach/" target="_blank">
+
+			http://140.123.105.16/upsteach/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/02/12</div></td>
+<td class="news_subject" id="news_content_tr-77"><b>平台北中南三場推廣說明會將於3/7.3/13.3/19舉辦，歡迎大家報名參加</b></td>
+<td class="viewNum_77"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-77" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	 本計畫即將舉辦 「教育部數位學習服務平台」推廣說明會，歡迎大家踴躍上網報名，相關資訊如下：<br/>
+<br/>
+1. 活動場次<br/>
+(1)北區：99年3月13日（星期六）<br/>
+         國立台北大學（三峽校區）商學大樓3F10教室<br/>
+<br/>
+(2)中區：99年3月7日（星期日）<br/>
+         國立中正大學圖書資訊大樓電算中心215教室<br/>
+<br/>
+(3)南區：99年3月19日（星期五）<br/>
+         國立中山大學圖書與資訊大樓地下一樓PC01教室<br/>
+<br/>
+2.研習活動採網路線上報名，報名網址為https://140.123.105.16/upsmoe/<br/>
+<br/>
+3.洽詢專線：（02）7712-9085蔡詩韻小姐<br/>
+  E-mail：ups_moe@mail.moe.gov.tw。<br/>
+<br/>
+4. 全程參與者核發研習時數8小時。
+
+        
+	</p>
+<br/>
+
+		
+        
+		
+
+        
+			外部網址：<a href="http://140.123.105.16/upsmoe/" target="_blank">
+
+			http://140.123.105.16/upsmoe/</a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/02/02</div></td>
+<td class="news_subject" id="news_content_tr-76"><b>平台目前已建置81門自學課程</b></td>
+<td class="viewNum_76"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-76" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	目前平台已新建置81門自學課程，歡迎大家選課<br/>
+<br/>
+1、一般民眾課程共43門<br/>
+  -數位學習機會中心課程(42門)<br/>
+  -國中小英文千字e學習(1門)<br/>
+<br/>
+2.中小學教師課程共9門<br/>
+  -國民中小學教師資訊課程(9門)<br/>
+<br/>
+3.大專院校課程共29門<br/>
+ -數位學習師資人才培育課程 (6門)<br/>
+ -環境變遷與永續發展示範課程 (1門)<br/>
+ -數位華語文教學課程 (4門)<br/>
+ -資訊素養與倫理系列課程18門)
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2010/01/08</div></td>
+<td class="news_subject" id="news_content_tr-74"><b> 新建置42門一般民眾課程</b></td>
+<td class="viewNum_74"><div align="center">1358</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-74" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	新增42門課程，課程及單元名稱列表如附件所示，歡迎大家選課：<br/>
+<br/>
+1. 新住民族群課程9門<br/>
+2. 婦女族群課程9門<br/>
+3. 勞工族群13門<br/>
+4. 銀髮族課程9門
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/74_cd579f9ffee6f0fa711fc652a482a500.pdf" target="_blank">
+
+			開課一覽表.pdf </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2009/11/10</div></td>
+<td class="news_subject" id="news_content_tr-70"><b>目前平台已建置21門自學課程</b></td>
+<td class="viewNum_70"><div align="center">1343</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-70" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	目前平台已新建置21門課程，如下所示，歡迎大家選課<br/>
+<br/>
+1、一般民眾課程1門<br/>
+2.中小學教師課程9門<br/>
+3.大專院校課程11門
+
+        
+	</p>
+<br/>
+
+		
+        
+			附加檔案：<a href="/Data_File/1/System_News/70_3cb80ef2deca09cbc9915bec7218e6a6.pdf" target="_blank">
+
+			list.pdf </a><br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2009/11/09</div></td>
+<td class="news_subject" id="news_content_tr-71"><b>新增1門「國中小英文千字e學習」此課程</b></td>
+<td class="viewNum_71"><div align="center">1368</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-71" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	新增「國中小英文千字e學習」課程，歡迎大家選課。
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2009/11/07</div></td>
+<td class="news_subject" id="news_content_tr-72"><b>新增9門國民中小學教師資訊課程</b></td>
+<td class="viewNum_72"><div align="center">1546</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-72" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	新增9門課程，歡迎大家選課：<br/>
+<br/>
+新增9門中小學教師資訊課程，歡迎選課：<br/>
+1.資訊倫理 3門<br/>
+  - 資訊倫理-校長主任篇 <br/>
+  - 資訊倫理_輔導教師篇 <br/>
+  - 資訊倫理_教師篇 <br/>
+<br/>
+2. 資訊融入教學 3門 <br/>
+  - 資訊科技融入教學方法與規劃 <br/>
+  - 科技媒體選擇與應用<br/>
+  - 數位教學資源應用與分享<br/>
+<br/>
+3. 資訊技能3門 <br/>
+  - 數位教學面面觀 <br/>
+  - 製作多媒體教材-工具篇 <br/>
+  - 製作多媒體教材-應用篇
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+<!--BEGIN:公告的標頭-->
+<tr>
+<td width="9%"><div align="center">2009/11/06</div></td>
+<td class="news_subject" id="news_content_tr-73"><b>新增11門大專院校課程</b></td>
+<td class="viewNum_73"><div align="center">1350</div></td>
+</tr>
+<!--			END:公告的標頭				-->
+<!--			BEGIN:公告的內容			-->
+<tr class="tr3" id="news_detail_content_tr-73" style="display:none;">
+<td colspan="3">
+<p>
+<strong>公告發佈者：</strong><br/>
+
+        
+        	新增11門大專院校課程，歡迎大家選課<br/>
+<br/>
+1、數位學習師資人才培育課程 6門<br/>
+  - 數位學習專案的企劃與管理<br/>
+  - 數位學習概論與導入<br/>
+  - 數位教學的設計與評鑑<br/>
+  - 數位教學的進行與支持服務<br/>
+  - 數位教材的設計<br/>
+  - 數位教材的製作與評鑑<br/>
+<br/>
+<br/>
+2、示範課程 1門 <br/>
+  - 環境變遷與永續發展篇<br/>
+<br/>
+3、華語文課程 4門 <br/>
+- 數位華語文教學之知能與資源<br/>
+- 數位華語文教材之改編與製作<br/>
+- 數位華語文課程之規劃與設計 <br/>
+- 數位華語文課程之實施與評鑑 
+
+        
+	</p>
+<br/>
+</td>
+</tr><!--END:公告的內容-->
+</tbody></table>
+</div>
+<blockquote>
+<p> </p>
+<p class="al-left"></p><div class="button001"><a href="systemNews_homeShowList.php?news_type=all&amp;showAll=0">隱藏部份公告</a></div><p></p>
+<p>
+<br/>
+</p><div align="right">
+<a href="systemNews_home_rss.php" target="_blank" title="Link to the RSS 2.0 feed."><img alt="RSS 2.0" src="/images/rss20_logo.gif" style="border:0px;"/></a>　
+
+		<input class="btn" onclick="downloadRSS()" type="button" value="下載RSS Reader"/>
+</div>
+<p></p>
+</blockquote>
+</span></body></html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<title>個人化首頁</title>
+<link href="../css/index/index.css" rel="stylesheet" type="text/css"/>
+<script async="" src="//www.google-analytics.com/analytics.js"></script><script src="/script/swfobject.js" type="text/javascript"></script>
+<script src="/themes/IE2/script/personal/personal.js" type="text/javascript"></script>
+<script src="/themes/IE2/script/personal/drag.js" type="text/javascript"></script>
+<script src="/script/jquery-1.3.2.min.js" type="text/javascript"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61985500-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<style>
+.index_top_item {
+    width:100%;
+    padding-top:2px;
+    margin:0;
+    margin-top:2px;
+    margin-left:-60px;
+    
+}
+
+.index_top_item li {  
+    float:right;  
+    margin-right:10px;
+    /*margin-left:-14px;*/
+    padding-right:0;
+    padding-left:0;
+    text-align:left;
+    display:inline;
+}
+
+.index_top_item li a {    
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;;
+    margin-right:10px !important;
+}  
+
+.index_top_item li span {
+    margin-right:0;   
+    /*margin-left:10px;*/
+}  
+
+.index_top_item li img {
+    padding:0;    
+    margin:0;
+    margin-right:3px;
+}   
+</style>
+<script language="JavaScript" type="text/javascript">
+&lt;!--
+var tmp = "course";
+var tmp2 = "tabA";
+var role = 3;
+var aim_url = '../System_News/systemNews_RoleNews.php';
+var basic_info_id =1;
+var basic_info=1;
+
+if(role == 0){
+	tmp = "other";
+	tmp2 = "tabB";
+}
+
+function start(){
+	view(tmp, tmp2);
+//	setTimeout("ResizeIframe(document.getElementsByName('calendar')[0])", 100);
+}
+
+function changeImg(path, block){
+	block.setAttribute("src", path);
+}
+
+function frame_redirect(url){
+    if(url != '') {
+        window.top.frames['main_info'].location = url ; 
+    }
+}
+
+function isWorking()
+{
+    alert("個人筆記本維護中...");
+}
+
+
+$(document).ready(function(){
+        if(role!=0&amp;&amp;role!=4&amp;&amp;role!=2&amp;&amp; (basic_info_id == 0||basic_info == 0)){
+            alert('請至"個人資料"選單中\n填寫個人身份證或護照號碼,Email等相關資料以免您的權益受損!');
+            $("#main_info").attr("src","../Learner_Profile/user_profile.php");
+            $("a[target='main_info']").attr("href","#").click(function(){
+                alert('依教育部電算中心要求，請至"個人資料"選單中\n填寫個人身份證或護照號碼,Email等相關資料，方可正常使用。(填完資料確定送出後請按F5重整頁面)');
+                $("#main_info").attr("src","../Learner_Profile/user_profile.php");
+                return false;
+            });
+        }
+
+        });
+
+
+--&gt;
+
+</script>
+<style media="screen" type="text/css">#flashBanner {visibility:hidden}</style></head>
+<body class="indx">
+<div class="outerContainer" style="relative;">
+<div class="bannerContainer">
+<div class="outersitelink">
+<ol class="index_top_item">
+<li><img src="../images/index/index_top_arrow.jpg"/><a alt="網站導覽" href="../Other/site_view.html" target="main_info">網站導覽</a></li>
+<li><img src="../images/index/index_top_arrow.jpg"/><a alt="教育部" href="http://www.edu.tw" target="_blank">教育部</a><span>|</span></li>
+<li><img src="../images/index/index_top_arrow.jpg"/><a alt="教育雲" href="http://cloud.edu.tw/?token1=18af3029e02f54a93f7dcc152e69b58a" target="_blank">教育雲</a><span>|</span></li>
+<li><img src="../images/index/index_top_arrow.jpg"/><a alt="下載區" href="../Other/software_download.php" target="main_info">工具下載區</a><span>|</span></li>
+</ol>
+</div>
+<object data="../images/index_top1.swf" height="115" id="flashBanner" style="visibility: visible;" type="application/x-shockwave-flash" width="970"></object>
+<script type="text/javascript">
+		swfobject.embedSWF("../images/index_top1.swf", "flashBanner", "970", "115", "9.0.0", "../script/expressInstall.swf");	
+	</script>
+</div>
+<div class="mainContainer" style="zoom:1;">
+<div class="leftContainer" style="">
+<div class="welcomeContainer">
+<div class="profile_pic">
+<img id="userImage" src="/themes/IE2/images/edu.jpg" style="width:80px; height:80px; border:0px outset black;"/>
+</div>
+<div class="identify">
+<div>-ㄇ</div>
+<div style="font-size:12px;font-wegiht:bold;">[研習學員]</div> </div>
+<div class="form_button">
+<input onclick="javascript:location='../logout.php'" size="15" style="width:48%;font-weight: bold; border:1px; border-color:#000;" type="button" value="登出"/>
+</div>
+</div>
+<div class="menubar">
+<div class="linkcontainer">
+<div class="linkitemleft"><a href="../System_News/systemNews_RoleNews.php" target="main_info"><img alt="最新消息" border="0" src="/images/personal_page/icon_a01.gif"/></a></div>
+<div class="linkitemleft"><a href="courseList.php" target="main_info"><img alt="我的課表" border="0" src="/images/personal_page/icon_e01.gif"/></a></div>
+<!-- joyce0808 教材分享  
+<div class="linkitemleft"><a href="../Teaching_Material/textbook_general_download.php" target="main_info"><img src="/images/personal_page/icon_e11.gif" alt="教材分享" border="0" /></a></div>
+-->
+<div class="linkitemleft"><a href="../popular_course.php" target="main_info"><img alt="熱門課程" border="0" src="/images/personal_page/icon_e02.gif"/></a></div>
+<div class="linkitemleft"><a href="courseSearch.php" target="main_info"><img alt="課程總覽" border="0" src="/images/personal_page/icon_e03.gif"/></a></div>
+<div class="linkitemleft"><a href="select_course_result.php" target="main_info"><img alt="選課結果" border="0" src="/images/personal_page/icon_e04.gif"/></a></div>
+<div class="linkitemleft"><a href="history_course_list.php" target="main_info"><img alt="學習紀錄" border="0" src="/images/personal_page/icon_e05.gif"/></a></div>
+<!-- joyce0808 教材分享 -->
+<div class="linkitemleft"><a href="../Teaching_Material/textbook_general_download.php" target="main_info"><img alt="教材分享" border="0" src="/images/personal_page/icon_e11.gif"/></a></div>
+<div class="linkitemleft"><a href="../Learner_Profile/user_profile.php" target="main_info"><img alt="個人資料" border="0" src="/images/personal_page/icon_e06.gif"/></a></div>
+<!--
+				  				  <div class="linkitemleft"><a href="../Note_Book/notebook_mgt.php" target="main_info"><img src="/images/personal_page/icon_e07.gif" alt="個人筆記本" border="0" /></a></div>
+				-->
+<!--
+                     <div class="linkitemleft"><a href="#" onclick="isWorking();"><img src="/images/personal_page/icon_e07.gif" alt="個人筆記本" border="0" /></a></div>
+
+                    <div class="linkitemleft"><a href="textbook_general_download.php" target="main_info"><img src="/images/personal_page/icon_e11.gi
+                  -->
+<div class="linkitemleft"><a href="../manual/MainPage_Member1118.pdf" target="_blank"><img alt="操作手冊" border="0" src="/images/personal_page/icon_e08.gif"/></a></div>
+<div class="linkitemleft"><a href="../Other/q_and_a.php" target="main_info"><img alt="常見問題" border="0" src="/images/personal_page/icon_e09.gif"/></a></div>
+<div class="linkitemleft"><a href="../Guest_Book/index.php" target="main_info"><img alt="留言板" border="0" src="/images/personal_page/icon_message.gif"/></a></div>
+<!--設定Admin有的功能-->
+<!--設定教務管理者有的功能-->
+<div class="linkitemleft"><a href="../Other/relatedOutcomes.php" target="main_info"><img alt="" border="0" src="/images/personal_page/icon_c11.gif"/></a></div>
+<div class="linkitemleft"><a href="http://cloud.edu.tw/?token1=18af3029e02f54a93f7dcc152e69b58a" target="_blank"><img alt="教育雲入口網" border="0" src="/images/personal_page/cloud_center.png"/></a></div>
+</div>
+</div>
+<div class="calendarContainer">
+<div class="calendarContent">
+<iframe cd_frame_id_="79c42c4467c5ddd7de821b3eaefc1d7f" frameborder="0" scrolling="no" src="../Calendar/calendar.php" style="width:160px ; height:190px;"></iframe>
+</div>
+<div class="calendarToday">
+					2015-11-19 12:26:43
+				</div>
+</div>
+</div>
+<div class="rightContainer">
+<iframe cd_frame_id_="874a102544d98d7285fd2f4ef3340c0b" frameborder="no" height="3344" id="main_info" name="main_info" onload="ResizeIframe(this);" src="../System_News/systemNews_RoleNews.php" style="border:none; width:750px; height:900px;" width="733"></iframe>
+</div>
+<div class="clear"></div>
+</div> <!-- mainContainerEnd -->
+<div class="footer">
+<hr/>
+		2009 © 網站內容為教育部所有 未經許可 請勿任意轉載｜最佳瀏覽解析度 1024 x 768<br/>
+有任何問題請洽教育部｜聯絡專線：05-2720411 分機：33131 或 23141｜E-mail：ups_moe@mail.moe.gov.tw
+	</div>
+</div>
+<script>
+    frame_redirect(aim_url) ;
+</script>
+</body></html>

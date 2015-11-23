@@ -10,11 +10,12 @@ class Hash :
             self.d[j] = x 
     
     def put(self, state):
-        new_dom = state.get_normalize_dom()
+        new_dom = ''
+        for stateDom in state.get_dom_list():
+            new_dom += stateDom.get_normalize_dom()
         hashvalue = self.hashfunction(new_dom)
-        print "[DEBUG] loop in list %s (length %s) in hash" % (hashvalue, len( self.d[hashvalue] ))
         for list_id  in self.d[hashvalue]:
-            list_dom = self.get_dom_by_stateID(list_id)
+            list_dom = self.get_doms_by_stateID(list_id)
             if self.is_normalize_equal(list_dom, new_dom):
                 return False, list_id
         list.append(self.d[hashvalue], state.get_id())
@@ -23,8 +24,11 @@ class Hash :
     def hashfunction(self, dom):
         return hash( dom ) % self.number
 
-    def get_dom_by_stateID(self, stateID):    
-        return self.automata.get_state_by_id(stateID).get_normalize_dom()
+    def get_doms_by_stateID(self, stateID):
+        dom = ''
+        for stateDom in self.automata.get_state_by_id(stateID).get_dom_list():
+            dom += stateDom.get_normalize_dom()
+        return dom
 
     def is_normalize_equal(self, list_dom, new_dom):
         return DomAnalyzer.is_normalize_equal(list_dom, new_dom)

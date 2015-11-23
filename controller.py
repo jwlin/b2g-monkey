@@ -14,6 +14,7 @@ from executor import SeleniumExecutor
 from crawler import B2gCrawler, SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
+from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
 #from connecter import mysqlConnect
 
 def B2gmain():
@@ -40,19 +41,23 @@ def SeleniumMain():
     print "setting config..."
     config = SeleniumConfiguration(3, _url, sys.argv[2])
     config.set_max_depth(_deep)
+    config.set_simple_clickable_tags()
+    config.set_simple_inputs_tags()
+    config.set_simple_normalizers()
     
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
     
     print "setting crawler..."
-    crawler = SeleniumCrawler(config, executor)
+    automata = Automata()
+    crawler = SeleniumCrawler(config, executor, automata)    
     
     print "crawler start run..."
     automata = crawler.run()
     crawler.close()
     
     print "end! save automata..."
-    save_automata(automata, config)
+    automata.save_automata(config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     save_config(config, 'config.json')
 
@@ -63,131 +68,31 @@ def debugTestMain():
     #config.set_max_depth(1)
     print "setting config..."
     config = SeleniumConfiguration(2, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
-    config.set_max_depth(3)
+    config.set_max_depth(1)
     config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
-    
+    config.set_automata_fname('automata.json')
+
+    config.set_simple_clickable_tags()
+    config.set_simple_inputs_tags()
+    config.set_simple_normalizers()
+    config.set_normalizer( TagWithAttributeNormalizer("div", "class", "calendarToday") )
+    config.set_normalizer( TagWithAttributeNormalizer("table", None, u"人氣", 'contains') )
+    config.set_normalizer( TagWithAttributeNormalizer("table", "class", "clmonth") )
+    config.set_normalizer( TagNormalizer(['iframe']) )
+    config.set_normalizer( TagWithAttributeNormalizer("a", "href", "http://cloud.edu.tw/?token") )
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
     print "setting crawler..."
-    crawler = SeleniumCrawler(config, executor)    
+    automata = Automata()
+    crawler = SeleniumCrawler(config, executor, automata)    
     print "crawler start run..."
-    automata = crawler.run()
+    crawler.run()
     crawler.close()    
     print "end! save automata..."
-    save_automata(automata, config)
+    automata.save_automata(config, config.get_automata_fname())
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
-    save_config(config, 'config.json')
+    config.save_config('config.json')
 #==============================================================================================================================
-
-def save_automata(automata, configuration):
-        data = {
-            'state': [],
-            'edge': [], 
-            # the prefix used in ids given by our monkey
-            'id_prefix': DomAnalyzer.serial_prefix
-        }
-        for state in automata.get_states():
-            state_data = {
-                'id': state.get_id(),
-                # output unix style path for website: first unpack dirs in get_path('dom'),
-                # and then posixpath.join them with the filename
-                'dom_path': posixpath.join(
-                    posixpath.join(
-                        *(relpath(
-                            configuration.get_path('dom'),
-                            configuration.get_path('root')
-                            ).split(os.sep))
-                    ),
-                    state.get_id() + '.txt'
-                ),
-                'img_path': posixpath.join(
-                    posixpath.join(
-                        *(relpath(
-                            configuration.get_path('state'),
-                            configuration.get_path('root')
-                            ).split(os.sep))
-                    ),
-                    state.get_id() + '.png'
-                ),
-                'clickable': [],
-                'inputs': [],
-                'selects': []
-            }
-            for clickable in state.get_clickables():
-                clickable_data = {
-                    'id': clickable.get_id(),
-                    'xpath': clickable.get_xpath(),
-                    'tag': clickable.get_tag(),
-                    'img_path': posixpath.join(
-                        posixpath.join(
-                            *(relpath(
-                                configuration.get_path('clickable'),
-                                configuration.get_path('root')
-                                ).split(os.sep))
-                        ),
-                        state.get_id() + '-' + clickable.get_id() + '.png'
-                    )
-                }
-                state_data['clickable'].append(clickable_data)
-            for my_input in state.get_inputs():
-                input_data = {
-                    'id': my_input.get_id(),
-                    'xpath': my_input.get_xpath(),
-                    'type': my_input.get_type(),
-                    'value': my_input.get_value()
-                }
-                state_data['inputs'].append(input_data)
-            for select in state.get_selects():
-                select_data = {
-                    'id': select.get_id(),
-                    'xpath': select.get_xpath(),
-                    'value': select.get_value()
-                }
-                state_data['selects'].append(select_data)
-            data['state'].append(state_data)
-        for (state_from, state_to, clickable, cost) in automata.get_edges():
-            edge_data = {
-                'from': state_from.get_id(),
-                'to': state_to.get_id(),
-                'clickable': clickable.get_id()
-            }
-            data['edge'].append(edge_data)
-
-        with open(os.path.join(configuration.get_abs_path('root'), configuration.get_automata_fname()), 'w') as f:
-            json.dump(data, f, indent=2, sort_keys=True, ensure_ascii=False)
-
-
-def save_config(config, fname):
-    config_data = {}
-    config_data['max_depth'] = config.get_max_depth()
-    config_data['max_states'] = config.get_max_states()
-    config_data['max_time'] = config.get_max_time()
-    config_data['sleep_time'] = config.get_sleep_time()
-    #=============================================================================================
-    #Diff: browser use url & browserID not app
-    '''
-    config_data['app_name'] = config.get_app_name()
-    config_data['app_id'] = config.get_app_id()
-    '''
-    config_data['url'] = config.get_url()
-    config_data['browser_id'] = config.get_browserID()
-    #=============================================================================================
-    config_data['automata_fname'] = config.get_automata_fname()
-    config_data['root_path'] = posixpath.join(
-        posixpath.join(*(config.get_path('root').split(os.sep)))
-    )
-    config_data['dom_path'] = posixpath.join(
-        posixpath.join(*(config.get_path('dom').split(os.sep)))
-    )
-    config_data['state_path'] = posixpath.join(
-        posixpath.join(*(config.get_path('state').split(os.sep)))
-    )
-    config_data['clickable_path'] = posixpath.join(
-        posixpath.join(*(config.get_path('clickable').split(os.sep)))
-    )
-    with open(os.path.join(config.get_abs_path('root'), fname), 'w') as f:
-        json.dump(config_data, f, indent=2, sort_keys=True, ensure_ascii=False)
-
 
 def load_automata(fname):
     t_start = time.time()

@@ -35,7 +35,7 @@ class AttributeNormalizer(AbstractNormalizer):
                     if attr not in self.attr_list:
                         filtered_attrs[attr] = tag[attr]
             tag.attrs = filtered_attrs
-        return str(soup).replace('\n', '')
+        return str(soup)#.replace('\n', '')
 
     def __str__(self):
         return 'AttributeNormalizer: attr_list: %s, mode: %s' % (self.attr_list, self.mode)
@@ -50,11 +50,10 @@ class TagContentNormalizer(AbstractNormalizer):
         for tag in soup.find_all():
             if self.tag_list and (tag.name in self.tag_list):
                 tag.clear()
-        return str(soup).replace('\n', '')
+        return str(soup)#.replace('\n', '')
 
     def __str__(self):
         return 'TagContentNormalizer: tag_list: %s' % self.tag_list
-
 
 class TagNormalizer(AbstractNormalizer):
     def __init__(self, tag_list=None):
@@ -65,7 +64,53 @@ class TagNormalizer(AbstractNormalizer):
         for tag in soup.find_all():
             if self.tag_list and (tag.name in self.tag_list):
                 tag.decompose()
-        return str(soup).replace('\n', '')
+
+        return str(soup)#.replace('\n', '')
 
     def __str__(self):
         return 'TagNormalizer: tag_list: %s' % self.tag_list
+
+#=============================================================================================
+# remove tag with:
+# 1. matched name, attr and startswith value
+# 2. matched name, and tag content contains value without given attr
+class TagWithAttributeNormalizer(AbstractNormalizer):
+    def __init__(self, name, attr, value, mode='startswith'):
+        self.name = name
+        self.attr = attr
+        self.value = value
+        self.mode = mode
+
+    def normalize(self, dom):
+        soup = BeautifulSoup(dom, 'html.parser')
+        for tag in soup.find_all(self.name):
+            if self.attr and (self.attr in tag.attrs):
+                if type(tag[self.attr]) == type([]):
+                    for attr_value in tag[self.attr]:
+                        if self.is_attr_value(attr_value):
+                            print "decompose %s: "%(self.name )
+                            tag.decompose()
+                            break
+                elif type(tag[self.attr]) == type('') or type(tag[self.attr]) == type(u'')  :
+                    if self.is_attr_value(tag[self.attr]):
+                        print "decompose %s: "%(self.name )
+                        tag.decompose()
+
+            elif not self.attr:  # self.attr is None
+                for string in tag.stripped_strings:
+                    if self.is_attr_value(string):
+                        print "decompose %s: "%(self.name )
+                        tag.decompose()
+                        break
+        return str(soup)#.replace('\n', '')
+
+    def is_attr_value(self, attr_value):
+        if self.mode == 'startswith':
+            return attr_value.startswith(self.value)
+        elif self.mode == 'contains':
+            return self.value in attr_value
+        else:
+            return False
+
+    def __str__(self):
+        return 'TagWithAttributeNormalizer: tag: %s, attr: %s, value: %s' % (self.name, self.attr, self.value)

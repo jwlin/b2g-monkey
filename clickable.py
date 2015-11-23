@@ -26,11 +26,12 @@ class Clickable:
         return 'clickable id: %s (xpath: %s) ' % (self._id, self._xpath )
         
 class InputField:
-    def __init__(self, input_id=None, xpath=None, input_type=None, value=None):
+    def __init__(self, input_id=None, xpath=None, input_type=None, value=None, iframe_path_list=None):
         self._id = input_id
         self._xpath = xpath
         self._value = value
         self._type = input_type
+        self.iframe_path_list = iframe_path_list
 
     def set_value(self, text):
         self._value = text
@@ -53,10 +54,11 @@ class InputField:
 #=============================================================================================
 #Diff: select is an input, too.
 class SelectField:
-    def __init__(self, input_id=None, xpath=None, value=None):
+    def __init__(self, input_id=None, xpath=None, value=None, iframe_path_list=None):
         self._id = input_id
         self._xpath = xpath
         self._value = value
+        self.iframe_path_list = iframe_path_list
 
     def set_value(self, text):
         self._value = text

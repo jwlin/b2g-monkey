@@ -8,7 +8,7 @@ import random, string
 from bs4 import BeautifulSoup
 from clickable import Clickable, InputField, SelectField
 from data_bank import InlineDataBank
-from normalizer import AttributeNormalizer, TagNormalizer
+from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
 
 
 class Tag:
@@ -24,17 +24,13 @@ class Tag:
 
 
 class DomAnalyzer:
-    _clickable_tags = [
-        Tag('a'),
-        Tag('button'),
-        Tag('input', {'type': 'submit'}),
-        Tag('input', {'type': 'button'})
-    ]
-    input_types = ['text', 'email', 'password']  # type of input fields filled with values
-    _normalizers = [TagNormalizer(['head', 'canvas', 'li']), AttributeNormalizer('class')]
+    _clickable_tags = []
+    _input_types = []  # type of input fields filled with values
+    _normalizers = []
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
 
+    #=============================================================================================
     @classmethod
     def make_id(cls, _id):
         if not _id:
@@ -42,47 +38,61 @@ class DomAnalyzer:
             cls._serial_num += 1
         return _id
 
-    #=============================================================================================
-    #Diff: inputs information save in state, indiviual to clickbles
+    #Diff: inputs information save in state, indiviual to clickables
     @classmethod
-    def get_clickables(cls, dom, prev_dom=None):
+    def get_clickables(cls, cs, prev_s=None):
         # only return newly discovered clickables, i.e. clickables not in prev_clickables
-        prev_clickables = []
-        if prev_dom:
-            prev_soup = BeautifulSoup(prev_dom, 'html.parser')
+        cs_dom_list = cs.get_dom_list()
+        prev_dom_list = prev_s.get_dom_list() if prev_s else None
+        clickables_iframe_list = []
+
+        for i in xrange(len(cs_dom_list)):
+            stateDom = cs_dom_list[i]
+            prev_stateDom = prev_dom_list[i] if prev_s and prev_dom_list and len(prev_dom_list)>i else None
+            prev_clickables = []
+            clickables = []
+
+            # if same iframe_path_list => ignore clickables in prev_state
+            if prev_stateDom and prev_stateDom.get_iframe_path_list() == stateDom.get_iframe_path_list():
+                prev_dom = prev_stateDom.get_dom()
+                prev_soup = BeautifulSoup(prev_dom, 'html.parser')
+                for tag in cls._clickable_tags:
+                    if tag.get_attr():
+                        for attr, value in tag.get_attr().items():
+                            prev_clickables += prev_soup.find_all(tag.get_name(), attrs={attr: value})
+                    else:
+                        prev_clickables += prev_soup.find_all(tag.get_name())
+
+            dom = stateDom.get_dom()
+            soup = BeautifulSoup(dom, 'html.parser')
             for tag in cls._clickable_tags:
                 if tag.get_attr():
                     for attr, value in tag.get_attr().items():
-                        prev_clickables += prev_soup.find_all(tag.get_name(), attrs={attr: value})
+                        candidate_clickables = soup.find_all(tag.get_name(), attrs={attr: value})
                 else:
-                    prev_clickables += prev_soup.find_all(tag.get_name())
+                    candidate_clickables = soup.find_all(tag.get_name())
+                for candidate_clickable in candidate_clickables:
+                    is_appear_in_prev = False
+                    for prev_clickable in prev_clickables:
+                        if candidate_clickable == prev_clickable and cls._get_xpath(candidate_clickable) == cls._get_xpath(prev_clickable):                         
+                            is_appear_in_prev = True
+                            break
+                    if not is_appear_in_prev and not cls._is_duplicate(clickables, candidate_clickable):
+                        clickable_id = cls.make_id( candidate_clickable.get('id') )
+                        clickables.append(Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name()))
 
-        soup = BeautifulSoup(dom, 'html.parser')
-        clickables = []
-        
-        for tag in cls._clickable_tags:
-            if tag.get_attr():
-                for attr, value in tag.get_attr().items():
-                    candidate_clickables = soup.find_all(tag.get_name(), attrs={attr: value})
-            else:
-                candidate_clickables = soup.find_all(tag.get_name())
-            for candidate_clickable in candidate_clickables:
-                if candidate_clickable in prev_clickables:   
-                    continue
-                if not cls._is_duplicate(clickables, candidate_clickable):
-                    clickable_id = cls.make_id( candidate_clickable.get('id') )
-                    clickables.append(Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name()))
-        return clickables
+            clickables_iframe_list.append( (clickables, stateDom.get_iframe_path_list()) )
+        return clickables_iframe_list
     #=============================================================================================
 
     #=============================================================================================
-    #Diff: inputs information save in state, indiviual to clickbles
+    #Diff: inputs information save in state, indiviual to clickables
     @classmethod
     def get_inputs(cls, dom):
         # add inputs in dom
         soup = BeautifulSoup(dom, 'html.parser')
         inputs_list = []
-        for input_type in cls.input_types:
+        for input_type in cls._input_types:
             inputs = soup.find_all('input', attrs={'type': input_type})
             for my_input in inputs:
                 if input_type == "text" and my_input.has_attr('id'):
@@ -95,7 +105,7 @@ class DomAnalyzer:
                 else:
                     value = ''.join(random.choice(string.lowercase) for i in xrange(8))
                 input_id = cls.make_id( my_input.get('id') )
-                inputs_list.append(InputField(input_id, cls._get_xpath(my_input), input_type, value))
+                inputs_list.append( InputField(input_id, cls._get_xpath(my_input), input_type, value))
         return inputs_list
 
     @classmethod
@@ -150,6 +160,8 @@ class DomAnalyzer:
         else:
             return False
 
+    #=============================================================================================
+    #Diff: normalize dom 
     @classmethod
     def normalize(cls, dom):
         for normalizer in cls._normalizers:
@@ -159,3 +171,37 @@ class DomAnalyzer:
     @classmethod
     def is_normalize_equal(cls, dom1, dom2):
         return dom1 == dom2
+    #=============================================================================================
+
+    #=============================================================================================
+    #Diff: set config of clickable, inputs, normalizer
+    @classmethod
+    def add_normalizer(cls, normalizer):
+        cls._normalizers.append(normalizer)
+
+    @classmethod
+    def add_clickable_tags(cls, Tag):
+        cls._clickable_tags.append(Tag)
+
+    @classmethod
+    def add_inputs_tags(cls, tag):
+        cls._input_types.append(tag)
+
+    @classmethod
+    def set_simple_clickable_tags(cls):
+        cls._clickable_tags.append( Tag('a') )
+        cls._clickable_tags.append( Tag('button') )
+        cls._clickable_tags.append( Tag('input', {'type': 'submit'}) )
+        cls._clickable_tags.append( Tag('input', {'type': 'button'}) )
+
+    @classmethod
+    def set_simple_inputs_tags(cls):
+        cls._input_types.append('text')
+        cls._input_types.append('email')
+        cls._input_types.append('password')
+
+    @classmethod
+    def set_simple_normalizers(cls):
+        cls._normalizers.append( TagNormalizer(['head', 'canvas', 'li']) )
+        cls._normalizers.append( AttributeNormalizer('class') )
+    #=============================================================================================
