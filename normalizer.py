@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Module docstring
+To sanitize (filter) dom string
 """
 
 from abc import ABCMeta, abstractmethod

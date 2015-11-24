@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Module docstring
+Test generator. Replay tests.
 """
 
 

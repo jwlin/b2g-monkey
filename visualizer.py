@@ -2,15 +2,18 @@
 # -*- coding: utf-8 -*-
 
 """
-Module docstring
+Provide a web page for the automata
 """
 
 import shutil
 import os
 import json
+import logging
 import HTMLParser
 from bs4 import BeautifulSoup
 
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 class Visualizer:
     @classmethod
@@ -37,7 +40,8 @@ class Visualizer:
                         pass
                     shutil.copy2(srcname, dstname)
             except Exception as e:
-                print 'Exception: %s in generate_html() of Visualizer' % (str(e))
+                logger.error('Exception: %s in generate_html() of Visualizer', str(e))
+
         # parse automata.json, fill the info into state.html
         with open(automata_file) as f:
             img_div_str = ''

@@ -2,10 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-Module docstring
+Main entry of the monkey
 """
 
-import os, json, posixpath, time
+import os
+import json
+import posixpath
+import time
+import sys
+import logging
 from os.path import relpath
 from configuration import B2gConfiguration
 from automata import Automata, State
@@ -17,37 +22,54 @@ from dom_analyzer import DomAnalyzer
 from test_generator import TestGenerator
 
 
+formatter = logging.Formatter("%(asctime)s [%(name)s] [%(levelname)s] %(message)s")
+logger = logging.getLogger()
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(formatter)
+console_handler.setLevel(logging.INFO)
+logger.addHandler(console_handler)
+
+
 def main():
+    t_start = time.time()
 
     # for crawling
     config = B2gConfiguration('Contacts', 'contacts')
-    #config = B2gConfiguration('HELLO', '07eec58b-bbaf-45d6-a6d4-7c959aaee4ca')
-    config.set_max_depth(2)
+    #config = B2gConfiguration('E-Mail', 'email')
+    #config = B2gConfiguration('App example', 'ae42bc7c-f296-4b65-9dae-33ce8769d7cd')
+    #config = B2gConfiguration('Crashed App', 'c783d244-b2b1-45d4-a176-3a9e61331dfe')
+    config.set_max_depth(4)
+
+    file_handler = logging.FileHandler(os.path.join(config.get_path('root'), 'log.txt'))
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.DEBUG)
+    logger.addHandler(file_handler)
+
     executor = B2gExecutor(config.get_app_name(), config.get_app_id())
     crawler = B2gCrawler(config, executor)
     automata, invariant_violation = crawler.run()
     save_automata(automata, config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     save_config(config, 'config.json')
-    print 'Crawling finished.'
+    logger.info('Crawling finished.')
     form_list = automata.get_forms_with_clickables()
-    print 'Forms:', len(form_list)
+    logger.info('Forms: %d', len(form_list))
     for f in form_list:
-        print 'state: %s, form-id: %s (xpath: %s), input_value:' % (f['state'], f['form'].get_id(), f['form'].get_xpath())
+        logger.info('state: %s, form-id: %s (xpath: %s), input_value:', f['state'], f['form'].get_id(), f['form'].get_xpath())
         for the_input in f['form'].get_inputs():
-            print 'type: %s, id: %s (xpath: %s), value: %s' \
-                  % (the_input.get_type(), the_input.get_id(), the_input.get_xpath(), the_input.get_value())
-        print 'path-to-form:'
+            logger.info('type: %s, id: %s (xpath: %s), value: %s',
+                  the_input.get_type(), the_input.get_id(), the_input.get_xpath(), the_input.get_value())
+        logger.info('path-to-form:')
         for clickable in f['execution_seq']:
-            print 'id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
-        print 'clickables in the form:'
+            logger.info('id: %s (xpath: %s)', clickable.get_id(), clickable.get_xpath())
+        logger.info('clickables in the form:')
         for clickable in f['clickable']:
-            print 'id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
-    print 'Violated invariants:', len(invariant_violation)
+            logger.info('id: %s (xpath: %s)', clickable.get_id(), clickable.get_xpath())
+    logger.info('Violated invariants: %d', len(invariant_violation))
     for inv in invariant_violation:
-        print 'state: %s, violated invariant: %s, execution sequence:' % (inv['state'], inv['name'])
+        logger.info('state: %s, violated invariant: %s, execution sequence:', inv['state'], inv['name'])
         for clickable in inv['sequence']:
-            print 'id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
+            logger.info('id: %s (xpath: %s)', clickable.get_id(), clickable.get_xpath())
 
     '''
     # for test case generation
@@ -68,6 +90,8 @@ def main():
             #raw_input()
             executor.fire_event(clickable)
     '''
+    t_end = time.time()
+    logger.info('time elapsed: %f minutes', ((t_end-t_start)/60.0))
 
 def save_automata(automata, configuration):
         data = {
@@ -204,7 +228,7 @@ def load_automata(fname, load_dom=False):
             clickable = from_state.get_clickable_by_id(edge['clickable'])
             assert from_state and to_state and clickable
             automata.add_edge(from_state, to_state, clickable)
-    print 'automata loaded. loading time: %f sec' % (time.time() - t_start)
+    logger.info('automata loaded. loading time: %f sec', time.time() - t_start)
     return automata
 
 
@@ -223,9 +247,8 @@ def load_config(fname):
         config.set_path('state', data['state_path'])
         config.set_path('clickable', data['clickable_path'])
         # todo: load invariants
-        print 'config loaded. loading time: %f sec' % (time.time() - t_start)
+        logger.info('config loaded. loading time: %f sec', time.time() - t_start)
     return config
-
 
 
 if __name__ == '__main__':

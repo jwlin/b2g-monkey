@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
+
+    <title>Form</title>
+    <!-- Inline scripts are forbidden in Firefox OS apps (CSP restrictions),
+         so we use a script file. -->
+    <script src="app.js" defer></script>
+  </head>
+
+  <body>
+    <!-- This code is in the public domain. Enjoy! -->
+    <h1>Form</h1>
+    <form method="post" action="index.html">
+      <p>
+        <label for="id_username">Username:</label>
+        <input id="id_username" maxlength="254" name="username" type="text" />
+      </p>
+      <p>
+        <label for="id_password">Password:</label>
+        <input id="id_password" name="password" type="password" />
+      </p>
+      <p>
+        <button type="submit">Login</button>
+        <a href="index.html">Cancel</a>
+      </p>
+    </form>
+  </body>
+
+</html>

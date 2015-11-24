@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Module docstring
+Analyze the dom string and return clickables, forms, etc.
 """
 import random, string
 from bs4 import BeautifulSoup
@@ -28,7 +28,7 @@ class DomAnalyzer:
         Tag('a'),
         Tag('button'),
         Tag('input', {'type': 'submit'}),
-        #Tag('input', {'type': 'button'}),
+        Tag('input', {'type': 'button'}),
     ]
     input_types = ['text', 'email', 'password']  # type of input fields filled with values
     _normalizers = [
@@ -41,8 +41,9 @@ class DomAnalyzer:
 
     @classmethod
     def get_clickables(cls, dom, prev_dom=None):
-        # only return newly discovered clickables, i.e. clickables not in prev_clickables
+        # only return newly discovered clickables and forms, i.e. clickables not in prev_clickables
         prev_clickables = []
+        prev_forms = []
         if prev_dom:
             prev_soup = BeautifulSoup(prev_dom, 'html.parser')
             for tag in cls._clickable_tags:
@@ -51,11 +52,14 @@ class DomAnalyzer:
                         prev_clickables += prev_soup.find_all(tag.get_name(), attrs={attr: value})
                 else:
                     prev_clickables += prev_soup.find_all(tag.get_name())
+            prev_forms = prev_soup.find_all('form')
         soup = BeautifulSoup(dom, 'html.parser')
         forms = soup.find_all('form')
         clickables = []
         # clickables with forms and inputs attached
         for form in forms:
+            if form in prev_forms:
+                continue
             form_id = form.get('id')
             if not form_id:
                 form_id = cls.serial_prefix + str(cls._serial_num)

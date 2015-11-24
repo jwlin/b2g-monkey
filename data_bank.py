@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Module docstring
+Databank
 """
 
 from abc import ABCMeta, abstractmethod

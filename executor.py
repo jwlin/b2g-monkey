@@ -8,6 +8,7 @@ Test case executor (a.k.a. robot)
 import sys
 import os
 import time
+import logging
 from abc import ABCMeta, abstractmethod
 from marionette import Marionette
 from marionette_driver.errors import ElementNotVisibleException, InvalidElementStateException, NoSuchElementException
@@ -15,6 +16,8 @@ from marionette_driver import Wait, By
 from gaiatest.gaia_test import GaiaApps, GaiaData
 from dom_analyzer import DomAnalyzer
 
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 class Executor():
     __metaclass__ = ABCMeta
@@ -86,7 +89,7 @@ class B2gExecutor(Executor):
         '''
 
     def fire_event(self, clickable):
-        print 'fire_event: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
+        logger.info('fire_event: id: %s (xpath: %s)', clickable.get_id(), clickable.get_xpath())
         try:
             # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
             if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
@@ -94,11 +97,13 @@ class B2gExecutor(Executor):
             elif clickable.get_xpath():
                 self._marionette.find_element('xpath', clickable.get_xpath()).tap()
             else:
-                raise ValueError('No id nor xpath for the clickable: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath()))
+                logger.error('No id nor xpath for the clickable: id: %s (xpath: %s)', clickable.get_id(), clickable.get_xpath())
+                sys.exit()
         except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
-            print 'Element is not interactable in fire_event(): id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
+            logger.info('Element is not interactable in fire_event(): id: %s (xpath: %s)', clickable.get_id(), clickable.get_xpath())
         except Exception as e:
-            print 'Unknown Exception: %s in fire_event(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
+            logger.error('Unknown Exception: %s in fire_event(): id: %s (xpath: %s)', str(e), clickable.get_id(), clickable.get_xpath())
+            sys.exit()
 
     def fill_form(self, clickable):
         for f in clickable.get_forms():
@@ -109,11 +114,13 @@ class B2gExecutor(Executor):
                     elif input_field.get_xpath():
                         self._marionette.find_element('xpath', input_field.get_xpath()).send_keys(input_field.get_value())
                     else:
-                        raise ValueError('No id nor xpath for an input field in the form id: %s (xpath: %s)' % (f.get_id(), f.get_xpath()))
+                        logger.error('No id nor xpath for an input field in the form id: %s (xpath: %s)', f.get_id(), f.get_xpath())
+                        sys.exit()
                 except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
-                    print 'Element is not interactable in fill_form(): id: %s (xpath: %s)' % (f.get_id(), f.get_xpath())
+                    logger.info('Element is not interactable in fill_form(): id: %s (xpath: %s)', f.get_id(), f.get_xpath())
                 except Exception as e:
-                    print 'Unknown Exception: %s in fill_form(): id: %s (xpath: %s)' % (str(e), f.get_id(), f.get_xpath())
+                    logger.error('Unknown Exception: %s in fill_form(): id: %s (xpath: %s)', str(e), f.get_id(), f.get_xpath())
+                    sys.exit()
 
     def empty_form(self, clickable):
         for f in clickable.get_forms():
@@ -124,11 +131,13 @@ class B2gExecutor(Executor):
                     elif input_field.get_xpath():
                         self._marionette.find_element('xpath', input_field.get_xpath()).clear()
                     else:
-                        raise ValueError('No id nor xpath for an input field in the form %s (%s)' % (f.get_id(), f.get_xpath()))
+                        logger.error('No id nor xpath for an input field in the form %s (%s)', f.get_id(), f.get_xpath())
+                        sys.exit()
                 except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
-                    print 'Element is not interactable in empty_form(): id: %s (xpath: %s)' % (f.get_id(), f.get_xpath())
+                    logger.info('Element is not interactable in empty_form(): id: %s (xpath: %s)', f.get_id(), f.get_xpath())
                 except Exception as e:
-                    print 'Unknown Exception: %s in empty_form(): id: %s (xpath: %s)' % (str(e), f.get_id(), f.get_xpath())
+                    logger.error('Unknown Exception: %s in empty_form(): id: %s (xpath: %s)', str(e), f.get_id(), f.get_xpath())
+                    sys.exit()
 
     def get_source(self):
         return self._marionette.page_source.encode(sys.stdout.encoding, 'ignore')
@@ -142,11 +151,13 @@ class B2gExecutor(Executor):
                 elif clickable.get_xpath():
                     element = self._marionette.find_element('xpath', clickable.get_xpath())
                 else:
-                    raise ValueError('No id nor xpath for the clickable: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath()))
+                    logger.error('No id nor xpath for the clickable: id: %s (xpath: %s)', clickable.get_id(), clickable.get_xpath())
+                    sys.exit()
             except (ElementNotVisibleException, InvalidElementStateException, NoSuchElementException):
-                print 'Element is not interactable in get_screenshot(): id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
+                logger.info('Element is not interactable in get_screenshot(): id: %s (xpath: %s)', clickable.get_id(), clickable.get_xpath())
             except Exception as e:
-                print 'Unknown Exception: %s in get_screenshot(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
+                logger.error('Unknown Exception: %s in get_screenshot(): id: %s (xpath: %s)', str(e), clickable.get_id(), clickable.get_xpath())
+                sys.exit()
         return self._marionette.screenshot(element)
 
     def switch_to_frame(self, by, frame_str):
@@ -168,9 +179,6 @@ class B2gExecutor(Executor):
         # launch the app
         # unlock_screen
         #self._marionette.execute_script('window.wrappedJSObject.lockScreen.unlock();')
-
-        #self._marionette.switch_to_frame()
-        #print self.marionette.execute_async_script("GaiaApps.locateWithName('%s')" % app_name)
 
         self.kill_all_apps()
         self.clear_data()

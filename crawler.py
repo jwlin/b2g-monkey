@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Module docstring
+Crawler
 """
 
 import time
@@ -10,10 +10,13 @@ import base64
 import os
 import threading
 import sys
+import logging
 from abc import ABCMeta, abstractmethod
 from automata import Automata, State
 from dom_analyzer import DomAnalyzer
 
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 class Crawler:
     __metaclass__ = ABCMeta
@@ -51,17 +54,18 @@ class B2gCrawler(Crawler):
                     img_data = self.executor.get_screenshot(clickable)
 
                     # fire the clickable
+                    logger.debug('Fire event in state: %s', cs.get_id())
                     self.executor.empty_form(clickable)
                     self.executor.fill_form(clickable)
                     ft = FireEventThread(self.executor, clickable)
                     ft.start()
                     ft.join(self.configuration.get_sleep_time()*2)  # time out after sleep_time*2 seconds
                     if ft.is_alive():  # timed out
-                        print 'No response while firing an event. Execution sequences:'
+                        logger.error('No response while firing an event. Execution sequences:')
                         self.exe_stack.append(clickable)  # add the clickable triggering No Response
                         for c in self.exe_stack:
-                            print c
-                        print 'Program terminated.'
+                            logger.error(c)
+                        logger.error('Program terminated.')
                         sys.exit()
                     time.sleep(self.configuration.get_sleep_time())
 

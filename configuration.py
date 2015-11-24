@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Module docstring
+Configuration needed by controller to run
 """
 
 import os

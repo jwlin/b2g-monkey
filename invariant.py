@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Module docstring
+Invariants, a.k.a. rules to verify on each encountered page
 """
 
 from abc import ABCMeta, abstractmethod
