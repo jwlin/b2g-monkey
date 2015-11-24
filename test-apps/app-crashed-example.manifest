@@ -1,7 +1,11 @@
 {
   "name": "Crashed App",
-  "description": "App example with a Button Causing Crash",
-  "launch_path": "/index.html",
+  "description": "App example with a Button Causing Crash", 
+  "package_path": "http://localhost/app-crashed-example.zip", 
+  "launch_path": "/index.html", 
+  "type": "web", 
+  "version": "1.0", 
+  "size": 65536, 
   "icons": {
     "16": "/icons/icon16x16.png",
     "48": "/icons/icon48x48.png",
@@ -11,5 +15,6 @@
   "developer": {
     "name": "Jun-Wei Lin",
     "url": "http://castman.net"
-  }
+  }, 
+  "default_locale": "en"
 }

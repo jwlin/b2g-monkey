@@ -35,10 +35,10 @@ def main():
 
     # for crawling
     config = B2gConfiguration('Contacts', 'contacts')
-    #config = B2gConfiguration('E-Mail', 'email')
-    #config = B2gConfiguration('App example', 'ae42bc7c-f296-4b65-9dae-33ce8769d7cd')
-    #config = B2gConfiguration('Crashed App', 'c783d244-b2b1-45d4-a176-3a9e61331dfe')
-    config.set_max_depth(4)
+    #config = B2gConfiguration('Firetext', 'firetext')
+    #config = B2gConfiguration('App example', '2a3304ed-29c0-400a-a61a-48a3e835caaf')
+    #config = B2gConfiguration('Crashed App', '48d3bd2a-c3b2-42af-a5bc-6ece5da9fa0e')
+    config.set_max_depth(5)
 
     file_handler = logging.FileHandler(os.path.join(config.get_path('root'), 'log.txt'))
     file_handler.setFormatter(formatter)
@@ -47,6 +47,9 @@ def main():
 
     executor = B2gExecutor(config.get_app_name(), config.get_app_id())
     crawler = B2gCrawler(config, executor)
+
+    logger.info('Start crawling, depth %d', config.get_max_depth())
+
     automata, invariant_violation = crawler.run()
     save_automata(automata, config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
