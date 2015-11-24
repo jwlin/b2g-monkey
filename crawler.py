@@ -54,7 +54,7 @@ class B2gCrawler(Crawler):
                     img_data = self.executor.get_screenshot(clickable)
 
                     # fire the clickable
-                    logger.debug('Fire event in state: %s', cs.get_id())
+                    logger.debug('Fire event in state %s', cs.get_id())
                     self.executor.empty_form(clickable)
                     self.executor.fill_form(clickable)
                     ft = FireEventThread(self.executor, clickable)
@@ -86,6 +86,7 @@ class B2gCrawler(Crawler):
                         self.backtrack(cs)
 
     def backtrack(self, state):
+        logger.debug('Backtrack to state %s', state.get_id())
         edges = self.automata.get_shortest_path(state)
         self.executor.restart_app()
         for (state_from, state_to, clickable, cost) in edges:
