@@ -93,12 +93,14 @@ class B2gConfiguration(Configuration):
 # Selenium Web Driver
 #==============================================================================================================================
 class SeleniumConfiguration(Configuration):
-    def __init__(self, browserID, url, dirname=None, filepath=None ):
+    def __init__(self, browserID, url, dirname=None, folderpath=None ):
         super(SeleniumConfiguration, self).__init__()
         self._browserID = browserID
         self._url = url
+        self._dirname = dirname
+        self._folderpath = folderpath
         dirname = datetime.datetime.now().strftime('%Y%m%d%H%M%S') if not dirname else dirname
-        self._root_path = os.path.join('trace', dirname ) if not filepath else filepath
+        self._root_path = os.path.join('trace', dirname ) if not folderpath else os.path.join( folderpath, dirname )
         self._file_path = {
             'root': self._root_path,
             'dom': os.path.join(self._root_path, 'dom'),
@@ -111,6 +113,7 @@ class SeleniumConfiguration(Configuration):
                 os.makedirs(abs_path)
 
         self._automata_fname = ''
+        self._dom_inside_iframe = True
         self._domains = []
         self._scripts = []
 
@@ -166,14 +169,19 @@ class SeleniumConfiguration(Configuration):
         for edge in scripts:
             inputs = []
             for _input in edge['inputs']:
-                inputs.append( (InputField(_input['id'], _input['xpath'], _input['type'], _input['value']), _input['iframe_list']) )
+                inputs.append( InputField(_input['id'], _input['xpath'], _input['type'], _input['value']) )
             selects = []
             for _select in edge['selects']:
-                selects.append( (SelectField(_select['id'], _select['xpath'], _select['value']), _select['iframe_list']) )
-                c = edge['clickable']
-            clickable = ( Clickable(c['id'], c['xpath'], c['tag']), c['iframe_list'] )
-            self._scripts.append( ( inputs, selects, clickable ) )
+                selects.append( SelectField(_select['id'], _select['xpath'], _select['value']) )
+            c = edge['clickable']
+            clickable = ( Clickable(c['id'], c['xpath'], c['tag']) )
+            self._scripts.append( ( inputs, selects, clickable, edge['iframe_list'] ) )
 
+    def set_dom_inside_iframe(self, is_inside):
+        self._dom_inside_iframe = is_inside
+
+    def is_dom_inside_iframe(self):
+        return self._dom_inside_iframe
 
     def save_config(self, fname):
         config_data = {}
@@ -189,6 +197,8 @@ class SeleniumConfiguration(Configuration):
         '''
         config_data['url'] = self._url
         config_data['browser_id'] = self._browserID
+        config_data['dirname'] = self._dirname
+        config_data['folderpath'] = self._folderpath
         #=============================================================================================
         config_data['automata_fname'] = self._automata_fname
         config_data['root_path'] = posixpath.join(

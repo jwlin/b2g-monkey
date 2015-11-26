@@ -67,10 +67,11 @@ def debugTestMain():
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     print "setting config..."
-    config = SeleniumConfiguration(2, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
+    config = SeleniumConfiguration(2, "https://ups.moe.edu.tw/index.php")
     config.set_max_depth(1)
     config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
     config.set_automata_fname('automata.json')
+    config.set_dom_inside_iframe(True)
 
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
@@ -80,6 +81,27 @@ def debugTestMain():
     config.set_normalizer( TagWithAttributeNormalizer("table", "class", "clmonth") )
     config.set_normalizer( TagNormalizer(['iframe']) )
     config.set_normalizer( TagWithAttributeNormalizer("a", "href", "http://cloud.edu.tw/?token") )
+    config.set_normalizer( TagWithAttributeNormalizer("td", "class", "viewNum") )
+
+    before_script = [
+        #{
+        #    "inputs":
+        #    [
+        #        {   "id":"uid", "xpath":"//html/body/div[1]/form[1]/input[3]", "type": "text", "value": "louisalflame@hotmail.com.tw" },
+        #        {   "id":"password", "xpath":"//html/body/div[1]/form[1]/input[4]", "type": "password", "value": "j6j6fu3fu3mp3mp3" }
+        #    ],
+        #    "selects": [],
+        #    "clickable": {   "id": "b2g-monkey-5", "xpath": "//html/body/div[1]/form[1]/input[5]", "tag": "input"  },
+        #    "iframe_list": None
+        #},
+        #{
+        #    "inputs":  [],
+        #    "selects": [],
+        #    "clickable": {   "id": "b2g-monkey-6", "xpath": "//html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[8]/a[1]", "tag": "a"  },
+        #    "iframe_list": None
+        #},
+    ]
+    config.set_before_script(before_script)
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
     print "setting crawler..."
@@ -117,16 +139,16 @@ def load_automata(fname):
     print 'automata loaded. loading time: %f sec' % (time.time() - t_start)
     return automata
 
-
 def load_config(fname):
     t_start = time.time()
     with open(fname) as f:
         data = json.load(f)
-        config = B2gConfiguration(data['app_name'], data['app_id'])
+        config = B2gConfiguration(data['browser_id'], data['url'])
         config.set_max_depth(int(data['max_depth']))
         config.set_max_states(int(data['max_states']))
         config.set_sleep_time(int(data['sleep_time']))
         config.set_max_time(int(data['max_time']))
+        config.set_automata_fname(data['automata_fname'])
         # ignore the rest ('automata_fname', 'root_path', 'dom_path', 'state_path', 'clickable_path')
         print 'config loaded. loading time: %f sec' % (time.time() - t_start)
     return config

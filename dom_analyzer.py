@@ -4,7 +4,7 @@
 """
 Module docstring
 """
-import random, string
+import random, string, re
 from bs4 import BeautifulSoup
 from clickable import Clickable, InputField, SelectField
 from data_bank import InlineDataBank
@@ -42,84 +42,129 @@ class DomAnalyzer:
     @classmethod
     def get_clickables(cls, cs, prev_s=None):
         # only return newly discovered clickables, i.e. clickables not in prev_clickables
-        cs_dom_list = cs.get_dom_list()
-        prev_dom_list = prev_s.get_dom_list() if prev_s else None
+        cs_candidate_clickables_iframe = cs.get_all_candidate_clickables()
+        prev_candidate_clickables_iframe = prev_s.get_all_candidate_clickables() if prev_s else None
         clickables_iframe_list = []
 
-        for i in xrange(len(cs_dom_list)):
-            stateDom = cs_dom_list[i]
-            prev_stateDom = prev_dom_list[i] if prev_s and prev_dom_list and len(prev_dom_list)>i else None
-            prev_clickables = []
+        for cs_candidate_clickables, iframe_path_list in cs_candidate_clickables_iframe:
+            #find prev_candidate_clickables if prev_s exists and iframe_path_list same
+            prev_candidate_clickables = None
             clickables = []
-
-            # if same iframe_path_list => ignore clickables in prev_state
-            if prev_stateDom and prev_stateDom.get_iframe_path_list() == stateDom.get_iframe_path_list():
-                prev_dom = prev_stateDom.get_dom()
-                prev_soup = BeautifulSoup(prev_dom, 'html.parser')
-                for tag in cls._clickable_tags:
-                    if tag.get_attr():
-                        for attr, value in tag.get_attr().items():
-                            prev_clickables += prev_soup.find_all(tag.get_name(), attrs={attr: value})
-                    else:
-                        prev_clickables += prev_soup.find_all(tag.get_name())
-
-            dom = stateDom.get_dom()
-            soup = BeautifulSoup(dom, 'html.parser')
-            for tag in cls._clickable_tags:
-                if tag.get_attr():
-                    for attr, value in tag.get_attr().items():
-                        candidate_clickables = soup.find_all(tag.get_name(), attrs={attr: value})
-                else:
-                    candidate_clickables = soup.find_all(tag.get_name())
-                for candidate_clickable in candidate_clickables:
-                    is_appear_in_prev = False
-                    for prev_clickable in prev_clickables:
-                        if candidate_clickable == prev_clickable and cls._get_xpath(candidate_clickable) == cls._get_xpath(prev_clickable):                         
-                            is_appear_in_prev = True
-                            break
-                    if not is_appear_in_prev and not cls._is_duplicate(clickables, candidate_clickable):
-                        clickable_id = cls.make_id( candidate_clickable.get('id') )
-                        clickables.append(Clickable(clickable_id, cls._get_xpath(candidate_clickable), tag.get_name()))
-
-            clickables_iframe_list.append( (clickables, stateDom.get_iframe_path_list()) )
+            if prev_candidate_clickables_iframe:
+                for prev_c, prev_i in prev_candidate_clickables_iframe:
+                    if iframe_path_list == prev_i:
+                        prev_candidate_clickables = prev_c
+                        break
+            for candidate_clickable, clickable_xpath in cs_candidate_clickables:
+                #find if candidate_clickable is same in prev
+                if not cls._is_same_soup_in_prev( prev_candidate_clickables, candidate_clickable, clickable_xpath ) \
+                        and not cls._is_duplicate(clickables, candidate_clickable):
+                    clickable_id = cls.make_id( candidate_clickable.get('id') if candidate_clickable.has_attr('id') else None  )
+                    clickable_name = cls.make_id( candidate_clickable.get('name') if candidate_clickable.has_attr('name') else None )
+                    clickable_xpath = cls._get_xpath(candidate_clickable)
+                    clickable_tag = candidate_clickable.name
+                    clickables.append( Clickable(clickable_id, clickable_name, clickable_xpath, clickable_tag) )
+            clickables_iframe_list.append( (clickables, iframe_path_list) )
         return clickables_iframe_list
     #=============================================================================================
 
     #=============================================================================================
-    #Diff: inputs information save in state, indiviual to clickables
+    #Diff: clickables, inputs, selects information save in state
+    @classmethod
+    def get_candidate_clickables_soup(cls, dom):
+        clickables = []
+        soup = BeautifulSoup(dom, 'html.parser')
+        soup = cls.soup_visible(soup)
+        for tag in cls._clickable_tags:
+            if tag.get_attr():
+                for attr, value in tag.get_attr().items():
+                    candidate_clickables = soup.find_all(tag.get_name(), attrs={attr: value})
+            else:
+                candidate_clickables = soup.find_all(tag.get_name())
+            for candidate_clickable in candidate_clickables:
+                clickables.append( (candidate_clickable, cls._get_xpath(candidate_clickable)) )
+        return clickables
+
     @classmethod
     def get_inputs(cls, dom):
         # add inputs in dom
         soup = BeautifulSoup(dom, 'html.parser')
+        soup = cls.soup_visible(soup)
         inputs_list = []
         for input_type in cls._input_types:
             inputs = soup.find_all('input', attrs={'type': input_type})
             for my_input in inputs:
-                if input_type == "text" and my_input.has_attr('id'):
-                    data_set = InlineDataBank.get_data(my_input['id'])
+                if my_input.has_attr('id'):
+                    data_set = InlineDataBank.get_data(input_type, my_input['id']) 
+                elif my_input.has_attr('name'):
+                    data_set = InlineDataBank.get_data(input_type, my_input['name']) 
                 else:
-                    data_set = InlineDataBank.get_data(input_type)
+                    data_set = InlineDataBank.get_data(input_type, None)
 
                 if data_set:
                     value = random.choice(list(data_set))
                 else:
                     value = ''.join(random.choice(string.lowercase) for i in xrange(8))
                 input_id = cls.make_id( my_input.get('id') )
-                inputs_list.append( InputField(input_id, cls._get_xpath(my_input), input_type, value))
+                input_name = cls.make_id( my_input.get('name') if my_input.has_attr('name') else None )
+                inputs_list.append( InputField(input_id, input_name, cls._get_xpath(my_input), input_type, value))
         return inputs_list
 
     @classmethod
     def get_selects(cls, dom):
-        # add selects in dom
         soup = BeautifulSoup(dom, 'html.parser')
+        soup = cls.soup_visible(soup)
         selects_list = []
         selects = soup.find_all('select')
         for my_select in selects:
             '''TODO: make select value'''
-            value = 1
+            if my_select.has_attr('id'):
+                data_set = InlineDataBank.get_data('select', my_select['id']) 
+            elif my_select.has_attr('name'):
+                data_set = InlineDataBank.get_data('select', my_select['name'])                    
+            else:
+                data_set = InlineDataBank.get_data('select', None)
+
+            option_num = len( my_select.find_all('option') )
+            if data_set:
+                value = random.choice(list(data_set))
+                value = min(max(0, value), option_num)
+            else:
+                value =  min(max(3, option_num/2), option_num)
             select_id = cls.make_id( my_select.get('id') )
-            selects_list.append(SelectField(select_id, cls._get_xpath(my_select), value))
+            select_name = cls.make_id( my_select.get('name') if my_select.has_attr('name') else None )
+            selects_list.append(SelectField(select_id, select_name, cls._get_xpath(my_select), value))
         return selects_list
+
+    @classmethod
+    def get_radios(cls, dom):
+        soup = BeautifulSoup(dom, 'html.parser')
+        soup = cls.soup_visible(soup)
+        radios_dict = { 'default': {} }
+        radios = soup.find_all('input',{'type' : 'radio'})
+        for radio in radios:
+            if radio.has_attr('name'):
+                pass
+            elif radio['name'] in radios_dict.keys():
+                radios_dict[ radio['name'] ]
+            radio_id = cls.make_id( radio.get('id') )
+            radios_list.append(RadioField(radio_id, cls._get_xpath(radio), value))
+        return selects_list
+        pass
+
+    @classmethod
+    def get_checkboxes(cls, dom):
+        pass
+
+    @classmethod
+    def soup_visible(cls, soup):
+        for invisible_tag in ['style', 'script', '[document]', 'head', 'title']:
+            for tag in soup.find_all(invisible_tag):
+                tag.decompose()
+        for element in soup.find_all():
+            if element.attrs and element.has_attr('style') and 'display:none;' in element['style']:
+                element.decompose()
+        return soup
     #=============================================================================================
 
     @classmethod
@@ -138,15 +183,21 @@ class DomAnalyzer:
         return '//html/body/' + '/'.join(path)
 
     @classmethod
+    def _is_same_soup_in_prev(cls, prev_clickables, candidate_clickable, candidate_xpath):
+        if not prev_clickables:
+            return False
+        for prev_clickable, prev_xpath in prev_clickables:
+            if candidate_xpath == prev_xpath and candidate_clickable == prev_clickable:
+                return True
+        return False
+
+    @classmethod
     def _is_duplicate(cls, clickables, candidate_clickable):
-        if candidate_clickable.get('id'):
-            for c in clickables:
-                if candidate_clickable.get('id') == c.get_id():
-                    return True
-        else:
-            for c in clickables:
-                if cls._get_xpath(candidate_clickable) == c.get_xpath():
-                    return True
+        for c in clickables:
+            if candidate_clickable.has_attr('id') and candidate_clickable.get('id') == c.get_id():
+                return True
+            elif cls._get_xpath(candidate_clickable) == c.get_xpath():
+                return True
         return False
 
     @classmethod
@@ -203,5 +254,7 @@ class DomAnalyzer:
     @classmethod
     def set_simple_normalizers(cls):
         cls._normalizers.append( TagNormalizer(['head', 'canvas', 'li']) )
-        cls._normalizers.append( AttributeNormalizer('class') )
+        cls._normalizers.append( AttributeNormalizer(['class']) )
+        cls._normalizers.append( TagWithAttributeNormalizer(None, "style", "display:none;", 'contains') )
+        cls._normalizers.append( TagWithAttributeNormalizer("input", "type", "hidden") )
     #=============================================================================================

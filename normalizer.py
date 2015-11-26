@@ -84,22 +84,19 @@ class TagWithAttributeNormalizer(AbstractNormalizer):
     def normalize(self, dom):
         soup = BeautifulSoup(dom, 'html.parser')
         for tag in soup.find_all(self.name):
-            if self.attr and (self.attr in tag.attrs):
+            if self.attr and tag.attrs and (self.attr in tag.attrs):
                 if type(tag[self.attr]) == type([]):
                     for attr_value in tag[self.attr]:
                         if self.is_attr_value(attr_value):
-                            print "decompose %s: "%(self.name )
                             tag.decompose()
                             break
                 elif type(tag[self.attr]) == type('') or type(tag[self.attr]) == type(u'')  :
                     if self.is_attr_value(tag[self.attr]):
-                        print "decompose %s: "%(self.name )
                         tag.decompose()
 
             elif not self.attr:  # self.attr is None
                 for string in tag.stripped_strings:
                     if self.is_attr_value(string):
-                        print "decompose %s: "%(self.name )
                         tag.decompose()
                         break
         return str(soup)#.replace('\n', '')

@@ -61,7 +61,8 @@ class SeleniumExecutor():
         self.main_window = None
 
     def fire_event(self, clickable):
-        print 'fire_event: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
+        print '[EVENT] fire_event: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
+        #raw_input("enter to click")
         try:
             # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
             if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
@@ -77,27 +78,32 @@ class SeleniumExecutor():
 
     def fill_form(self, all_inputs):
         state_inputs = all_inputs[0]
-        sate_selects = all_inputs[1]
-        for input_field in state_inputs:
-            #print "[DEBUG] fill: ",input_field.__str__()
+        state_selects = all_inputs[1]
+        for select_field in state_selects:
+            #raw_input("enter to fill")
             try:
-                if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                    self.driver.find_element_by_id( input_field.get_id() ).send_keys(input_field.get_value())
-                elif input_field.get_xpath():
-                    self.driver.find_element_by_xpath( input_field.get_xpath() ).send_keys(input_field.get_value())
+                if select_field.get_id() and not select_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                    select = Select(self.driver.find_element_by_id(select_field.get_id()))
+                    select.select_by_index(select_field.get_value())
+                    self.check_after_click()
+                elif select_field.get_xpath():
+                    select = Select(self.driver.find_element_by_xpath(select_field.get_xpath()))
+                    select.select_by_index(select_field.get_value())
+                    self.check_after_click()
                 else:
                     raise ValueError('No id nor xpath for an input field')
             except Exception as e:
                 pass
                 #print 'Unknown Exception: %s' % (str(e))
-        for select_field in sate_selects:
+        for input_field in state_inputs:
+            #raw_input("enter to fill")
             try:
-                if select_field.get_id() and not select_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                    select = Select(self.driver.find_element_by_id(select_field.get_id()))
-                    select.select_by_index(select_field.get_value())
-                elif select_field.get_xpath():
-                    select = Select(self.driver.find_element_by_xpath(select_field.get_xpath()))
-                    select.select_by_index(select_field.get_value())
+                if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                    self.driver.find_element_by_id( input_field.get_id() ).send_keys(input_field.get_value())
+                    self.check_after_click()
+                elif input_field.get_xpath():
+                    self.driver.find_element_by_xpath( input_field.get_xpath() ).send_keys(input_field.get_value())
+                    self.check_after_click()
                 else:
                     raise ValueError('No id nor xpath for an input field')
             except Exception as e:
@@ -107,27 +113,16 @@ class SeleniumExecutor():
 
     def empty_form(self, all_inputs):
         state_inputs = all_inputs[0]
-        sate_selects = all_inputs[1]
+        state_selects = all_inputs[1]
         for input_field in state_inputs:
-            #print "[DEBUG] empty: ",input_field.__str__()
+            #raw_input("enter to empty")
             try:
                 if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
                     self.driver.find_element_by_id( input_field.get_id() ).clear()
+                    self.check_after_click()
                 elif input_field.get_xpath():
                     self.driver.find_element_by_xpath( input_field.get_xpath() ).clear()
-                else:
-                    raise ValueError('No id nor xpath for an input field')
-            except Exception as e:
-                pass
-                #print 'Unknown Exception: %s' % (str(e))
-        for select_field in sate_selects:
-            try:
-                if select_field.get_id() and not select_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                    select = Select(self.driver.find_element_by_id(select_field.get_id()))
-                    select.select_by_index(0)
-                elif select_field.get_xpath():
-                    select = Select(self.driver.find_element_by_xpath(select_field.get_xpath()))
-                    select.select_by_index(0)
+                    self.check_after_click()
                 else:
                     raise ValueError('No id nor xpath for an input field')
             except Exception as e:
@@ -140,15 +135,26 @@ class SeleniumExecutor():
         except Exception as e:
             print "[ERROR] ", e
             self.driver.refresh()
+            self.driver.page_source
+        except Exception as e:
+            print "[ERROR] ", e
+            self.driver.close()
+            self.start()
+            self.driver.page_source
+        except Exception as e:
+            print "[ERROR] ", e
             text = "ERROR! cannot load file"
         return text.encode('utf-8')
 
     def switch_iframe_and_get_source(self, iframe_xpath_list=None):
-        self.driver.switch_to_default_content()
-        if iframe_xpath_list:
-            for xpath in iframe_xpath_list:        
-                iframe = self.driver.find_element_by_xpath(xpath)
-                self.driver.switch_to_frame(iframe)
+        try:
+            self.driver.switch_to_default_content()
+            if iframe_xpath_list:
+                for xpath in iframe_xpath_list:        
+                    iframe = self.driver.find_element_by_xpath(xpath)
+                    self.driver.switch_to_frame(iframe)
+        except Exception as e:
+            print "[ERROR] ", e
         return self.get_source()
 
     def get_screenshot(self, file_path):
@@ -180,8 +186,9 @@ class SeleniumExecutor():
 
     def back_history(self):
         try:
-            time.sleep(0.5)
+            time.sleep(1)
             self.driver.back()
+            self.check_after_click()
         except Exception as e:
             print '[ERROR] back : %s' % (str(e))
 
@@ -191,19 +198,21 @@ class SeleniumExecutor():
     #=============================================================================================
     #Diff: check any browser detail after cleck event
     def check_after_click(self):
-        print "[LOG] sleep after click event"
-        time.sleep(0.5)
+        time.sleep(1)
         self.check_alert()
         self.check_window()
         self.check_tab()
 
     def check_alert(self):
-        try:
-            alert = self.driver.switch_to_alert()
-            print "[LOG] click with alert: %s" % alert.text
-            alert.accept()
-        except Exception:
-            print "[LOG] click without alert"
+        no_alert = False
+        while not no_alert:
+            try:
+                alert = self.driver.switch_to_alert()
+                print "[LOG] click with alert: %s" % alert.text
+                alert.dismiss()
+            except Exception:
+                print "[LOG] click without alert"
+                no_alert = True
 
     def check_window(self):
         if len(self.driver.window_handles) > 1:

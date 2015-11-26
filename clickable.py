@@ -8,14 +8,18 @@ Definition of HTML elements: clickables, form and input field
 """
 
 class Clickable:
-    def __init__(self, clickable_id=None, xpath=None, tag=None):
+    def __init__(self, clickable_id=None, clickable_name=None, xpath=None, tag=None):
         self._id = clickable_id
+        self._name = clickable_name
         self._xpath = xpath
         self._tag = tag
         #self._forms = []
 
     def get_id(self):
         return self._id
+        
+    def get_name(self):
+        return self._name
 
     def get_xpath(self):
         return self._xpath
@@ -26,8 +30,9 @@ class Clickable:
         return 'clickable id: %s (xpath: %s) ' % (self._id, self._xpath )
         
 class InputField:
-    def __init__(self, input_id=None, xpath=None, input_type=None, value=None, iframe_path_list=None):
+    def __init__(self, input_id=None, input_name=None, xpath=None, input_type=None, value=None, iframe_path_list=None):
         self._id = input_id
+        self._name = input_name
         self._xpath = xpath
         self._value = value
         self._type = input_type
@@ -42,6 +47,9 @@ class InputField:
     def get_id(self):
         return self._id
 
+    def get_name(self):
+        return self._name
+
     def get_xpath(self):
         return self._xpath
 
@@ -54,8 +62,9 @@ class InputField:
 #=============================================================================================
 #Diff: select is an input, too.
 class SelectField:
-    def __init__(self, input_id=None, xpath=None, value=None, iframe_path_list=None):
-        self._id = input_id
+    def __init__(self, select_id=None, select_name=None, xpath=None, value=None, iframe_path_list=None):
+        self._id = select_id
+        self._name = select_name
         self._xpath = xpath
         self._value = value
         self.iframe_path_list = iframe_path_list
@@ -69,9 +78,12 @@ class SelectField:
     def get_id(self):
         return self._id
 
+    def get_name(self):
+        return self._name
+
     def get_xpath(self):
         return self._xpath
 
     def __str__(self):
-        return 'input id: %s (xpath: %s), value: %s' % (self._id, self._xpath, self._value)
+        return 'select id: %s (xpath: %s), value: %s' % (self._id, self._xpath, self._value)
 #=============================================================================================
