@@ -67,7 +67,7 @@ def debugTestMain():
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     print "setting config..."
-    config = SeleniumConfiguration(2, "https://ups.moe.edu.tw/index.php")
+    config = SeleniumConfiguration(3, "https://ups.moe.edu.tw/index.php")
     config.set_max_depth(1)
     config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
     config.set_automata_fname('automata.json')
@@ -143,7 +143,7 @@ def load_config(fname):
     t_start = time.time()
     with open(fname) as f:
         data = json.load(f)
-        config = B2gConfiguration(data['browser_id'], data['url'])
+        config = B2gConfiguration(data['browser_id'], data['url'], data['dirname'], data['folderpath'])
         config.set_max_depth(int(data['max_depth']))
         config.set_max_states(int(data['max_states']))
         config.set_sleep_time(int(data['sleep_time']))

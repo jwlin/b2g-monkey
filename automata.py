@@ -54,8 +54,8 @@ class Automata:
     def change_state(self, state):
         self._current_state = state
 
-    def add_edge(self, state_from, state_to, clickable, iframe_list, cost=1):
-        edge = (state_from, state_to, clickable, iframe_list, cost)
+    def add_edge(self, state_from, state_to, clickable, inputs, selects, iframe_list, cost=1):
+        edge = (state_from, state_to, clickable, inputs, selects, iframe_list, cost)
         self._edges.append(edge)
 
     def get_state_by_id(self, sid):
@@ -175,13 +175,32 @@ class Automata:
                             select_data['iframe_list'].append(i)
                     state_data['selects'].append(select_data)
             data['state'].append(state_data)
-        for (state_from, state_to, clickable, iframe_list, cost) in self._edges:
+        for (state_from, state_to, clickable, inputs, selects, iframe_list, cost) in self._edges:
             edge_data = {
                 'from': state_from.get_id(),
                 'to': state_to.get_id(),
                 'clickable': clickable.get_id(),
+                'inputs': [],
+                'selects': [],
                 'iframe_list': str(iframe_list)
             }
+            for my_input in inputs:
+                input_data = {
+                    'id': my_input.get_id(),
+                    'name': my_input.get_name(),
+                    'xpath': my_input.get_xpath(),
+                    'type': my_input.get_type(),
+                    'value': my_input.get_value()
+                }
+                edge_data['inputs'].append(input_data)
+            for select in selects:
+                select_data = {
+                    'id': select.get_id(),
+                    'name': select.get_name(),
+                    'xpath': select.get_xpath(),
+                    'value': select.get_value()
+                }
+                edge_data['selects'].append(select_data)
             data['edge'].append(edge_data)
 
         with codecs.open(os.path.join(configuration.get_abs_path('root'), configuration.get_automata_fname()), 'w', encoding='utf-8' ) as f:

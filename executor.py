@@ -135,11 +135,14 @@ class SeleniumExecutor():
         except Exception as e:
             print "[ERROR] ", e
             self.driver.refresh()
+            self.check_after_click()
             self.driver.page_source
         except Exception as e:
             print "[ERROR] ", e
+            url = self.driver.current_url
             self.driver.close()
             self.start()
+            self.driver.get(url)
             self.driver.page_source
         except Exception as e:
             print "[ERROR] ", e
@@ -154,7 +157,7 @@ class SeleniumExecutor():
                     iframe = self.driver.find_element_by_xpath(xpath)
                     self.driver.switch_to_frame(iframe)
         except Exception as e:
-            print "[ERROR] ", e
+            print '[ERROR] switch_iframe : %s' % (str(e))
         return self.get_source()
 
     def get_screenshot(self, file_path):
@@ -169,19 +172,35 @@ class SeleniumExecutor():
         elif self.browserID == 3:
             self.driver = webdriver.PhantomJS()
         '''
-        if self.browserID == 1:
-            self.driver = webdriver.Firefox();
-        elif self.browserID == 2:
-            self.driver = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
-        elif self.browserID == 3:
-            self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
-        else:
-            self.driver = webdriver.Firefox(); 
-        self.driver.get(self.startUrl)
-        self.main_window = self.driver.current_window_handle
+        try:
+            if self.browserID == 1:
+                self.driver = webdriver.Firefox();
+            elif self.browserID == 2:
+                self.driver = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
+            elif self.browserID == 3:
+                self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
+            else: #default in firefox
+                self.driver = webdriver.Firefox(); 
+            self.driver.set_window_size(1280,960)
+            self.main_window = self.driver.current_window_handle
+        except Exception as e:
+            print '[ERROR] start driver : %s' % (str(e))
+
+    def goto_url(self):
+        try:
+            self.driver.get(self.startUrl)
+        except Exception as e:
+            print '[ERROR] driver get url : %s' % (str(e))
+
+    def refresh(self):
+        try:
+            self.driver.refresh()
+            self.check_after_click()
+        except Exception as e:
+            print '[ERROR] refresh : %s' % (str(e))
 
     def restart_app(self):
-        self.driver.close()
+        self.close()
         self.start()
 
     def back_history(self):
@@ -192,8 +211,20 @@ class SeleniumExecutor():
         except Exception as e:
             print '[ERROR] back : %s' % (str(e))
 
+    def forward_history(self):
+        try:
+            time.sleep(1)
+            self.driver.forward()
+            self.check_after_click()
+        except Exception as e:
+            print '[ERROR] back : %s' % (str(e))
+
     def get_url(self):
-        return self.driver.current_url
+        try:
+            return self.driver.current_url
+        except Exception as e:
+            print '[ERROR] get url : %s' % (str(e))
+            return 'error url'
 
     #=============================================================================================
     #Diff: check any browser detail after cleck event
@@ -228,5 +259,8 @@ class SeleniumExecutor():
     #=============================================================================================
 
     def close(self):
-        self.driver.close()
+        try:
+            self.driver.close()
+        except Exception as e:
+            print '[ERROR] close : %s' % (str(e))        
 #==============================================================================================================================
