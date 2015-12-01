@@ -29,6 +29,7 @@ class DomAnalyzer:
     _normalizers = []
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
+    _path_ignore_tags = []
 
     #=============================================================================================
     @classmethod
@@ -176,9 +177,11 @@ class DomAnalyzer:
     @classmethod
     def _get_xpath(cls, node):
         path = [cls._get_node(node)]
-        for parent in node.parents:
+        for parent in node.parents:            
             if parent.name == 'body':
                 break
+            elif  parent.name in cls._path_ignore_tags:
+                continue
             path.insert(0, cls._get_node(parent))
         return '//html/body/' + '/'.join(path)
 
@@ -205,7 +208,6 @@ class DomAnalyzer:
         for normalizer in cls._normalizers:
             dom1 = normalizer.normalize(dom1)
             dom2 = normalizer.normalize(dom2)
-
         if dom1 == dom2:
             return True
         else:
@@ -225,17 +227,21 @@ class DomAnalyzer:
     #=============================================================================================
 
     #=============================================================================================
-    #Diff: set config of clickable, inputs, normalizer
+    #Diff: set config of clickable, inputs, normalizer, ignoreTages
+    @classmethod
+    def add_path_ignore_tag(cls, tag):
+        cls._path_ignore_tags.append(tag)
+
     @classmethod
     def add_normalizer(cls, normalizer):
         cls._normalizers.append(normalizer)
 
     @classmethod
-    def add_clickable_tags(cls, Tag):
+    def add_clickable_tag(cls, Tag):
         cls._clickable_tags.append(Tag)
 
     @classmethod
-    def add_inputs_tags(cls, tag):
+    def add_inputs_tag(cls, tag):
         cls._input_types.append(tag)
 
     @classmethod
