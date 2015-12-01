@@ -162,7 +162,7 @@ class SeleniumCrawler(Crawler):
         #if url are same, guess they are just javascipt edges
         if self.executor.get_url() == state.get_url():
             #first, just refresh for javascript button
-            print "[log] <BACKTRACK> : try refresh "
+            print "[LOG] <BACKTRACK> : try refresh "
             self.executor.refresh()
             dom_list, url, is_same = self.is_same_state_dom(state)
             if is_same:
@@ -170,7 +170,7 @@ class SeleniumCrawler(Crawler):
 
         #if can't , try go back form history
         self.executor.back_history()
-        print "[log] <BACKTRACK> : try back_history "
+        print "[LOG] <BACKTRACK> : try back_history "
         dom_list, url, is_same = self.is_same_state_dom(state)
         if is_same:
             return True
@@ -178,7 +178,7 @@ class SeleniumCrawler(Crawler):
         #if can't , try do last edge of state history
         if len(self.event_history) > 0:
             self.executor.forward_history()
-            print "[log] <BACKTRACK> : try last edge of state history "
+            print "[LOG] <BACKTRACK> : try last edge of state history "
             parent_state, clickable, inputs, selects, iframe_list = self.event_history[-1]
             self.executor.switch_iframe_and_get_source(iframe_list)
             self.executor.empty_form([inputs, selects])

@@ -67,9 +67,9 @@ def debugTestMain():
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     print "setting config..."
-    config = SeleniumConfiguration(3, "https://ups.moe.edu.tw/index.php")
-    config.set_max_depth(1)
-    config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
+    config = SeleniumConfiguration(2, "http://www.jibako.com/")
+    config.set_max_depth(2)
+    #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
     config.set_automata_fname('automata.json')
     config.set_dom_inside_iframe(True)
 
@@ -82,6 +82,12 @@ def debugTestMain():
     config.set_normalizer( TagNormalizer(['iframe']) )
     config.set_normalizer( TagWithAttributeNormalizer("a", "href", "http://cloud.edu.tw/?token") )
     config.set_normalizer( TagWithAttributeNormalizer("td", "class", "viewNum") )
+    #jibako
+    config.set_normalizer( TagWithAttributeNormalizer("script", None, '') )
+    config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'fotorama', 'contains') )
+    config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'player', 'contains') )
+    config.set_path_ignore_tags( ['img', 'hr', 'br'] )
+
 
     before_script = [
         #{

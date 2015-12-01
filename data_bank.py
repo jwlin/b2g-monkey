@@ -49,23 +49,32 @@ class InlineDataBank(DataBank):
             'interest':{'true'},
             'city':{'2', '3'},
             'job1':{'1', '3'},
+            #ups.moe.edu
             'uid': {'louisalflame@hotmail.com.tw'},
             'textfield2':{'0911233456'}, #name=tel
             'personal_name':{'Louis','Alice'} ,
-            'id': {'1234'}
+            'id': {'1234'},
+            #jibako
+            'user_user_profile_attributes_name':{'louis'},
         },
         "password":
         {
-            'password': {'j6j6fu3fu3mp3mp3'}
+            'password': {'j6j6fu3fu3mp3mp3'},
+            #jibako
+            'user_password':{'j6j6fu3fu3mp3mp3'},
+            'user_password_confirmation':{'j6j6fu3fu3mp3mp3'},
         },
         "email":
         {          
-            'email': {'user1@example.com', 'user2@mailhost.com'}
+            'email': {'user1@example.com', 'user2@mailhost.com'},
+            #jibako
+            'user_email':{'taadoopswow@gmail.com','j6j6fu3fu3mp3mp3@yahoo.com.tw'},
         },
         "select":
         {
             'city':{2, 3},
             'job1':{1, 3},
+            #ups.moe.edu
             'dist_cd': {0},
             'd_birthday': {70, 80},
             'city_cd': {12, 13},

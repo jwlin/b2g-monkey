@@ -150,6 +150,18 @@ class SeleniumConfiguration(Configuration):
     def get_domains(self):
         return self._domains
 
+    def set_clickable_tag(self, tag):
+        DomAnalyzer.add_clickable_tag(tag)
+
+    def set_inputs_tag(self, tag):
+        DomAnalyzer.add_inputs_tag(tag)
+
+    def set_path_ignore_tag(self, tag):
+        DomAnalyzer.add_path_ignore_tag(tag)
+        
+    def set_path_ignore_tags(self, tag):
+        DomAnalyzer.add_path_ignore_tags(tag)
+
     def set_normalizer(self, normalizer):
         DomAnalyzer.add_normalizer(normalizer)
 
@@ -161,6 +173,12 @@ class SeleniumConfiguration(Configuration):
 
     def set_simple_normalizers(self):
         DomAnalyzer.set_simple_normalizers()
+
+    def set_dom_inside_iframe(self, is_inside):
+        self._dom_inside_iframe = is_inside
+
+    def is_dom_inside_iframe(self):
+        return self._dom_inside_iframe
 
     def get_before_script(self):
         return self._scripts
@@ -176,12 +194,6 @@ class SeleniumConfiguration(Configuration):
             c = edge['clickable']
             clickable = ( Clickable(c['id'], c['xpath'], c['tag']) )
             self._scripts.append( ( inputs, selects, clickable, edge['iframe_list'] ) )
-
-    def set_dom_inside_iframe(self, is_inside):
-        self._dom_inside_iframe = is_inside
-
-    def is_dom_inside_iframe(self):
-        return self._dom_inside_iframe
 
     def save_config(self, fname):
         config_data = {}

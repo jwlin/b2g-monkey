@@ -233,6 +233,10 @@ class DomAnalyzer:
         cls._path_ignore_tags.append(tag)
 
     @classmethod
+    def add_path_ignore_tags(cls, tag_list):
+        cls._path_ignore_tags += tag_list
+
+    @classmethod
     def add_normalizer(cls, normalizer):
         cls._normalizers.append(normalizer)
 
