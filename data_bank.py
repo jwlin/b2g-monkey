@@ -68,7 +68,7 @@ class InlineDataBank(DataBank):
         {          
             'email': {'user1@example.com', 'user2@mailhost.com'},
             #jibako
-            'user_email':{'taadoopswow@gmail.com','j6j6fu3fu3mp3mp3@yahoo.com.tw'},
+            'user_email':{'taadoopswow@gmail.com','bluehouseeverywhere@yahoo.com.tw'},
         },
         "select":
         {

@@ -74,16 +74,21 @@ class DomAnalyzer:
     @classmethod
     def get_candidate_clickables_soup(cls, dom):
         clickables = []
+        candidate_clickables = []
         soup = BeautifulSoup(dom, 'html.parser')
         soup = cls.soup_visible(soup)
         for tag in cls._clickable_tags:
             if tag.get_attr():
                 for attr, value in tag.get_attr().items():
-                    candidate_clickables = soup.find_all(tag.get_name(), attrs={attr: value})
+                    candidate_clickables += soup.find_all(tag.get_name(), attrs={attr: value})
             else:
-                candidate_clickables = soup.find_all(tag.get_name())
-            for candidate_clickable in candidate_clickables:
-                clickables.append( (candidate_clickable, cls._get_xpath(candidate_clickable)) )
+                candidate_clickables += soup.find_all(tag.get_name())
+        #find other element with onclick
+        for find_onclick in soup.find_all():
+            if find_onclick.has_attr('onclick') and not find_onclick in candidate_clickables:
+                candidate_clickables.append(find_onclick)
+        for candidate_clickable in candidate_clickables:
+            clickables.append( (candidate_clickable, cls._get_xpath(candidate_clickable)) )
         return clickables
 
     @classmethod
@@ -163,8 +168,11 @@ class DomAnalyzer:
             for tag in soup.find_all(invisible_tag):
                 tag.decompose()
         for element in soup.find_all():
-            if element.attrs and element.has_attr('style') and 'display:none;' in element['style']:
-                element.decompose()
+            if element.attrs and element.has_attr('style') and 'display:' in element['style'] and 'none' in element['style']:
+                if element.name in cls._clickable_tags or element.name == 'input' or element.name == 'select':
+                    element.decompose()
+                else:
+                    element.clear()
         return soup
     #=============================================================================================
 

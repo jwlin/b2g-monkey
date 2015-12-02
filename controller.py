@@ -67,8 +67,8 @@ def debugTestMain():
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     print "setting config..."
-    config = SeleniumConfiguration(2, "http://www.jibako.com/")
-    config.set_max_depth(2)
+    config = SeleniumConfiguration(2, "https://member.cht.com.tw/CHTRegi/mobile_register.jsp")
+    config.set_max_depth(1)
     #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
     config.set_automata_fname('automata.json')
     config.set_dom_inside_iframe(True)
@@ -76,6 +76,7 @@ def debugTestMain():
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
+    #ups.moe.edu.tw
     config.set_normalizer( TagWithAttributeNormalizer("div", "class", "calendarToday") )
     config.set_normalizer( TagWithAttributeNormalizer("table", None, u"人氣", 'contains') )
     config.set_normalizer( TagWithAttributeNormalizer("table", "class", "clmonth") )
@@ -84,9 +85,13 @@ def debugTestMain():
     config.set_normalizer( TagWithAttributeNormalizer("td", "class", "viewNum") )
     #jibako
     config.set_normalizer( TagWithAttributeNormalizer("script", None, '') )
+    config.set_normalizer( TagWithAttributeNormalizer("style", None, '') )
     config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'fotorama', 'contains') )
     config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'player', 'contains') )
     config.set_path_ignore_tags( ['img', 'hr', 'br'] )
+    #http://ckenkay2.myweb.hinet.net/
+    config.set_frame_tags(['iframe', 'frame'])
+    config.set_normalizer( TagWithAttributeNormalizer("div", 'style', 'visibility: hidden', 'contains') )
 
 
     before_script = [

@@ -333,30 +333,32 @@ class SeleniumCrawler(Crawler):
         new_dom = self.executor.switch_iframe_and_get_source()
         url = self.executor.get_url()
         soup = BeautifulSoup(new_dom, 'html.parser')
-        for iframe_tag in soup.find_all('iframe'):
-            iframe_xpath = DomAnalyzer._get_xpath(iframe_tag)
-            iframe_src = iframe_tag['src'] if iframe_tag.has_attr('src') else None
-            try: #not knowing what error in iframe_tag.clear(): no src
-                if self.configuration.is_dom_inside_iframe():
-                    self.get_dom_of_iframe(dom_list, [iframe_xpath], iframe_src)
-                iframe_tag.clear()
-            except Exception as e:
-                print "[ERROR] ", e
+        for frame in self.configuration.get_frame_tags():
+            for iframe_tag in soup.find_all(frame):
+                iframe_xpath = DomAnalyzer._get_xpath(iframe_tag)
+                iframe_src = iframe_tag['src'] if iframe_tag.has_attr('src') else None
+                try: #not knowing what error in iframe_tag.clear(): no src
+                    if self.configuration.is_dom_inside_iframe():
+                        self.get_dom_of_iframe(dom_list, [iframe_xpath], iframe_src)
+                    iframe_tag.clear()
+                except Exception as e:
+                    print "[ERROR] ", e
         dom_list.append( StateDom(None, str(soup), url) )
         return dom_list, url
 
     def get_dom_of_iframe(self, dom_list, iframe_xpath_list, src):
         dom = self.executor.switch_iframe_and_get_source(iframe_xpath_list)
         soup = BeautifulSoup(dom, 'html.parser')
-        for iframe_tag in soup.find_all('iframe'):
-            iframe_xpath = DomAnalyzer._get_xpath(iframe_tag)
-            iframe_xpath_list.append(iframe_xpath)
-            iframe_src = iframe_tag['src'] if iframe_tag.has_attr('src') else None
-            try:
-                self.get_dom_of_iframe(dom_list, iframe_xpath_list, iframe_src)      
-                iframe_tag.clear()
-            except Exception as e:
-                print "[ERROR] ", e
+        for frame in self.configuration.get_frame_tags():
+            for iframe_tag in soup.find_all(frame):
+                iframe_xpath = DomAnalyzer._get_xpath(iframe_tag)
+                iframe_xpath_list.append(iframe_xpath)
+                iframe_src = iframe_tag['src'] if iframe_tag.has_attr('src') else None
+                try:
+                    self.get_dom_of_iframe(dom_list, iframe_xpath_list, iframe_src)      
+                    iframe_tag.clear()
+                except Exception as e:
+                    print "[ERROR] ", e
         dom_list.append( StateDom(iframe_xpath_list, str(soup), src) )
     #=============================================================================================
 #==============================================================================================================================

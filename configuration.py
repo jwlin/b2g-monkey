@@ -116,6 +116,7 @@ class SeleniumConfiguration(Configuration):
         self._dom_inside_iframe = True
         self._domains = []
         self._scripts = []
+        self._frame_tags = []
 
     def set_automata_fname(self, automata_fname):
         self._automata_fname = automata_fname
@@ -158,7 +159,7 @@ class SeleniumConfiguration(Configuration):
 
     def set_path_ignore_tag(self, tag):
         DomAnalyzer.add_path_ignore_tag(tag)
-        
+
     def set_path_ignore_tags(self, tag):
         DomAnalyzer.add_path_ignore_tags(tag)
 
@@ -179,6 +180,12 @@ class SeleniumConfiguration(Configuration):
 
     def is_dom_inside_iframe(self):
         return self._dom_inside_iframe
+
+    def set_frame_tags(self, tag_list):
+        self._frame_tags += tag_list
+
+    def get_frame_tags(self):
+        return self._frame_tags
 
     def get_before_script(self):
         return self._scripts
