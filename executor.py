@@ -98,7 +98,14 @@ class SeleniumExecutor():
         for input_field in state_inputs:
             #raw_input("enter to fill")
             try:
-                if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                if input_field.get_type() == 'checkbox':
+                    if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                        self.driver.find_element_by_id( input_field.get_id() ).click()
+                        self.check_after_click()
+                    elif input_field.get_xpath():
+                        self.driver.find_element_by_xpath( input_field.get_xpath() ).click()
+                        self.check_after_click()
+                elif input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
                     self.driver.find_element_by_id( input_field.get_id() ).send_keys(input_field.get_value())
                     self.check_after_click()
                 elif input_field.get_xpath():
@@ -233,6 +240,7 @@ class SeleniumExecutor():
         self.check_alert()
         self.check_window()
         self.check_tab()
+        time.sleep(1)
 
     def check_alert(self):
         no_alert = False
@@ -242,7 +250,7 @@ class SeleniumExecutor():
                 print "[LOG] click with alert: %s" % alert.text
                 alert.dismiss()
             except Exception:
-                print "[LOG] click without alert"
+                #print "[LOG] click without alert"
                 no_alert = True
 
     def check_window(self):

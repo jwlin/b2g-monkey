@@ -194,12 +194,12 @@ class SeleniumConfiguration(Configuration):
         for edge in scripts:
             inputs = []
             for _input in edge['inputs']:
-                inputs.append( InputField(_input['id'], _input['xpath'], _input['type'], _input['value']) )
+                inputs.append( InputField(_input['id'], _input['name'], _input['xpath'], _input['type'], _input['value']) )
             selects = []
             for _select in edge['selects']:
-                selects.append( SelectField(_select['id'], _select['xpath'], _select['value']) )
+                selects.append( SelectField(_select['id'], _select['name'], _select['xpath'], _select['value']) )
             c = edge['clickable']
-            clickable = ( Clickable(c['id'], c['xpath'], c['tag']) )
+            clickable = Clickable(c['id'], c['name'], c['xpath'], c['tag'])
             self._scripts.append( ( inputs, selects, clickable, edge['iframe_list'] ) )
 
     def save_config(self, fname):

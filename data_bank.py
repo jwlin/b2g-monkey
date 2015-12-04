@@ -56,6 +56,15 @@ class InlineDataBank(DataBank):
             'id': {'1234'},
             #jibako
             'user_user_profile_attributes_name':{'louis'},
+            #member.cht.com.tw
+            'birthday':{'2000/10/22', '2000/11/22'},
+            #www.cloudopenlab.org.tw
+            'chnlastname':{'wu', 'wang', 'lin', 'li'},
+            'chnname':{'Cindy', 'Duck', 'Ellen'},
+            'engname':{'Ann', 'Bob'},
+            'companyname':{'bl618', },
+            'phone':{'1234567','000000'},
+            'applynote':{'***','<!---->'},
         },
         "password":
         {
@@ -63,6 +72,9 @@ class InlineDataBank(DataBank):
             #jibako
             'user_password':{'j6j6fu3fu3mp3mp3'},
             'user_password_confirmation':{'j6j6fu3fu3mp3mp3'},
+            #member.cht.com.tw
+            'password1':{'1apple2bee'},
+            'password2':{'1apple2bee'}
         },
         "email":
         {          
@@ -78,7 +90,15 @@ class InlineDataBank(DataBank):
             'dist_cd': {0},
             'd_birthday': {70, 80},
             'city_cd': {12, 13},
-            'doc_cd': {0}            
+            'doc_cd': {0},
+            #member.cht.com.tw
+            'gender':{1,2},
+            #www.cloudopenlab.org.tw
+            'industry':{13,16,23},
+        },
+        "checkbox":{
+            'agreement':{True},
+            'private_date1':{True},
         }
     }
 
@@ -89,6 +109,8 @@ class InlineDataBank(DataBank):
     @classmethod
     def get_data(cls, input_type, data_id):
         if input_type in cls.data.keys():
+            if input_type == 'checkbox':
+                return {True}
             if data_id and data_id in cls.data[input_type].keys():
                 return cls.data[input_type][data_id]
             else:

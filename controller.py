@@ -57,22 +57,22 @@ def SeleniumMain():
     crawler.close()
     
     print "end! save automata..."
+    automata.make_traces()
     automata.save_automata(config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     save_config(config, 'config.json')
 
 def debugTestMain():
     #config = SeleniumConfiguration(2, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
+    #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
     #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     print "setting config..."
-    config = SeleniumConfiguration(2, "https://member.cht.com.tw/CHTRegi/mobile_register.jsp")
-    config.set_max_depth(1)
-    #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
+    config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
+    config.set_max_depth(2)
     config.set_automata_fname('automata.json')
     config.set_dom_inside_iframe(True)
-
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
@@ -89,12 +89,53 @@ def debugTestMain():
     config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'fotorama', 'contains') )
     config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'player', 'contains') )
     config.set_path_ignore_tags( ['img', 'hr', 'br'] )
-    #http://ckenkay2.myweb.hinet.net/
-    config.set_frame_tags(['iframe', 'frame'])
+    #member.cht.com.tw/
     config.set_normalizer( TagWithAttributeNormalizer("div", 'style', 'visibility: hidden', 'contains') )
+    config.set_normalizer( TagWithAttributeNormalizer("div", 'style', 'none', 'contains') )
+    config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'ui-widget', 'contains') )
+    #config.set_domains(['https://member.cht.com.tw/'])
 
 
     before_script = [
+    #www.cloudopenlab.org.tw
+        {
+            "inputs":[],
+            "selects":[],
+            "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[2]/a[1]", "tag":"a" },
+            "iframe_list":None
+        },
+        {
+            "inputs":[],
+            "selects":[],
+            "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/div[2]/div[2]/span[1]/a[1]", "tag":"a" },
+            "iframe_list":None
+        },
+        {
+            "inputs":[],
+            "selects":[],
+            "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/span[1]/span[1]/input[1]", "tag":"a" },
+            "iframe_list":None
+        },
+        {
+            "inputs":[],
+            "selects":[],
+            "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/a[1]", "tag":"a" },
+            "iframe_list":None
+        },
+    #member.cht.com.tw/
+        #{
+        #    "inputs":[],
+        #    "selects":[],
+        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[1]/div[1]/div[3]/p[3]/a[1]", "tag":"a" },
+        #    "iframe_list":None
+        #},
+        #{
+        #    "inputs":[],
+        #    "selects":[],
+        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[2]/div[1]/div[1]/ul[1]/li[1]", "tag":"li" },
+        #    "iframe_list":None
+        #},
+    #ups.moe.edu.tw
         #{
         #    "inputs":
         #    [

@@ -106,6 +106,12 @@ class TagWithAttributeNormalizer(AbstractNormalizer):
             return attr_value.startswith(self.value)
         elif self.mode == 'contains':
             return self.value in attr_value
+        elif self.mode == 'attribute':
+            attrs = self.value.split(':')
+            for attr in attrs:
+                if not attr in attr_value:
+                    return False
+            return True
         else:
             return False
 

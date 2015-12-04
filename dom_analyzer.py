@@ -27,6 +27,7 @@ class DomAnalyzer:
     _clickable_tags = []
     _input_types = []  # type of input fields filled with values
     _normalizers = []
+    _attribute_normalizers = []
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
     _path_ignore_tags = []
@@ -227,6 +228,8 @@ class DomAnalyzer:
     def normalize(cls, dom):
         for normalizer in cls._normalizers:
             dom = normalizer.normalize(dom)
+        for attr_normalizer in cls._attribute_normalizers:
+            dom = attr_normalizer.normalize(dom)
         return dom
 
     @classmethod
@@ -268,11 +271,12 @@ class DomAnalyzer:
         cls._input_types.append('text')
         cls._input_types.append('email')
         cls._input_types.append('password')
+        cls._input_types.append('checkbox')
 
     @classmethod
     def set_simple_normalizers(cls):
         cls._normalizers.append( TagNormalizer(['head', 'canvas', 'li']) )
-        cls._normalizers.append( AttributeNormalizer(['class']) )
         cls._normalizers.append( TagWithAttributeNormalizer(None, "style", "display:none;", 'contains') )
         cls._normalizers.append( TagWithAttributeNormalizer("input", "type", "hidden") )
+        cls._attribute_normalizers.append( AttributeNormalizer(['class']) )
     #=============================================================================================
