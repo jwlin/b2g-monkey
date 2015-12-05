@@ -7,11 +7,11 @@ Module docstring
 
 import os, sys, json, posixpath, time
 from os.path import relpath
-from configuration import B2gConfiguration,SeleniumConfiguration
+from configuration import SeleniumConfiguration
 from automata import Automata, State
 from clickable import Clickable, InputField, SelectField
 from executor import SeleniumExecutor
-from crawler import B2gCrawler, SeleniumCrawler
+from crawler import SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
 from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
@@ -57,7 +57,6 @@ def SeleniumMain():
     crawler.close()
     
     print "end! save automata..."
-    automata.make_traces()
     automata.save_automata(config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     save_config(config, 'config.json')
@@ -69,10 +68,11 @@ def debugTestMain():
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     print "setting config..."
-    config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
-    config.set_max_depth(2)
+    config = SeleniumConfiguration(3, "https://ups.moe.edu.tw/index.php")
+    config.set_max_depth(1)
     config.set_automata_fname('automata.json')
-    config.set_dom_inside_iframe(True)
+    config.set_traces_fname('traces.json')
+    config.set_dom_inside_iframe(False)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
@@ -98,30 +98,30 @@ def debugTestMain():
 
     before_script = [
     #www.cloudopenlab.org.tw
-        {
-            "inputs":[],
-            "selects":[],
-            "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[2]/a[1]", "tag":"a" },
-            "iframe_list":None
-        },
-        {
-            "inputs":[],
-            "selects":[],
-            "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/div[2]/div[2]/span[1]/a[1]", "tag":"a" },
-            "iframe_list":None
-        },
-        {
-            "inputs":[],
-            "selects":[],
-            "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/span[1]/span[1]/input[1]", "tag":"a" },
-            "iframe_list":None
-        },
-        {
-            "inputs":[],
-            "selects":[],
-            "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/a[1]", "tag":"a" },
-            "iframe_list":None
-        },
+        #{
+        #    "inputs":[],
+        #    "selects":[],
+        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[2]/a[1]", "tag":"a" },
+        #    "iframe_list":None
+        #},
+        #{
+        #    "inputs":[],
+        #    "selects":[],
+        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/div[2]/div[2]/span[1]/a[1]", "tag":"a" },
+        #    "iframe_list":None
+        #},
+        #{
+        #    "inputs":[],
+        #    "selects":[],
+        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/span[1]/span[1]/input[1]", "tag":"a" },
+        #    "iframe_list":None
+        #},
+        #{
+        #    "inputs":[],
+        #    "selects":[],
+        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/a[1]", "tag":"a" },
+        #    "iframe_list":None
+        #},
     #member.cht.com.tw/
         #{
         #    "inputs":[],
@@ -163,6 +163,7 @@ def debugTestMain():
     crawler.run()
     crawler.close()    
     print "end! save automata..."
+    automata.save_traces(config)
     automata.save_automata(config, config.get_automata_fname())
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')

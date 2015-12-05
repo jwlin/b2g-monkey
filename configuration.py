@@ -113,16 +113,11 @@ class SeleniumConfiguration(Configuration):
                 os.makedirs(abs_path)
 
         self._automata_fname = ''
+        self._traces_fname = ''
         self._dom_inside_iframe = True
         self._domains = []
         self._scripts = []
         self._frame_tags = []
-
-    def set_automata_fname(self, automata_fname):
-        self._automata_fname = automata_fname
-
-    def get_automata_fname(self):
-        return self._automata_fname
 
     def get_abs_path(self, my_type):
         abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
@@ -186,6 +181,18 @@ class SeleniumConfiguration(Configuration):
 
     def get_frame_tags(self):
         return self._frame_tags
+
+    def set_automata_fname(self, automata_fname):
+        self._automata_fname = automata_fname
+
+    def get_automata_fname(self):
+        return self._automata_fname
+
+    def set_traces_fname(self, traces_fname):
+        self._traces_fname = traces_fname
+
+    def get_traces_fname(self):
+        return self._traces_fname
 
     def get_before_script(self):
         return self._scripts

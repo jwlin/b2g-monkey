@@ -7,7 +7,7 @@ Module docstring
 
 import os, sys, json, posixpath, time, datetime, base64, codecs
 from abc import ABCMeta, abstractmethod
-from automata import Automata, State, StateDom
+from automata import Automata, State, StateDom, Edge
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
 from bs4 import BeautifulSoup
@@ -23,72 +23,6 @@ class Crawler:
     @abstractmethod
     def run(self):
         pass
-
-
-class B2gCrawler(Crawler):
-    def __init__(self, configuration, executor):
-        self.automata = Automata()
-        self.configuration = configuration
-        self.executor = executor
-
-    def run(self):
-        self.executor.restart_app()
-        initial_state = State(self.executor.get_source())
-        self.automata.add_state(initial_state)
-        self.save_screenshot(initial_state.get_id() + '.png', self.executor.get_screenshot(), 'state')
-        self.save_state(initial_state)
-        self.crawl(1)
-        return self.automata
-
-    def crawl(self, depth, prev_state=None):
-        if depth <= self.configuration.get_max_depth():
-            cs = self.automata.get_current_state()
-            #print cs.get_dom()
-            #print '==='
-            #for clickable in cs.get_candidate_clickables():
-            for clickable in DomAnalyzer.get_clickables(cs.get_dom(), prev_state.get_dom() if prev_state else None):
-                img_name = cs.get_id() + '-' + clickable.get_id() + '.png'
-                img_data = self.executor.get_screenshot(clickable)
-
-                # fire the clickable
-                self.executor.empty_form(clickable)
-                self.executor.fill_form(clickable)
-                self.executor.fire_event(clickable)
-                time.sleep(self.configuration.get_sleep_time())
-
-                new_dom = self.executor.get_source()
-                if not DomAnalyzer.is_equal(cs.get_dom(), new_dom):
-                    cs.add_clickable(clickable)
-                    self.save_screenshot(img_name, img_data, 'clickable')
-                    ns, is_newly_added = self.automata.add_state(State(new_dom))
-                    self.automata.add_edge(cs, ns, clickable)
-                    if is_newly_added:
-                        self.save_screenshot(ns.get_id() + '.png', self.executor.get_screenshot(), 'state')
-                        self.save_dom(ns)
-                        self.automata.change_state(ns)
-                        self.crawl(depth+1, cs)
-                    self.automata.change_state(cs)
-                    self.backtrack(cs)
-
-    def backtrack(self, state):
-        edges = self.automata.get_shortest_path(state)
-        self.executor.restart_app()
-        for (state_from, state_to, clickable, cost) in edges:
-            time.sleep(self.configuration.get_sleep_time())
-            self.executor.empty_form(clickable)
-            self.executor.fill_form(clickable)
-            self.executor.fire_event(clickable)
-
-    def save_screenshot(self, fname, b64data, my_type):
-        path = os.path.join(self.configuration.get_abs_path(my_type), fname)
-        imgdata = base64.b64decode(b64data)
-        with open(path, 'wb') as f:
-            f.write(imgdata)
-
-    def save_dom(self, state):
-        with open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '.txt'), 'w') as f:
-            f.write(state.get_dom())
-
 
 #==============================================================================================================================
 # Selenium Web Driver
@@ -110,53 +44,55 @@ class SeleniumCrawler(Crawler):
         return self.automata
 
     def crawl(self, depth, prev_state=None):
+        if depth > self.configuration.get_max_depth():
+            return
         print "[LOG] now depth: ",depth," - max_depth: ",self.configuration.get_max_depth()
-        if depth <= self.configuration.get_max_depth():
-            cs = self.automata.get_current_state()
-            print "[LOG] current state", cs.get_id()
-            for clickables, iframe_list in DomAnalyzer.get_clickables(cs, prev_state if prev_state else None):
-                inputs = cs.get_inputs(iframe_list)
-                selects = cs.get_selects(iframe_list)
+        current_state = self.automata.get_current_state()
+        print "[LOG] current state", current_state.get_id()
+        for clickables, iframe_list in DomAnalyzer.get_clickables(current_state, prev_state if prev_state else None):
+            inputs = current_state.get_inputs(iframe_list)
+            selects = current_state.get_selects(iframe_list)
 
-                for clickable in clickables:
-                    '''TODO: ADD OTHER EVENTS '''
-                    print "[LOG] state %s fire element in iframe(%s) " % ( cs.get_id(), iframe_list )
-                    self.executor.switch_iframe_and_get_source(iframe_list)
-                    self.executor.empty_form([inputs, selects])
-                    self.executor.fill_form([inputs, selects])
-                    self.executor.fire_event(clickable)
+            for clickable in clickables:
+                '''TODO: ADD OTHER EVENTS '''
+                print "[LOG] state %s fire element in iframe(%s) " % ( current_state.get_id(), iframe_list )
+                self.executor.switch_iframe_and_get_source(iframe_list)
+                self.executor.empty_form([inputs, selects])
+                self.executor.fill_form([inputs, selects])
+                self.executor.fire_event(clickable)
 
-                    dom_list, url, is_same = self.is_same_state_dom(cs)
-                    if not is_same:
-                        if self.is_same_domain(url):
-                            print "[LOG] change dom to: ", self.executor.get_url()
-                            # check if this is a new state
-                            temp_state = State(dom_list, url)
-                            ns, is_newly_added = self.automata.add_state(temp_state)
-                            # save this click edge
-                            cs.add_clickable(clickable, iframe_list)
-                            self.automata.add_edge(cs, ns, clickable, inputs, selects, iframe_list)
-                            '''TODO: value of inputs should connect with edges '''
-                            if is_newly_added:
-                                print "[LOG] add new state ",ns.get_id()," of: ", url
-                                self.save_state(ns)
-                                self.event_history.append( (cs, clickable, inputs, selects, iframe_list) )
-                                str_event = [ s.get_id() for s,_c,_i,_s,_l in self.event_history ]
-                                print "[DEBUG] event_history: ", str_event
-                                if depth < self.configuration.get_max_depth():
-                                    self.automata.change_state(ns)
-                                    self.crawl(depth+1, cs)
-                                self.event_history.pop()
-                            self.automata.change_state(cs)
-                        else:
-                            print "[LOG] out of domain: ", url
-                        print "[LOG] <BACKTRACK> : depth ", depth," -> backtrack to state ", cs.get_id()
-                        self.backtrack(cs)
-                        self.configuration.save_config('config.json')
-                        self.automata.save_automata(self.configuration)
-                        Visualizer.generate_html('web', os.path.join(self.configuration.get_path('root'), self.configuration.get_automata_fname()))
-                        print "[LOG] <BACKTRACK> : end"
-            print "[LOG] depth ", depth," -> state ", cs.get_id()," crawl end"
+                dom_list, url, is_same = self.is_same_state_dom(current_state)
+                if is_same:
+                    continue
+                if self.is_same_domain(url):
+                    print "[LOG] change dom to: ", self.executor.get_url()
+                    # check if this is a new state
+                    temp_state = State(dom_list, url)
+                    new_state, is_newly_added = self.automata.add_state(temp_state)
+                    # save this click edge
+                    current_state.add_clickable(clickable, iframe_list)
+                    new_edge = Edge(current_state, new_state, clickable, inputs, selects, iframe_list)
+                    self.automata.add_edge(new_edge)
+                    '''TODO: value of inputs should connect with edges '''
+                    if is_newly_added:
+                        print "[LOG] add new state ",new_state.get_id()," of: ", url
+                        self.save_state(new_state, depth)
+                        self.event_history.append( new_edge )
+                        print "[DEBUG] event_history: ",  [ edge.get_state_from().get_id() for edge in self.event_history ]
+                        if depth < self.configuration.get_max_depth():
+                            self.automata.change_state(new_state)
+                            self.crawl(depth+1, current_state)
+                        self.event_history.pop()
+                    self.automata.change_state(current_state)
+                else:
+                    print "[LOG] out of domain: ", url
+                print "[LOG] <BACKTRACK> : depth ", depth," -> backtrack to state ", current_state.get_id()
+                self.backtrack(current_state)
+                self.configuration.save_config('config.json')
+                self.automata.save_automata(self.configuration)
+                Visualizer.generate_html('web', os.path.join(self.configuration.get_path('root'), self.configuration.get_automata_fname()))
+                print "[LOG] <BACKTRACK> : end"
+        print "[LOG] depth ", depth," -> state ", current_state.get_id()," crawl end"
 
     def backtrack(self, state):
         #if url are same, guess they are just javascipt edges
@@ -179,11 +115,11 @@ class SeleniumCrawler(Crawler):
         if len(self.event_history) > 0:
             self.executor.forward_history()
             print "[LOG] <BACKTRACK> : try last edge of state history "
-            parent_state, clickable, inputs, selects, iframe_list = self.event_history[-1]
-            self.executor.switch_iframe_and_get_source(iframe_list)
-            self.executor.empty_form([inputs, selects])
-            self.executor.fill_form([inputs, selects])
-            self.executor.fire_event(clickable)
+            last_edge = self.event_history[-1]
+            self.executor.switch_iframe_and_get_source(last_edge.get_iframe_list())
+            self.executor.empty_form([last_edge.get_inputs(), last_edge.get_selects()])
+            self.executor.fill_form([last_edge.get_inputs(), last_edge.get_selects()])
+            self.executor.fire_event(last_edge.get_clickable())
             dom_list, url, is_same = self.is_same_state_dom(state)
             if is_same:
                 return True
@@ -192,11 +128,11 @@ class SeleniumCrawler(Crawler):
         print "[LOG] <BACKTRACK> : start form base url"
         self.executor.goto_url()
         for i in xrange(len(self.event_history)):
-            parent_state, clickable, inputs, selects, iframe_list = self.event_history[i]
-            self.executor.switch_iframe_and_get_source(iframe_list)
-            self.executor.empty_form([inputs, selects])
-            self.executor.fill_form([inputs, selects])
-            self.executor.fire_event(clickable)
+            history_edge = self.event_history[i]
+            self.executor.switch_iframe_and_get_source(history_edge.get_iframe_list())
+            self.executor.empty_form([history_edge.get_inputs(), history_edge.get_selects()])
+            self.executor.fill_form([history_edge.get_inputs(), history_edge.get_selects()])
+            self.executor.fire_event(history_edge.get_clickable())
             time.sleep(self.configuration.get_sleep_time())
         dom_list, url, is_same = self.is_same_state_dom(state)
         if is_same:
@@ -207,43 +143,49 @@ class SeleniumCrawler(Crawler):
         edges = self.automata.get_shortest_path(state)
         self.executor.restart_app()
         self.executor.goto_url()
-        for (state_from, state_to, clickable, inputs, selects, iframe_list, cost) in edges:
-            self.executor.switch_iframe_and_get_source(iframe_list)
-            self.executor.empty_form([state_from.get_inputs(iframe_list), state_from.get_selects(iframe_list)])
-            self.executor.fill_form([state_from.get_inputs(iframe_list), state_from.get_selects(iframe_list)])
-            self.executor.fire_event(clickable)
+        for edge in edges:
+            self.executor.switch_iframe_and_get_source(edge.get_iframe_list())
+            self.executor.empty_form([edge.get_inputs(), edge.get_selects()])
+            self.executor.fill_form([edge.get_inputs(), edge.get_selects()])
+            self.executor.fire_event(edge.get_clickable())
 
             #check again if executor really turn back. if not, sth error, stop
             time.sleep(self.configuration.get_sleep_time())
             dom_list, url, is_same = self.is_same_state_dom(state_to)
             if not is_same:
-                err = State(dom_list, url)
-                print "[DEBUG] save diff dom as debug_file "
-                with open('debug_origin_'+state_to.get_id()+'.txt', 'w') as f:
-                    f.write(state_to.get_all_dom())
-                with open('debug_restart_'+state_to.get_id()+'.txt', 'w') as f:
-                    f.write(err.get_all_dom())
-                with open('debug_origin_nor_'+state_to.get_id()+'.txt', 'w') as f:
-                    f.write( state_to.get_all_normalize_dom() )
-                with open('debug_restart_nor_'+state_to.get_id()+'.txt', 'w') as f:
-                    f.write( err.get_all_normalize_dom() )
-                print "[ERROR] cannot traceback to %s" % ( state_to.get_id() )
+                try:
+                    err = State(dom_list, url)
+                    print "[DEBUG] save diff dom as debug_file "
+                    with open('debug_origin_'+state_to.get_id()+'.txt', 'w') as f:
+                        f.write(state_to.get_all_dom())
+                    with open('debug_restart_'+state_to.get_id()+'.txt', 'w') as f:
+                        f.write(err.get_all_dom())
+                    with open('debug_origin_nor_'+state_to.get_id()+'.txt', 'w') as f:
+                        f.write( state_to.get_all_normalize_dom() )
+                    with open('debug_restart_nor_'+state_to.get_id()+'.txt', 'w') as f:
+                        f.write( err.get_all_normalize_dom() )
+                    print "[ERROR] cannot traceback to %s" % ( state_to.get_id() )
+                except Exception as e:  
+                    print '[ERROR] <BACKTRACK> save diff dom : %s' % (str(e))     
 
         dom_list, url, is_same = self.is_same_state_dom(state)
         return is_same
 
 
     def save_dom(self, state):
-        with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '.txt'), 'w' ) as f:
-            f.write(state.get_all_dom())
-        with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_nor.txt'), 'w' ) as f:
-            f.write(state.get_all_normalize_dom())
-        with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_inputs.txt'), 'w', encoding='utf-8' ) as f:
-            json.dump(state.get_all_inputs_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
-        with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_selects.txt'), 'w', encoding='utf-8' ) as f:
-            json.dump(state.get_all_selects_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
-        with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_clicks.txt'), 'w', encoding='utf-8') as f:
-            json.dump(state.get_all_candidate_clickables_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
+        try:
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '.txt'), 'w' ) as f:
+                f.write(state.get_all_dom())
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_nor.txt'), 'w' ) as f:
+                f.write(state.get_all_normalize_dom())
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_inputs.txt'), 'w', encoding='utf-8' ) as f:
+                json.dump(state.get_all_inputs_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_selects.txt'), 'w', encoding='utf-8' ) as f:
+                json.dump(state.get_all_selects_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_clicks.txt'), 'w', encoding='utf-8') as f:
+                json.dump(state.get_all_candidate_clickables_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
+        except Exception as e:  
+            print '[ERROR] save dom : %s' % (str(e)) 
 
     #=============================================================================================
     def get_initail_state(self):
@@ -251,7 +193,7 @@ class SeleniumCrawler(Crawler):
         dom_list, url = self.get_dom_list()
         initial_state = State( dom_list, url )
         self.automata.add_state(initial_state)
-        self.save_state(initial_state)
+        self.save_state(initial_state, 0)
         time.sleep(self.configuration.get_sleep_time())
         return initial_state
 
@@ -264,20 +206,22 @@ class SeleniumCrawler(Crawler):
             self.event_history.append( (prev_state, clickable, inputs, selects, iframe_list) )
 
             dom_list, url, is_same = self.is_same_state_dom(prev_state)
-            if not is_same:
-                print "[LOG] change dom to: ", self.executor.get_url()
-                # check if this is a new state
-                temp_state = State(dom_list, url)
-                new_state, is_newly_added = self.automata.add_state(temp_state)
-                # save this click edge
-                prev_state.add_clickable(clickable, iframe_list)
-                self.automata.add_edge(prev_state, new_state, clickable, inputs, selects, iframe_list)
-                '''TODO: value of inputs should connect with edges '''
-                if is_newly_added:
-                    print "[LOG] add new state ", new_state.get_id(), " of: ", url
-                    self.save_state(new_state)
-                    self.automata.change_state(new_state)
-                prev_state = new_state
+            if is_same:
+                continue
+            print "[LOG] change dom to: ", self.executor.get_url()
+            # check if this is a new state
+            temp_state = State(dom_list, url)
+            new_state, is_newly_added = self.automata.add_state(temp_state)
+            # save this click edge
+            prev_state.add_clickable(clickable, iframe_list)
+            edge = (prev_state, new_state, clickable, inputs, selects, iframe_list) 
+            self.automata.add_edge(edge)
+            '''TODO: value of inputs should connect with edges '''
+            if is_newly_added:
+                print "[LOG] add new state ", new_state.get_id(), " of: ", url
+                self.save_state(new_state, 0)
+                self.automata.change_state(new_state)
+            prev_state = new_state
 
     #Diff: check url domain
     def is_same_domain(self, url):
@@ -296,19 +240,27 @@ class SeleniumCrawler(Crawler):
         self.executor.close()
 
     #Diff: save state's information(inputs, selects, screenshot, [normalize]dom/iframe)
-    def save_state(self, state):
-        candidate_clickables = []        
-        inputs = []
-        selects = []
+    def save_state(self, state, depth):
+        candidate_clickables = {}       
+        inputs = {}
+        selects = {}
+        checkboxes = {}
+        radios = {}
         for stateDom in state.get_dom_list():
             iframe_path_list = stateDom.get_iframe_path_list()
             dom = stateDom.get_dom()
-            candidate_clickables.append( (DomAnalyzer.get_candidate_clickables_soup(dom), iframe_path_list) )
-            inputs.append( (DomAnalyzer.get_inputs(dom), iframe_path_list) )
-            selects.append( (DomAnalyzer.get_selects(dom), iframe_path_list) )
+            iframe_key = ';'.join(iframe_path_list) if iframe_path_list else 'None'
+            candidate_clickables[iframe_key] = DomAnalyzer.get_candidate_clickables_soup(dom)
+            inputs[iframe_key] = DomAnalyzer.get_inputs(dom)
+            selects[iframe_key] = DomAnalyzer.get_selects(dom)
+            checkboxes[iframe_key] = DomAnalyzer.get_selects(dom)
+            radios[iframe_key] = DomAnalyzer.get_radios(dom)
         state.set_candidate_clickables(candidate_clickables)
         state.set_inputs(inputs)
         state.set_selects(selects)
+        state.set_checkboxes(checkboxes)
+        state.set_radios(radios)
+        state.set_depth(depth)
 
         # save this state's screenshot and dom
         path = os.path.join(self.configuration.get_abs_path('state'), state.get_id() + '.png')

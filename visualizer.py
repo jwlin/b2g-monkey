@@ -47,19 +47,20 @@ class Visualizer:
             edge [labelStyle="font: 300 14px 'Helvetica Neue', Helvetica"];
             '''
             automata = json.load(f)
-            clickable_path = {}
+            #clickable_path = {}
             for state in automata['state']:
                 img_div_str += '<img src="' + state['img_path'] + '">\n'
                 input_graph_str += state['id'] \
                     + ' [labelType=\"html\" label=\"' + state['id'] \
                     + '<img src=\'' + state['img_path'] + '\'>"];\n'
-                for clickable in state['clickable']:
-                    clickable_path[state['id'] + '-' + clickable['id']] = clickable['img_path']
-                    img_div_str += '<img src="' + clickable['img_path'] + '">\n'
+                #for clickable in state['clickable']:
+                #   clickable_path[state['id'] + '-' + clickable['id']] = clickable['img_path']
+                #   img_div_str += '<img src="' + clickable['img_path'] + '">\n'
             #print automata['id_prefix']
             for edge in automata['edge']:
                 input_graph_str += edge['from'] + '->' + edge['to'] \
-                    + '[labelType=\"html\" label=\"<img src=\'' + clickable_path[edge['from'] + '-' + edge['clickable']] + '\'>"];\n'
+                    + '[labelType=\"html\" label=\"<img src=\'' + '\'>"];\n'
+                    #clickable_path[edge['from'] + '-' + edge['clickable']['id']]
             #print img_div_str
             #print input_graph_str
             input_graph_str += '}'

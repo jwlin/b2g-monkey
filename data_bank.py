@@ -84,21 +84,21 @@ class InlineDataBank(DataBank):
         },
         "select":
         {
-            'city':{2, 3},
-            'job1':{1, 3},
+            'city':{'2', '3'},
+            'job1':{'1', '3'},
             #ups.moe.edu
-            'dist_cd': {0},
-            'd_birthday': {70, 80},
-            'city_cd': {12, 13},
-            'doc_cd': {0},
+            'dist_cd': {'0'},
+            'd_birthday': {'70', '80'},
+            'city_cd': {'12', '13'},
+            'doc_cd': {'0'},
             #member.cht.com.tw
-            'gender':{1,2},
+            'gender':{'1','2'},
             #www.cloudopenlab.org.tw
-            'industry':{13,16,23},
+            'industry':{'13','16','23'},
         },
         "checkbox":{
-            'agreement':{True},
-            'private_date1':{True},
+            'agreement':{'True'},
+            'private_date1':{'True'},
         }
     }
 
@@ -110,7 +110,7 @@ class InlineDataBank(DataBank):
     def get_data(cls, input_type, data_id):
         if input_type in cls.data.keys():
             if input_type == 'checkbox':
-                return {True}
+                return {'True'}
             if data_id and data_id in cls.data[input_type].keys():
                 return cls.data[input_type][data_id]
             else:

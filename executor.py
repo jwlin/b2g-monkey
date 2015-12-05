@@ -136,6 +136,56 @@ class SeleniumExecutor():
                 pass
                 #print 'Unknown Exception: %s' % (str(e))
 
+
+
+    def fill_inputs_text(self, inputs):
+        for input_field in inputs:
+            try:
+                element = self.get_element_by_tag(input_field)
+                if not element:
+                    raise ValueError('No id nor xpath for an input field')
+                element.clear()
+                element.send_keys(input_field.get_value())
+                self.check_after_click()
+            except Exception as e:
+                #print 'Unknown Exception: %s' % (str(e))
+                pass
+
+    def fill_selects(self, selects):
+        for select_field in selects:
+            try:
+                element = self.get_element_by_tag(select)
+                if not element:
+                    raise ValueError('No id nor xpath for an input field')
+                select.select_by_index( int(select_field.get_value()) )
+                self.check_after_click()
+            except Exception as e:
+                #print 'Unknown Exception: %s' % (str(e))
+                pass
+
+    def fill_checkboxes(self, checkboxes):
+        for checkbox_field in checkboxes:
+            try:
+                element = self.get_element_by_tag(select)
+                if not element:
+                    raise ValueError('No id nor xpath for an input field')
+                if not ( element.is_selected() or element.get_value()=="True" ):
+                    element.click()
+            except Exception as e:
+                #print 'Unknown Exception: %s' % (str(e))
+                pass
+
+    def fill_radios(self, radios):
+        pass
+
+    def get_element_by_tag(self, element):
+        if element.get_id() and not element.get_id().startswith(DomAnalyzer.serial_prefix):
+            return self.driver.find_element_by_id( input_field.get_id() )
+        elif input_field.get_xpath():
+            return self.driver.find_element_by_xpath( input_field.get_xpath() )
+        else:
+            return None
+
     def get_source(self):
         try:
             text = self.driver.page_source
@@ -159,8 +209,8 @@ class SeleniumExecutor():
     def switch_iframe_and_get_source(self, iframe_xpath_list=None):
         try:
             self.driver.switch_to_default_content()
-            if iframe_xpath_list:
-                for xpath in iframe_xpath_list:        
+            if iframe_xpath_list and iframe_xpath_list != 'None':
+                for xpath in iframe_xpath_list.split(';'):        
                     iframe = self.driver.find_element_by_xpath(xpath)
                     self.driver.switch_to_frame(iframe)
         except Exception as e:

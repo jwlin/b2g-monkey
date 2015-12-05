@@ -6,7 +6,7 @@ Module docstring
 """
 import random, string, re
 from bs4 import BeautifulSoup
-from clickable import Clickable, InputField, SelectField
+from clickable import Clickable, InputField, SelectField, CheckboxField, Radio, RadioField
 from data_bank import InlineDataBank
 from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
 
@@ -44,18 +44,19 @@ class DomAnalyzer:
     @classmethod
     def get_clickables(cls, cs, prev_s=None):
         # only return newly discovered clickables, i.e. clickables not in prev_clickables
-        cs_candidate_clickables_iframe = cs.get_all_candidate_clickables()
-        prev_candidate_clickables_iframe = prev_s.get_all_candidate_clickables() if prev_s else None
+        cs_candidate_clickables_dict = cs.get_all_candidate_clickables()
+        prev_candidate_clickables_dict = prev_s.get_all_candidate_clickables() if prev_s else None
         clickables_iframe_list = []
 
-        for cs_candidate_clickables, iframe_path_list in cs_candidate_clickables_iframe:
+        for iframe_path_list in cs_candidate_clickables_dict.keys():
             #find prev_candidate_clickables if prev_s exists and iframe_path_list same
+            cs_candidate_clickables = cs_candidate_clickables_dict[iframe_path_list]
             prev_candidate_clickables = None
             clickables = []
-            if prev_candidate_clickables_iframe:
-                for prev_c, prev_i in prev_candidate_clickables_iframe:
+            if prev_candidate_clickables_dict:
+                for prev_i in prev_candidate_clickables_dict.keys():
                     if iframe_path_list == prev_i:
-                        prev_candidate_clickables = prev_c
+                        prev_candidate_clickables = prev_candidate_clickables_dict[prev_i]
                         break
             for candidate_clickable, clickable_xpath in cs_candidate_clickables:
                 #find if candidate_clickable is same in prev
@@ -94,24 +95,24 @@ class DomAnalyzer:
 
     @classmethod
     def get_inputs(cls, dom):
-        # add inputs in dom
         soup = BeautifulSoup(dom, 'html.parser')
         soup = cls.soup_visible(soup)
         inputs_list = []
         for input_type in cls._input_types:
             inputs = soup.find_all('input', attrs={'type': input_type})
             for my_input in inputs:
+                #==TODO GET_VALUE=====================================================
                 if my_input.has_attr('id'):
                     data_set = InlineDataBank.get_data(input_type, my_input['id']) 
                 elif my_input.has_attr('name'):
                     data_set = InlineDataBank.get_data(input_type, my_input['name']) 
                 else:
                     data_set = InlineDataBank.get_data(input_type, None)
-
                 if data_set:
                     value = random.choice(list(data_set))
                 else:
                     value = ''.join(random.choice(string.lowercase) for i in xrange(8))
+                #==TODO GET_VALUE=====================================================
                 input_id = cls.make_id( my_input.get('id') )
                 input_name = cls.make_id( my_input.get('name') if my_input.has_attr('name') else None )
                 inputs_list.append( InputField(input_id, input_name, cls._get_xpath(my_input), input_type, value))
@@ -124,20 +125,20 @@ class DomAnalyzer:
         selects_list = []
         selects = soup.find_all('select')
         for my_select in selects:
-            '''TODO: make select value'''
+            #==TODO GET_VALUE=====================================================
             if my_select.has_attr('id'):
                 data_set = InlineDataBank.get_data('select', my_select['id']) 
             elif my_select.has_attr('name'):
                 data_set = InlineDataBank.get_data('select', my_select['name'])                    
             else:
                 data_set = InlineDataBank.get_data('select', None)
-
             option_num = len( my_select.find_all('option') )
             if data_set:
                 value = random.choice(list(data_set))
                 value = min(max(0, value), option_num)
             else:
                 value =  min(max(3, option_num/2), option_num)
+            #==TODO GET_VALUE=====================================================
             select_id = cls.make_id( my_select.get('id') )
             select_name = cls.make_id( my_select.get('name') if my_select.has_attr('name') else None )
             selects_list.append(SelectField(select_id, select_name, cls._get_xpath(my_select), value))
@@ -147,21 +148,54 @@ class DomAnalyzer:
     def get_radios(cls, dom):
         soup = BeautifulSoup(dom, 'html.parser')
         soup = cls.soup_visible(soup)
-        radios_dict = { 'default': {} }
-        radios = soup.find_all('input',{'type' : 'radio'})
-        for radio in radios:
-            if radio.has_attr('name'):
-                pass
-            elif radio['name'] in radios_dict.keys():
-                radios_dict[ radio['name'] ]
-            radio_id = cls.make_id( radio.get('id') )
-            radios_list.append(RadioField(radio_id, cls._get_xpath(radio), value))
-        return selects_list
-        pass
+        #group radio by name
+        default_name = cls.make_id(None)
+        radio_dict = { default_name: [] }
+        radio_field_list = []
+        for my_radio in soup.find_all('input',{'type' : 'radio'}):
+            radio_id = cls.make_id( my_radio.get('id') )
+            radio_name = my_radio.get('name') if my_radio.has_attr('name') else default_name
+            radio =  Radio( radio_id, radio_name, cls._get_xpath(my_radio) )
+            if not my_radio.has_attr('name'):
+                radio_dict[default_name].append(radio)
+            elif radio['name'] in radio_dict.keys():
+                radio_dict[ radio['name'] ].append(radio)
+            else:
+                radio_dict[ radio['name'] ] = [radio]
+        for radio_name_key in radio_dict.keys():
+            #==TODO GET_VALUE=====================================================
+            data_set = InlineDataBank.get_data('radio', radio_name_key)
+            if data_set:
+                radio_value = random.choice(list(data_set))
+            else:
+                radio_value = [ random.choice(['True','False']) for i in len(radio_dict[radio_name_key]) ]
+            #==TODO GET_VALUE=====================================================
+            radio_field_list.append( RadioField(radio_dict[radio_name_key], radio_name_key, radio_value) )
+        return radio_field_list
 
     @classmethod
     def get_checkboxes(cls, dom):
-        pass
+        soup = BeautifulSoup(dom, 'html.parser')
+        soup = cls.soup_visible(soup)
+        checkboxes_list = []
+        for my_checkbox in soup.find_all('input', attrs={'type': 'checkbox'}):
+            #==TODO GET_VALUE=====================================================
+            if my_checkbox.has_attr('id'):
+                data_set = InlineDataBank.get_data('checkbox', my_input['id']) 
+            elif my_checkbox.has_attr('name'):
+                data_set = InlineDataBank.get_data('checkbox', my_input['name']) 
+            else:
+                data_set = InlineDataBank.get_data('checkbox', None)
+            if data_set:
+                value = random.choice(list(data_set))
+            else:
+                value = random.choice(['True','False'])
+            #==TODO GET_VALUE=====================================================
+
+            checkbox_id = cls.make_id( my_checkbox.get('id') )
+            checkbox_name = cls.make_id( my_checkbox.get('name') if my_input.has_attr('name') else None )
+            checkboxes_list.append( CheckboxField(checkbox_id, checkbox_name, cls._get_xpath(my_checkbox), value))
+        return checkboxes_list
 
     @classmethod
     def soup_visible(cls, soup):
@@ -271,7 +305,6 @@ class DomAnalyzer:
         cls._input_types.append('text')
         cls._input_types.append('email')
         cls._input_types.append('password')
-        cls._input_types.append('checkbox')
 
     @classmethod
     def set_simple_normalizers(cls):
