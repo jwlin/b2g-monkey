@@ -85,18 +85,11 @@ class SelectField:
     def __str__(self):
         return 'select id: %s (xpath: %s), value: %s' % (self._id, self._xpath, self._value)
 
-class CheckboxField:
-    def __init__(self, checkbox_id=None, checkbox_name=None, xpath=None, value=None):
+class Checkbox:
+    def __init__(self, checkbox_id=None, checkbox_name=None, xpath=None):
         self._id = checkbox_id
         self._name = checkbox_name
         self._xpath = xpath
-        self._value = value
-
-    def set_value(self, value):
-        self._value = value
-
-    def get_value(self):
-        return self._value
 
     def get_id(self):
         return self._id
@@ -110,12 +103,29 @@ class CheckboxField:
     def __str__(self):
         return 'checkbox id: %s, name: %s, (xpath: %s), value: %s' % (self._id, self._name, self._xpath, self._value)
 
+class CheckboxField:
+    def __init__(self, checkbox_list=None, checkbox_name=None, checkbox_value_list=None):
+        self._checkbox_list = checkbox_list
+        self._checkbox_name = checkbox_name
+        self._checkbox_value_list = checkbox_value_list
+
+    def set_value(self, value_list):
+        self._checkbox_value_list = value_list
+
+    def get_value(self):
+        return self._checkbox_value_list
+
+    def get_checkbox_list(self):
+        return self._checkbox_list
+
+    def get_checkbox_name(self):
+        return self._checkbox_name
+
 class Radio:
     def __init__(self, radio_id=None, radio_name=None, xpath=None):
         self._id = radio_id
         self._name = radio_name
         self._xpath = xpath
-        self._value = value
 
     def get_id(self):
         return self._id
@@ -130,13 +140,13 @@ class Radio:
         return 'radio id: %s, name: %s, (xpath: %s), value: %s' % (self._id, self._name, self._xpath, self._value)
 
 class RadioField:
-    def __init__(self, radio_list, radio_name=None, radio_values=None):
+    def __init__(self, radio_list, radio_name=None, radio_value=None):
         self._radio_list = radio_list
         self._radio_name = radio_name
         self._radio_value = radio_value
 
-    def set_value(self, value_list):
-        self._radio_value = value_list
+    def set_value(self, value):
+        self._radio_value = value
 
     def get_value(self):
         return self._radio_value

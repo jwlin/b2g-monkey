@@ -136,8 +136,6 @@ class SeleniumExecutor():
                 pass
                 #print 'Unknown Exception: %s' % (str(e))
 
-
-
     def fill_inputs_text(self, inputs):
         for input_field in inputs:
             try:
@@ -148,35 +146,61 @@ class SeleniumExecutor():
                 element.send_keys(input_field.get_value())
                 self.check_after_click()
             except Exception as e:
-                #print 'Unknown Exception: %s' % (str(e))
+                print 'Unknown Exception: %s' % (str(e))
                 pass
 
     def fill_selects(self, selects):
         for select_field in selects:
             try:
-                element = self.get_element_by_tag(select)
+                element = self.get_element_by_tag(select_field)
                 if not element:
                     raise ValueError('No id nor xpath for an input field')
                 select.select_by_index( int(select_field.get_value()) )
                 self.check_after_click()
             except Exception as e:
-                #print 'Unknown Exception: %s' % (str(e))
+                print 'Unknown Exception: %s' % (str(e))
                 pass
 
     def fill_checkboxes(self, checkboxes):
         for checkbox_field in checkboxes:
             try:
-                element = self.get_element_by_tag(select)
-                if not element:
-                    raise ValueError('No id nor xpath for an input field')
-                if not ( element.is_selected() or element.get_value()=="True" ):
-                    element.click()
+                checkbox_list = checkbox_field.get_checkbox_list()
+                #clear all
+                for checkbox in checkbox_list:
+                    element = self.get_element_by_tag(checkbox)
+                    if not element:
+                        raise ValueError('No id nor xpath for an input field')
+                    if checkbox.is_selected():
+                        checkbox.click()
+                for selected_id in checkbox_field.get_value():
+                    selected_element = self.get_element_by_tag( checkbox_list[int(selected_id)] )
+                    if not selected_element:
+                        raise ValueError('No id nor xpath for an input field')
+                    selected_element.click()
             except Exception as e:
                 #print 'Unknown Exception: %s' % (str(e))
                 pass
 
     def fill_radios(self, radios):
-        pass
+        for radio_field in radios:
+            try:
+                selected_id = int(radio_field.get_value())
+                radio_list = radio_field.get_radio_list()
+                #clear all
+                for radio in radio_list:
+                    element = self.get_element_by_tag(radio)
+                    if not element:
+                        raise ValueError('No id nor xpath for an input field')
+                    if element.is_selected():
+                        element.click()
+                selected_element = self.get_element_by_tag( radio_list[selected_id] )
+                if not selected_element:
+                    raise ValueError('No id nor xpath for an input field')
+                selected_element.click()
+            except Exception as e:
+                #print 'Unknown Exception: %s' % (str(e))
+                pass
+
 
     def get_element_by_tag(self, element):
         if element.get_id() and not element.get_id().startswith(DomAnalyzer.serial_prefix):

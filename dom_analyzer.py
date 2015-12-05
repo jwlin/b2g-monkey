@@ -158,17 +158,17 @@ class DomAnalyzer:
             radio =  Radio( radio_id, radio_name, cls._get_xpath(my_radio) )
             if not my_radio.has_attr('name'):
                 radio_dict[default_name].append(radio)
-            elif radio['name'] in radio_dict.keys():
-                radio_dict[ radio['name'] ].append(radio)
+            elif my_radio['name'] in radio_dict.keys():
+                radio_dict[ my_radio['name'] ].append(radio)
             else:
-                radio_dict[ radio['name'] ] = [radio]
+                radio_dict[ my_radio['name'] ] = [radio]
         for radio_name_key in radio_dict.keys():
             #==TODO GET_VALUE=====================================================
             data_set = InlineDataBank.get_data('radio', radio_name_key)
             if data_set:
                 radio_value = random.choice(list(data_set))
             else:
-                radio_value = [ random.choice(['True','False']) for i in len(radio_dict[radio_name_key]) ]
+                radio_value = random.choice(range(len(radio_dict[radio_name_key])))
             #==TODO GET_VALUE=====================================================
             radio_field_list.append( RadioField(radio_dict[radio_name_key], radio_name_key, radio_value) )
         return radio_field_list
@@ -177,26 +177,31 @@ class DomAnalyzer:
     def get_checkboxes(cls, dom):
         soup = BeautifulSoup(dom, 'html.parser')
         soup = cls.soup_visible(soup)
-        checkboxes_list = []
-        for my_checkbox in soup.find_all('input', attrs={'type': 'checkbox'}):
-            #==TODO GET_VALUE=====================================================
-            if my_checkbox.has_attr('id'):
-                data_set = InlineDataBank.get_data('checkbox', my_input['id']) 
-            elif my_checkbox.has_attr('name'):
-                data_set = InlineDataBank.get_data('checkbox', my_input['name']) 
-            else:
-                data_set = InlineDataBank.get_data('checkbox', None)
-            if data_set:
-                value = random.choice(list(data_set))
-            else:
-                value = random.choice(['True','False'])
-            #==TODO GET_VALUE=====================================================
-
+        #group radio by name
+        default_name = cls.make_id(None)
+        checkbox_dict = { default_name: [] }
+        checkbox_field_list = []
+        for my_checkbox in soup.find_all('input',{'type' : 'checkbox'}):
             checkbox_id = cls.make_id( my_checkbox.get('id') )
-            checkbox_name = cls.make_id( my_checkbox.get('name') if my_input.has_attr('name') else None )
-            checkboxes_list.append( CheckboxField(checkbox_id, checkbox_name, cls._get_xpath(my_checkbox), value))
-        return checkboxes_list
-
+            checkbox_name = my_checkbox.get('name') if my_checkbox.has_attr('name') else default_name
+            checkbox =  Checkbox( checkbox_id, checkbox_name, cls._get_xpath(my_checkbox) )
+            if not my_checkbox.has_attr('name'):
+                checkbox_dict[default_name].append(checkbox)
+            elif my_checkbox['name'] in checkbox_dict.keys():
+                checkbox_dict[ my_checkbox['name'] ].append(checkbox)
+            else:
+                checkbox_dict[ my_checkbox['name'] ] = [checkbox]
+        for checkbox_name_key in checkbox_dict.keys():
+            #==TODO GET_VALUE=====================================================
+            data_set = InlineDataBank.get_data('checkbox', checkbox_name_key)
+            if data_set:
+                checkbox_value = random.choice(list(data_set))
+            else:
+                checkbox_value = [ random.choice(['True','False']) for i in len(checkbox_dict[checkbox_name_key]) ]
+            #==TODO GET_VALUE=====================================================
+            checkbox_field_list.append( CheckboxField(checkbox_dict[checkbox_name_key], checkbox_name_key, checkbox_value) )
+        return checkbox_field_list
+        
     @classmethod
     def soup_visible(cls, soup):
         for invisible_tag in ['style', 'script', '[document]', 'head', 'title']:
