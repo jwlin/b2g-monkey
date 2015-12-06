@@ -77,83 +77,22 @@ def debugTestMain():
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
     #ups.moe.edu.tw
-    config.set_normalizer( TagWithAttributeNormalizer("div", "class", "calendarToday") )
-    config.set_normalizer( TagWithAttributeNormalizer("table", None, u"人氣", 'contains') )
-    config.set_normalizer( TagWithAttributeNormalizer("table", "class", "clmonth") )
-    config.set_normalizer( TagNormalizer(['iframe']) )
-    config.set_normalizer( TagWithAttributeNormalizer("a", "href", "http://cloud.edu.tw/?token") )
-    config.set_normalizer( TagWithAttributeNormalizer("td", "class", "viewNum") )
+    config.set_tags_normalizer( ['iframe'] )
+    config.set_tag_with_attribute_normalizer( "div", "class", "calendarToday" )
+    config.set_tag_with_attribute_normalizer( "table", None, u"人氣", 'contains') )
+    config.set_tag_with_attribute_normalizer( "table", "class", "clmonth") )
+    config.set_tag_with_attribute_normalizer( "td", "class", "viewNum" )
     #jibako
-    config.set_normalizer( TagWithAttributeNormalizer("script", None, '') )
-    config.set_normalizer( TagWithAttributeNormalizer("style", None, '') )
-    config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'fotorama', 'contains') )
-    config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'player', 'contains') )
+    config.set_tags_normalizer( ["script","style"] )
+    config.set_tag_with_attribute_normalizer( "div", 'class', 'fotorama', 'contains' )
+    config.set_tag_with_attribute_normalizer( "div", 'class', 'player', 'contains' )
     config.set_path_ignore_tags( ['img', 'hr', 'br'] )
     #member.cht.com.tw/
-    config.set_normalizer( TagWithAttributeNormalizer("div", 'style', 'visibility: hidden', 'contains') )
-    config.set_normalizer( TagWithAttributeNormalizer("div", 'style', 'none', 'contains') )
-    config.set_normalizer( TagWithAttributeNormalizer("div", 'class', 'ui-widget', 'contains') )
-    #config.set_domains(['https://member.cht.com.tw/'])
+    config.set_tag_with_attribute_normalizer( "div", 'style', 'visibility: hidden', 'contains' )
+    config.set_tag_with_attribute_normalizer( "div", 'style', 'none', 'contains' )
+    config.set_tag_with_attribute_normalizer( "div", 'class', 'ui-widget', 'contains' )
 
-
-    before_script = [
-    #www.cloudopenlab.org.tw
-        #{
-        #    "inputs":[],
-        #    "selects":[],
-        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[2]/a[1]", "tag":"a" },
-        #    "iframe_list":None
-        #},
-        #{
-        #    "inputs":[],
-        #    "selects":[],
-        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/div[2]/div[2]/span[1]/a[1]", "tag":"a" },
-        #    "iframe_list":None
-        #},
-        #{
-        #    "inputs":[],
-        #    "selects":[],
-        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/span[1]/span[1]/input[1]", "tag":"a" },
-        #    "iframe_list":None
-        #},
-        #{
-        #    "inputs":[],
-        #    "selects":[],
-        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/a[1]", "tag":"a" },
-        #    "iframe_list":None
-        #},
-    #member.cht.com.tw/
-        #{
-        #    "inputs":[],
-        #    "selects":[],
-        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[1]/div[1]/div[3]/p[3]/a[1]", "tag":"a" },
-        #    "iframe_list":None
-        #},
-        #{
-        #    "inputs":[],
-        #    "selects":[],
-        #    "clickable":{   "id":"b2g-monkey-5", "name":None, "xpath":"//html/body/div[2]/div[2]/div[2]/div[1]/div[1]/ul[1]/li[1]", "tag":"li" },
-        #    "iframe_list":None
-        #},
-    #ups.moe.edu.tw
-        #{
-        #    "inputs":
-        #    [
-        #        {   "id":"uid", "xpath":"//html/body/div[1]/form[1]/input[3]", "type": "text", "value": "louisalflame@hotmail.com.tw" },
-        #        {   "id":"password", "xpath":"//html/body/div[1]/form[1]/input[4]", "type": "password", "value": "j6j6fu3fu3mp3mp3" }
-        #    ],
-        #    "selects": [],
-        #    "clickable": {   "id": "b2g-monkey-5", "xpath": "//html/body/div[1]/form[1]/input[5]", "tag": "input"  },
-        #    "iframe_list": None
-        #},
-        #{
-        #    "inputs":  [],
-        #    "selects": [],
-        #    "clickable": {   "id": "b2g-monkey-6", "xpath": "//html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[8]/a[1]", "tag": "a"  },
-        #    "iframe_list": None
-        #},
-    ]
-    config.set_before_script(before_script)
+    config.set_before_trace(before_trace)
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
     print "setting crawler..."
@@ -194,15 +133,37 @@ def load_automata(fname):
 
 def load_config(fname):
     t_start = time.time()
-    with open(fname) as f:
+    with codecs.open(fname, encoding='utf-8') as f:
         data = json.load(f)
         config = B2gConfiguration(data['browser_id'], data['url'], data['dirname'], data['folderpath'])
         config.set_max_depth(int(data['max_depth']))
         config.set_max_states(int(data['max_states']))
         config.set_sleep_time(int(data['sleep_time']))
         config.set_max_time(int(data['max_time']))
-        config.set_automata_fname(data['automata_fname'])
         # ignore the rest ('automata_fname', 'root_path', 'dom_path', 'state_path', 'clickable_path')
+        config.set_automata_fname(data['automata_fname'])
+        config.set_domains(data['domains'])
+        config.set_dom_inside_iframe(data['dom_inside_iframe'])
+        config.set_traces_fname(data['traces_fname'])
+
+        if data['analyzer']['simple_clickable_tags']:
+            config.set_simple_clickable_tags()
+        if data['analyzer']['simple_normalizers']:
+            config.set_simple_normalizers()
+        if data['analyzer']['simple_inputs_tags']:
+            config.set_simple_inputs_tags()
+        for tag in data['analyzer']['clickable_tags']:
+            config.set_clickable_tags(tag['tag'], tag['attr'], tag['value'])
+        for tag in data['analyzer']['inputs_tags']:
+            config.set_inputs_tags(tag)
+        config.set_path_ignore_tags(data['analyzer']['path_ignore_tags'])
+        config.set_tags_normalizer(data['analyzer']['tag_normalizers'])
+        config.set_attributes_normalizer(data['analyzer']['attributes_normalizer'])
+        for tag in data['analyzer']['tag_with_attribute_normalizers']:
+            config.set_tag_with_attribute_normalizer(tag['tag'], tag['attr'], tag['value'], tag['mode'])
+
+        if data['before_trace_fname']:
+            config.set_before_trace(data['before_trace_fname'])
         print 'config loaded. loading time: %f sec' % (time.time() - t_start)
     return config
 

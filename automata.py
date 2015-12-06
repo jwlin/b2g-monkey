@@ -33,7 +33,7 @@ class Automata:
     def get_edges(self):
         return self._edges
 
-    def add_state(self, state):
+    def add_state_edge(self, state, edge):
         if not state.get_id():
             state.set_id( str(len( self.get_states() )) )
 
@@ -46,11 +46,16 @@ class Automata:
             # check if the dom is duplicated
             is_new, state_id = self._hash.put(state)
 
+        #change state if not new
         if is_new:
             self._states.append(state)
-            return state, True
         else:
-            return self.get_state_by_id(state_id), False
+            state = self.get_state_by_id(state_id)
+
+        #add edge
+        edge.set_state_to(state)
+        self.add_edge(edge)
+        return state, is_new
 
     def change_state(self, state):
         self._current_state = state
@@ -363,13 +368,19 @@ class State:
                 'iframe_list': iframe_key.split(';'),
                 'checkboxes': []
             }
-            for my_checkbox in self._checkboxes[iframe_key]:
-                checkbox_data = {
-                    'id': my_checkbox.get_id(),
-                    'name': my_checkbox.get_name(),
-                    'xpath': my_checkbox.get_xpath()
+            for my_checkbox_field in self._checkboxes[iframe_key]:
+                checkbox_field_data = {
+                    'checkbox_name': my_checkbox_field.get_checkbox_name(),
+                    'checkbox_list': []
                 }
-                iframe['inputs'].append(checkbox_data) 
+                for my_checkbox in my_checkbox_field.get_checkbox_list():
+                    checkbox_data = {
+                        'id': my_checkbox.get_id(),
+                        'name': my_checkbox.get_name(),
+                        'xpath': my_checkbox.get_xpath()
+                    }
+                    checkbox_field_data['radio_list'].append(checkbox_data)
+                iframe['checkboxes'].append(checkbox_field_data)  
             note.append(iframe)
         return note
 
@@ -391,16 +402,17 @@ class State:
             }
             for my_radio_field in self._radios[iframe_key]:
                 radio_field_data = {
-                    'name': my_radio_field.get_radio_name(),
-                    'radios': []
+                    'radio_name': my_radio_field.get_radio_name(),
+                    'radio_list': []
                 }
                 for my_radio in my_radio_field.get_radio_list():
                     radio_data = {
                         'id': my_radio.get_id(),
+                        'name': my_radio.get_name(),
                         'xpath': my_radio.get_xpath()
                     }
-                    my_radio_field['radios'].append(radio_data)
-                iframe['inputs'].append(radio_data) 
+                    radio_field_data['radio_list'].append(radio_data)
+                iframe['radios'].append(radio_field_data) 
             note.append(iframe)
         return note
 
@@ -478,12 +490,15 @@ class StateDom:
                DomAnalyzer.is_normalize_equal(self.normalize_dom, stateDom.get_normalize_dom())
 
 class Edge:
-    def __init__(self, state_from, state_to, clickable, inputs, selects, iframe_list, cost = 1):
+    def __init__(self, state_from, state_to, clickable, \
+                 inputs, selects, checkboxes, radios, iframe_list, cost = 1):
         self._state_from = state_from
         self._state_to = state_to
         self._clickable = clickable
         self._inputs = inputs
         self._selects = selects
+        self._checkboxes = checkboxes
+        self._radios = radios
         self._iframe_list = iframe_list
 
     def get_state_from(self):
@@ -491,6 +506,9 @@ class Edge:
 
     def get_state_to(self):
         return self._state_to
+
+    def set_state_to(self, state):
+        self._state_to = state
 
     def get_clickable(self):
         return self._clickable
@@ -500,6 +518,12 @@ class Edge:
 
     def get_selects(self):
         return self._selects
+
+    def get_checkboxes(self):
+        return self._checkboxes
+
+    def get_radios(self):
+        return self._radios
 
     def get_iframe_list(self):
         return self._iframe_list
@@ -516,6 +540,8 @@ class Edge:
             },
             'inputs': [],
             'selects': [],
+            'checkboxes': [],
+            'radios': [],
             'iframe_list': self._iframe_list.split(';')
         }
         for my_input in self._inputs:
@@ -535,4 +561,31 @@ class Edge:
                 'value': select.get_value()
             }
             edge_data['selects'].append(select_data)
+        for checkbox_field in self._checkboxes:
+            checkbox_field_data = {
+                'checkbox_list': [],
+                'checkbox_value_list': checkboxe_field.get_value(),
+                'checkbox_name': checkboxe_field.get_checkbox_name()
+            }
+            for checkbox in checkbox_field.get_checkbox_list():
+                checkbox_data = {
+                    'id': checkbox.get_id(),
+                    'name': checkbox.get_name(),
+                    'value': checkbox.get_value()
+                }
+                checkbox_field_data['checkbox_list'].append(checkbox_data)
+            edge_data['checkboxes'].append(checkbox_field_data)
+        for radio_field in self._radios:
+            radio_field_data = {
+                'radio_list': [],
+                'radio_value': radio_field.get_value(),
+                'radio_name': radio_field.get_radio_name()
+            }
+            for radio in radio_field.get_radio_list():
+                radio_data = {
+                    'id': radio.get_id(),
+                    'name': radio.get_name(),
+                    'xpath': radio.get_xpath()
+                }
+            edge_data['radios'].append(radio_field_data)
         return edge_data

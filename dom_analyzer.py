@@ -6,7 +6,7 @@ Module docstring
 """
 import random, string, re
 from bs4 import BeautifulSoup
-from clickable import Clickable, InputField, SelectField, CheckboxField, Radio, RadioField
+from clickable import Clickable, InputField, SelectField, Checkbox, CheckboxField, Radio, RadioField
 from data_bank import InlineDataBank
 from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
 
@@ -283,16 +283,24 @@ class DomAnalyzer:
         cls._path_ignore_tags.append(tag)
 
     @classmethod
-    def add_path_ignore_tags(cls, tag_list):
-        cls._path_ignore_tags += tag_list
+    def add_tags_normalizer(cls, tags):
+        cls._normalizers.append( TagNormalizer(tags) )
 
     @classmethod
-    def add_normalizer(cls, normalizer):
-        cls._normalizers.append(normalizer)
+    def add_attributes_normalizer(cls, attrs):
+        cls._normalizers.append( AttributeNormalizer(attrs) )
 
     @classmethod
-    def add_clickable_tag(cls, Tag):
-        cls._clickable_tags.append(Tag)
+    def add_tag_with_attribute_normalizer(cls, tag_name, attr, value, mode):
+        if mode:
+            cls._normalizers.append( TagWithAttributeNormalizer( tag_name, attr, value, mode ) )
+        else:
+            cls._normalizers.append( TagWithAttributeNormalizer( tag_name, attr, value ) )
+
+    @classmethod
+    def add_clickable_tag(cls, tag_name, attr, value):
+        tag = Tag(tag_name, {attr:value}) if attr else Tag(tag_name)
+        cls._clickable_tags.append(tag)
 
     @classmethod
     def add_inputs_tag(cls, tag):

@@ -52,14 +52,15 @@ class SeleniumCrawler(Crawler):
         for clickables, iframe_list in DomAnalyzer.get_clickables(current_state, prev_state if prev_state else None):
             inputs = current_state.get_inputs(iframe_list)
             selects = current_state.get_selects(iframe_list)
+            checkboxes = current_state.get_checkboxes(iframe_list)
+            radios = current_state.get_radios(iframe_list)
 
             for clickable in clickables:
                 '''TODO: ADD OTHER EVENTS '''
+                '''TODO: get value'''
+                new_edge = Edge(current_state, None, clickable, inputs, selects, checkboxes, radios, iframe_list)
                 print "[LOG] state %s fire element in iframe(%s) " % ( current_state.get_id(), iframe_list )
-                self.executor.switch_iframe_and_get_source(iframe_list)
-                self.executor.empty_form([inputs, selects])
-                self.executor.fill_form([inputs, selects])
-                self.executor.fire_event(clickable)
+                self.click_event_by_edge(unknown_edge)
 
                 dom_list, url, is_same = self.is_same_state_dom(current_state)
                 if is_same:
@@ -68,11 +69,9 @@ class SeleniumCrawler(Crawler):
                     print "[LOG] change dom to: ", self.executor.get_url()
                     # check if this is a new state
                     temp_state = State(dom_list, url)
-                    new_state, is_newly_added = self.automata.add_state(temp_state)
+                    new_state, is_newly_added = self.automata.add_state_edge(temp_state, new_edge)
                     # save this click edge
                     current_state.add_clickable(clickable, iframe_list)
-                    new_edge = Edge(current_state, new_state, clickable, inputs, selects, iframe_list)
-                    self.automata.add_edge(new_edge)
                     '''TODO: value of inputs should connect with edges '''
                     if is_newly_added:
                         print "[LOG] add new state ",new_state.get_id()," of: ", url
@@ -113,13 +112,9 @@ class SeleniumCrawler(Crawler):
 
         #if can't , try do last edge of state history
         if len(self.event_history) > 0:
-            self.executor.forward_history()
             print "[LOG] <BACKTRACK> : try last edge of state history "
-            last_edge = self.event_history[-1]
-            self.executor.switch_iframe_and_get_source(last_edge.get_iframe_list())
-            self.executor.empty_form([last_edge.get_inputs(), last_edge.get_selects()])
-            self.executor.fill_form([last_edge.get_inputs(), last_edge.get_selects()])
-            self.executor.fire_event(last_edge.get_clickable())
+            self.executor.forward_history()
+            self.click_event_by_edge( self.event_history[-1] )
             dom_list, url, is_same = self.is_same_state_dom(state)
             if is_same:
                 return True
@@ -127,13 +122,8 @@ class SeleniumCrawler(Crawler):
         #if can't, try go through all edge
         print "[LOG] <BACKTRACK> : start form base url"
         self.executor.goto_url()
-        for i in xrange(len(self.event_history)):
-            history_edge = self.event_history[i]
-            self.executor.switch_iframe_and_get_source(history_edge.get_iframe_list())
-            self.executor.empty_form([history_edge.get_inputs(), history_edge.get_selects()])
-            self.executor.fill_form([history_edge.get_inputs(), history_edge.get_selects()])
-            self.executor.fire_event(history_edge.get_clickable())
-            time.sleep(self.configuration.get_sleep_time())
+        for history_edge in self.event_history:
+            self.click_event_by_edge( history_edge )
         dom_list, url, is_same = self.is_same_state_dom(state)
         if is_same:
             return True
@@ -144,13 +134,8 @@ class SeleniumCrawler(Crawler):
         self.executor.restart_app()
         self.executor.goto_url()
         for edge in edges:
-            self.executor.switch_iframe_and_get_source(edge.get_iframe_list())
-            self.executor.empty_form([edge.get_inputs(), edge.get_selects()])
-            self.executor.fill_form([edge.get_inputs(), edge.get_selects()])
-            self.executor.fire_event(edge.get_clickable())
-
+            self.click_event_by_edge(edge)
             #check again if executor really turn back. if not, sth error, stop
-            time.sleep(self.configuration.get_sleep_time())
             dom_list, url, is_same = self.is_same_state_dom(state_to)
             if not is_same:
                 try:
@@ -171,6 +156,14 @@ class SeleniumCrawler(Crawler):
         dom_list, url, is_same = self.is_same_state_dom(state)
         return is_same
 
+    def click_event_by_edge(self, edge):
+        self.executor.switch_iframe_and_get_source( edge.get_iframe_list() )
+        self.executor.fill_selects( edge.get_selects() )
+        self.executor.fill_inputs_text( edge.get_inputs() )
+        self.executor.fill_checkboxes( edge.get_checkboxes() )
+        self.executor.fill_radios( edge.get_radios() )
+        self.executor.fire_event( edge.get_clickable() )
+        time.sleep(self.configuration.get_sleep_time())
 
     def save_dom(self, state):
         try:
@@ -198,12 +191,9 @@ class SeleniumCrawler(Crawler):
         return initial_state
 
     def run_script_before_crawl(self, prev_state):
-        for inputs, selects, clickable, iframe_list in self.configuration.get_before_script():
-            self.executor.switch_iframe_and_get_source(iframe_list)
-            self.executor.empty_form([inputs, selects])
-            self.executor.fill_form([inputs, selects])
-            self.executor.fire_event(clickable)
-            self.event_history.append( (prev_state, clickable, inputs, selects, iframe_list) )
+        for edge in self.configuration.get_before_script():
+            self.click_event_by_edge(edge)
+            self.event_history.append(edge)
 
             dom_list, url, is_same = self.is_same_state_dom(prev_state)
             if is_same:
@@ -211,11 +201,9 @@ class SeleniumCrawler(Crawler):
             print "[LOG] change dom to: ", self.executor.get_url()
             # check if this is a new state
             temp_state = State(dom_list, url)
-            new_state, is_newly_added = self.automata.add_state(temp_state)
+            new_state, is_newly_added = self.automata.add_state_edge(temp_state, edge)
             # save this click edge
             prev_state.add_clickable(clickable, iframe_list)
-            edge = (prev_state, new_state, clickable, inputs, selects, iframe_list) 
-            self.automata.add_edge(edge)
             '''TODO: value of inputs should connect with edges '''
             if is_newly_added:
                 print "[LOG] add new state ", new_state.get_id(), " of: ", url
@@ -253,7 +241,7 @@ class SeleniumCrawler(Crawler):
             candidate_clickables[iframe_key] = DomAnalyzer.get_candidate_clickables_soup(dom)
             inputs[iframe_key] = DomAnalyzer.get_inputs(dom)
             selects[iframe_key] = DomAnalyzer.get_selects(dom)
-            checkboxes[iframe_key] = DomAnalyzer.get_selects(dom)
+            checkboxes[iframe_key] = DomAnalyzer.get_checkboxes(dom)
             radios[iframe_key] = DomAnalyzer.get_radios(dom)
         state.set_candidate_clickables(candidate_clickables)
         state.set_inputs(inputs)
