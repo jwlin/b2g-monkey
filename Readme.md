@@ -10,6 +10,7 @@ pip install -r requirement.txt (Admin privilege may be needed)
 
 Download [b2g desktop client](https://ftp.mozilla.org/pub/b2g/nightly/latest-maple/b2g-43.0a1.en-US.win32.zip) (b2g-43.0a1.en-US.win32)
 Unzip it and run `b2g.exe`. Simulator should be opened. Finish the first-time settings, and then go to
+
 1. Settings -> Display, to turn off Screen Timeout 
 2. Settings -> Screen Lock, to disable the screen lock
 
