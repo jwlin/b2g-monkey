@@ -75,10 +75,10 @@ class TestContacts(unittest.TestCase):
         import sys
         #print sys.stdout.encoding
         #print self.marionette.page_source.encode(sys.stdout.encoding, errors='replace')
-        print u'\u232b'.encode('utf-8', 'ignore')#.decode('utf-8')
-        print u'\u232b'.encode('utf-8', 'replace')#.decode('utf-8')
-        print u'\u232b'.encode('utf-8')
-        print self.marionette.page_source.encode(sys.stdout.encoding, 'ignore')
+        #print u'\u232b'.encode('utf-8', 'ignore')#.decode('utf-8')
+        #print u'\u232b'.encode('utf-8', 'replace')#.decode('utf-8')
+        #print u'\u232b'.encode('utf-8')
+        #print self.marionette.page_source.encode(sys.stdout.encoding, 'ignore')
         Wait(self.marionette).until(lambda m: m.find_element('css selector', "iframe[data-url*='contacts']").is_displayed())
 
 

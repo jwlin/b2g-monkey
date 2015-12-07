@@ -1,20 +1,61 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
 """
 The automata (finite state machine) referenced by the monkey.
 """
 
+import json
+import posixpath
+import os
+import time
+import logging
+from os.path import relpath
 from dom_analyzer import DomAnalyzer
+from clickable import Clickable, FormField, InputField
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 class Automata:
-    def __init__(self):
+    def __init__(self, fname=None, load_dom=False):
         self._states = []
         self._edges = []
         self._initial_state = None
         self._current_state = None
+        if fname:
+            assert os.path.isfile(fname) and os.path.exists(fname)
+            t_start = time.time()
+            with open(fname) as f:
+                data = json.load(f)
+                for state in data['state']:
+                    if load_dom:
+                        with open(os.path.join(os.path.dirname(os.path.realpath(fname)), state['dom_path']), 'r') as df:
+                            s = State(df.read())
+                    else:
+                        s = State(state['id'])
+                    s.set_id(state['id'])
+                    for form in state['form']:
+                        f = FormField(form['id'], form['xpath'])
+                        for the_input in form['input']:
+                            f.add_input(InputField(the_input['id'], the_input['xpath'], the_input['type'], the_input['value']))
+                        s.add_form(f)
+                    for clickable in state['clickable']:
+                        c = Clickable(clickable['id'], clickable['xpath'], clickable['tag'])
+                        for form in clickable['form']:
+                            f = s.get_form_by_id(form['id'])
+                            assert f
+                            c.add_form(f)
+                        s.add_clickable(c)
+                    self.add_state(s)
+                for edge in data['edge']:
+                    from_state = self.get_state_by_id(edge['from'])
+                    to_state = self.get_state_by_id(edge['to'])
+                    clickable = from_state.get_clickable_by_id(edge['clickable'])
+                    assert from_state and to_state and clickable
+                    self.add_edge(from_state, to_state, clickable)
+            logger.info('automata loaded. loading time: %f sec', time.time() - t_start)
 
     def get_current_state(self):
         return self._current_state
@@ -105,6 +146,89 @@ class Automata:
                         form_element['clickable'] = clickable_list
                     form_list.append(form_element)
         return form_list
+
+    def save(self, config):
+        data = {
+            'state': [],
+            'edge': [],
+            'id_prefix': DomAnalyzer.serial_prefix  # the prefix used in ids given by our monkey
+        }
+        for state in self._states:
+            state_data = {
+                'id': state.get_id(),
+                # output unix style path for website: first unpack dirs in get_path('dom'),
+                # and then posixpath.join them with the filename
+                'dom_path': posixpath.join(
+                    posixpath.join(
+                        *(relpath(
+                            config.get_path('dom'),
+                            config.get_path('root')
+                            ).split(os.sep))
+                    ),
+                    state.get_id() + '.txt'
+                ),
+                'img_path': posixpath.join(
+                    posixpath.join(
+                        *(relpath(
+                            config.get_path('state'),
+                            config.get_path('root')
+                            ).split(os.sep))
+                    ),
+                    state.get_id() + '.png'
+                ),
+                'clickable': [],
+                'form': []
+            }
+            for form in state.get_forms():
+                form_data = {
+                    'id': form.get_id(),
+                    'xpath': form.get_xpath(),
+                    'input': []
+                }
+                for my_input in form.get_inputs():
+                    input_data = {
+                        'id': my_input.get_id(),
+                        'xpath': my_input.get_xpath(),
+                        'type': my_input.get_type(),
+                        'value': my_input.get_value()
+                    }
+                    form_data['input'].append(input_data)
+                state_data['form'].append(form_data)
+            for clickable in state.get_clickables():
+                clickable_data = {
+                    'id': clickable.get_id(),
+                    'xpath': clickable.get_xpath(),
+                    'tag': clickable.get_tag(),
+                    'img_path': posixpath.join(
+                        posixpath.join(
+                            *(relpath(
+                                config.get_path('clickable'),
+                                config.get_path('root')
+                                ).split(os.sep))
+                        ),
+                        state.get_id() + '-' + clickable.get_id() + '.png'
+                    ),
+                    'form': []
+                }
+                for form in clickable.get_forms():
+                    form_data = {
+                        'id': form.get_id()
+                    }
+                    clickable_data['form'].append(form_data)
+                state_data['clickable'].append(clickable_data)
+            data['state'].append(state_data)
+        for (state_from, state_to, clickable, cost) in self._edges:
+            edge_data = {
+                'from': state_from.get_id(),
+                'to': state_to.get_id(),
+                'clickable': clickable.get_id()
+            }
+            data['edge'].append(edge_data)
+
+        with open(os.path.join(config.get_abs_path('root'), config.get_automata_fname()), 'w') as f:
+            json.dump(data, f, indent=2, sort_keys=True, ensure_ascii=False)
+
+        return os.path.join(config.get_abs_path('root'), config.get_automata_fname())
 
 
 class State:

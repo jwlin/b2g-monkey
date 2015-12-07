@@ -10,11 +10,11 @@ from automata import Automata, State
 from clickable import Clickable, FormField, InputField
 from executor import B2gExecutor
 from configuration import B2gConfiguration
-from dom_analyzer import DomAnalyzer
+from dom_analyzer import DomAnalyzer, Tag
 from bs4 import BeautifulSoup
 from normalizer import AttributeNormalizer, TagContentNormalizer, TagNormalizer, TagWithAttributeNormalizer
 from visualizer import Visualizer
-from invariant import TagInvariant, FileNotFoundInvariant
+from invariant import TagInvariant, FileNotFoundInvariant, StringInvariant
 
 
 class AutomataTestCase(unittest.TestCase):
@@ -129,6 +129,21 @@ class AutomataTestCase(unittest.TestCase):
         #for e in edges:
         #    print e[0].get_id(), e[1].get_id(), e[2].get_id()
 
+    def test_load_save(self):
+        automata = Automata(fname='test_data/automata-example.json')
+        config = B2gConfiguration('test-app-name', 'test-app-id', mkdir=False)
+        config.set_path('root', 'test_data')
+        config.set_path('dom', 'test_data/dom')
+        config.set_path('state', 'test_data/screenshot/state')
+        config.set_path('clickable', 'test_data/screenshot/clickable')
+        saved_file_path = automata.save(config)
+        import filecmp
+        self.assertTrue(filecmp.cmp('test_data/automata-example.json', 'test_data/automata.json'))
+        try:
+            os.remove(saved_file_path)
+        except OSError:
+            pass
+
 '''
 class ExecutorTestCase(unittest.TestCase):
     def test_executor(self):
@@ -160,7 +175,7 @@ class DomAnalyzerTestCase(unittest.TestCase):
         form = soup.find('form')
         self.assertEqual(DomAnalyzer._get_xpath(form), '//html/body/div[2]/form[1]')
 
-    def test_add_clickable(self):
+    def get_clickable(self):
         dom = '''
         <html><body>
         <form data-prop="formNode" class="sup-form sup-account-form">
@@ -198,6 +213,45 @@ class DomAnalyzerTestCase(unittest.TestCase):
                 print '==='
         '''
 
+    def add_remove_clickable_tags(self):
+        return
+        dom = '''
+        <html><body>
+        <form data-prop="formNode" class="sup-form sup-account-form">
+        <p>
+        <input placeholder="Your name" data-prop="nameNode" data-event="input:onInfoInput" class="sup-info-name" data-l10n-id="setup-info-name" x-inputmode="verbatim" inputmode="verbatim" dir="auto" required="" type="text">
+        <button type="reset">reset1</button>
+        </p>
+        <p>
+        <input placeholder="someone@example.com" data-prop="emailNode" data-event="input:onInfoInput" class="sup-info-email" data-l10n-id="setup-info-email" dir="auto" required="" type="email">
+        <button type="reset">reset2</button>
+        </p>
+        <p>
+        <button data-prop="nextButton" data-event="click:onNext" class="sup-info-next-btn recommend" disabled="">
+          <span data-l10n-id="setup-info-next">Next</span>
+        </button>
+        <button data-prop="manualConfig" data-event="click:onClickManualConfig" class="sup-manual-config-btn" disabled="" data-l10n-id="setup-manual-config2">Manual setup</button>
+        </p>
+        </form>
+        </body></html>
+        '''
+
+        # Tag('a'), Tag('button'), Tag('input', {'type': 'submit'}), Tag('input', {'type': 'button'})
+        self.assertEqual(len(DomAnalyzer.get_clickable_tags()), 4)
+        DomAnalyzer.remove_clickable_tags(Tag('a'))
+        DomAnalyzer.remove_clickable_tags(Tag('button'))
+        DomAnalyzer.remove_clickable_tags(Tag('button'))
+        DomAnalyzer.remove_clickable_tags(Tag('input', {'type': 'submit'}))
+        DomAnalyzer.remove_clickable_tags(Tag('input', {'type': 'button'}))
+        self.assertEqual(len(DomAnalyzer.get_clickable_tags()), 0)
+        DomAnalyzer.add_clickable_tags(Tag('button', {'type': 'reset'}))
+        self.assertEqual(len(DomAnalyzer.get_clickables(dom)), 2)
+
+    def test_all(self):
+        self.get_clickable()
+        self.add_remove_clickable_tags()
+
+
 
 class ConfigurationTestCase(unittest.TestCase):
     def test_b2g_configuration(self):
@@ -206,19 +260,40 @@ class ConfigurationTestCase(unittest.TestCase):
         init_max_depth = 2
         init_max_states = 0
         init_max_time = 0
-        config = B2gConfiguration(app_name, app_id)
+        config = B2gConfiguration(app_name, app_id, mkdir=False)
         self.assertEqual(config.get_app_name(), app_name)
         self.assertEqual(config.get_app_id(), app_id)
         self.assertEqual(config.get_max_depth(), init_max_depth)
         self.assertEqual(config.get_max_states(), init_max_states)
         self.assertEqual(config.get_max_time(), init_max_time)
 
+    def test_load_save(self):
+        config = B2gConfiguration(app_name=None, app_id=None, fname='test_data/config-example.json')
+        config.save('config2.json')
+        import filecmp
+        self.assertTrue(filecmp.cmp('test_data/config-example.json', 'test_data/config2.json'))
+        try:
+            os.remove('test_data/config2.json')
+        except OSError:
+            pass
 
-class ControllerTestCase(unittest.TestCase):
-    def test_controller(self):
-        import controller
-        controller.main()
-
+    def test_add_remove_invariant(self):
+        config = B2gConfiguration('test-app-name', 'test-app-id', mkdir=False)
+        self.assertEqual(len(config.get_invariants()), 1)  # FileNotFoundInvariant
+        config.add_invariant(FileNotFoundInvariant())
+        self.assertEqual(len(config.get_invariants()), 1)
+        config.remove_invariant(FileNotFoundInvariant())
+        self.assertEqual(len(config.get_invariants()), 0)
+        config.add_invariant(TagInvariant('a',
+            [{'name': 'data', 'value': 'sister'}, {'name': 'id', 'value': 'link2'}]))
+        config.add_invariant(TagInvariant('a',
+            [{'name': 'data', 'value': 'sister'}, {'name': 'id', 'value': 'link2'}]))
+        config.add_invariant(TagInvariant('a',
+            [{'name': 'data', 'value': 'sister'}, {'name': 'id', 'value': 'link3'}]))
+        self.assertEqual(len(config.get_invariants()), 2)
+        config.remove_invariant(TagInvariant('a',
+            [{'name': 'data', 'value': 'sister'}, {'name': 'id', 'value': 'link2'}]))
+        self.assertEqual(len(config.get_invariants()), 1)
 
 class DataBankTestCase(unittest.TestCase):
     def test_inline_databank(self):
@@ -312,7 +387,7 @@ class NormalizerTestCase(unittest.TestCase):
 
 class InvariantTestCase(unittest.TestCase):
     def test_invariant(self):
-        dom = '''
+        dom = u'''
         <p class="title"><b>The Dormouse story</b></p>
         <a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>
         <a class="sister" href="http://example2.com/anna" id="link2">Anna</a>
@@ -324,7 +399,7 @@ class InvariantTestCase(unittest.TestCase):
         self.assertTrue(invariant.check(dom))
         invariant = TagInvariant('a',
                                  [{'name': 'class', 'value': 'sister'},
-                                  {'name': 'string', 'value':'Anna'}])
+                                  {'name': 'string', 'value': 'Anna'}])
         self.assertTrue(invariant.check(dom))
         invariant = TagInvariant('a',
                                  [{'name': 'class', 'value': 'sister'},
@@ -336,6 +411,42 @@ class InvariantTestCase(unittest.TestCase):
                                   {'name': 'id', 'value': 'link2'},
                                   {'name': 'string', 'value': 'Bobby'}])
         self.assertFalse(invariant.check(dom))
+        invariant = TagInvariant('table',
+                                 [{'name': 'string', 'value': u'文字'}])
+        self.assertTrue(invariant.check(dom))
+        invariant = StringInvariant(u'文字')
+        self.assertTrue(invariant.check(dom))
+
+    def test_equality(self):
+        invariants = [
+            FileNotFoundInvariant(),
+            TagInvariant('a',
+                [{'name': 'class', 'value': 'sister'},
+                 {'name': 'string', 'value': 'Anna'}]
+            ),
+            StringInvariant(u'文字')
+        ]
+        inv1 = TagInvariant('a',
+                [{'name': 'class', 'value': 'sister'},
+                 {'name': 'string', 'value': 'Anna'}]
+            )
+        inv2 = TagInvariant('a',
+                [{'name': 'class', 'value': 'sister'},
+                 {'name': 'string', 'value': 'Bob'}]
+            )
+        inv3 = TagInvariant('a',
+                [{'name': 'class', 'value': 'sister'},]
+            )
+        inv4 = StringInvariant(u'文字')
+        inv5 = StringInvariant(u'文字a')
+        inv6 = TagInvariant('a')
+        self.assertTrue(FileNotFoundInvariant() in invariants)
+        self.assertTrue(inv1 in invariants)
+        self.assertFalse(inv2 in invariants)
+        self.assertFalse(inv3 in invariants)
+        self.assertTrue(inv4 in invariants)
+        self.assertFalse(inv5 in invariants)
+        self.assertFalse(inv6 in invariants)
 
 
 class VisualizerTestCase(unittest.TestCase):

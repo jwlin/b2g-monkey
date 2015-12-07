@@ -158,7 +158,13 @@ class B2gExecutor(Executor):
             except Exception as e:
                 logger.error('Unknown Exception: %s in get_screenshot(): id: %s (xpath: %s)', str(e), clickable.get_id(), clickable.get_xpath())
                 sys.exit()
-        return self._marionette.screenshot(element)
+        if not element:
+            # set context to CHROME to capture whole screen
+            # system frame e.g. FileNotFound cannot be captured without CONTEXT_CHROME (Don't know why)
+            self._marionette.set_context(self._marionette.CONTEXT_CHROME)
+        screenshot = self._marionette.screenshot(element)
+        self._marionette.set_context(self._marionette.CONTEXT_CONTENT)
+        return screenshot
 
     def switch_to_frame(self, by, frame_str):
         """

@@ -1,0 +1,252 @@
+{
+  "edge": [
+    {
+      "clickable": "add-contact-button", 
+      "from": "0", 
+      "to": "1"
+    }, 
+    {
+      "clickable": "add-new-phone", 
+      "from": "1", 
+      "to": "2"
+    }, 
+    {
+      "clickable": "add-new-email", 
+      "from": "1", 
+      "to": "3"
+    }, 
+    {
+      "clickable": "add-new-address", 
+      "from": "1", 
+      "to": "4"
+    }, 
+    {
+      "clickable": "add-new-date", 
+      "from": "1", 
+      "to": "5"
+    }, 
+    {
+      "clickable": "add-new-note", 
+      "from": "1", 
+      "to": "6"
+    }, 
+    {
+      "clickable": "save-button", 
+      "from": "1", 
+      "to": "7"
+    }, 
+    {
+      "clickable": "settings-button", 
+      "from": "0", 
+      "to": "8"
+    }, 
+    {
+      "clickable": "settings-close", 
+      "from": "8", 
+      "to": "9"
+    }, 
+    {
+      "clickable": "b2g-monkey-43", 
+      "from": "8", 
+      "to": "10"
+    }
+  ], 
+  "id_prefix": "b2g-monkey-", 
+  "state": [
+    {
+      "clickable": [
+        {
+          "form": [], 
+          "id": "add-contact-button", 
+          "img_path": "screenshot/clickable/0-add-contact-button.png", 
+          "tag": "button", 
+          "xpath": "//html/body/section[1]/gaia-header[1]/button[1]"
+        }, 
+        {
+          "form": [], 
+          "id": "settings-button", 
+          "img_path": "screenshot/clickable/0-settings-button.png", 
+          "tag": "button", 
+          "xpath": "//html/body/section[1]/gaia-header[1]/button[2]"
+        }
+      ], 
+      "dom_path": "dom/0.txt", 
+      "form": [], 
+      "id": "0", 
+      "img_path": "screenshot/state/0.png"
+    }, 
+    {
+      "clickable": [
+        {
+          "form": [
+            {
+              "id": "contact-form"
+            }
+          ], 
+          "id": "add-new-phone", 
+          "img_path": "screenshot/clickable/1-add-new-phone.png", 
+          "tag": "button", 
+          "xpath": "//html/body/section[1]/article[1]/div[1]/form[1]/ul[1]/li[1]/button[1]"
+        }, 
+        {
+          "form": [
+            {
+              "id": "contact-form"
+            }
+          ], 
+          "id": "add-new-email", 
+          "img_path": "screenshot/clickable/1-add-new-email.png", 
+          "tag": "button", 
+          "xpath": "//html/body/section[1]/article[1]/div[1]/form[1]/ul[1]/li[2]/button[1]"
+        }, 
+        {
+          "form": [
+            {
+              "id": "contact-form"
+            }
+          ], 
+          "id": "add-new-address", 
+          "img_path": "screenshot/clickable/1-add-new-address.png", 
+          "tag": "button", 
+          "xpath": "//html/body/section[1]/article[1]/div[1]/form[1]/ul[1]/li[3]/button[1]"
+        }, 
+        {
+          "form": [
+            {
+              "id": "contact-form"
+            }
+          ], 
+          "id": "add-new-date", 
+          "img_path": "screenshot/clickable/1-add-new-date.png", 
+          "tag": "button", 
+          "xpath": "//html/body/section[1]/article[1]/div[1]/form[1]/ul[1]/li[4]/button[1]"
+        }, 
+        {
+          "form": [
+            {
+              "id": "contact-form"
+            }
+          ], 
+          "id": "add-new-note", 
+          "img_path": "screenshot/clickable/1-add-new-note.png", 
+          "tag": "button", 
+          "xpath": "//html/body/section[1]/article[1]/div[1]/form[1]/ul[1]/li[5]/button[1]"
+        }, 
+        {
+          "form": [], 
+          "id": "save-button", 
+          "img_path": "screenshot/clickable/1-save-button.png", 
+          "tag": "button", 
+          "xpath": "//html/body/section[1]/gaia-header[1]/button[1]"
+        }
+      ], 
+      "dom_path": "dom/1.txt", 
+      "form": [
+        {
+          "id": "contact-form", 
+          "input": [
+            {
+              "id": "givenName", 
+              "type": "text", 
+              "value": "dzrpjoxi", 
+              "xpath": "//html/body/section[1]/article[1]/div[1]/form[1]/section[1]/div[2]/p[1]/input[1]"
+            }, 
+            {
+              "id": "familyName", 
+              "type": "text", 
+              "value": "oloeuptj", 
+              "xpath": "//html/body/section[1]/article[1]/div[1]/form[1]/section[1]/div[2]/p[2]/input[1]"
+            }, 
+            {
+              "id": "org", 
+              "type": "text", 
+              "value": "omkqltgj", 
+              "xpath": "//html/body/section[1]/article[1]/div[1]/form[1]/section[1]/div[3]/p[1]/input[1]"
+            }
+          ], 
+          "xpath": "//html/body/section[1]/article[1]/div[1]/form[1]"
+        }
+      ], 
+      "id": "1", 
+      "img_path": "screenshot/state/1.png"
+    }, 
+    {
+      "clickable": [], 
+      "dom_path": "dom/2.txt", 
+      "form": [], 
+      "id": "2", 
+      "img_path": "screenshot/state/2.png"
+    }, 
+    {
+      "clickable": [], 
+      "dom_path": "dom/3.txt", 
+      "form": [], 
+      "id": "3", 
+      "img_path": "screenshot/state/3.png"
+    }, 
+    {
+      "clickable": [], 
+      "dom_path": "dom/4.txt", 
+      "form": [], 
+      "id": "4", 
+      "img_path": "screenshot/state/4.png"
+    }, 
+    {
+      "clickable": [], 
+      "dom_path": "dom/5.txt", 
+      "form": [], 
+      "id": "5", 
+      "img_path": "screenshot/state/5.png"
+    }, 
+    {
+      "clickable": [], 
+      "dom_path": "dom/6.txt", 
+      "form": [], 
+      "id": "6", 
+      "img_path": "screenshot/state/6.png"
+    }, 
+    {
+      "clickable": [], 
+      "dom_path": "dom/7.txt", 
+      "form": [], 
+      "id": "7", 
+      "img_path": "screenshot/state/7.png"
+    }, 
+    {
+      "clickable": [
+        {
+          "form": [], 
+          "id": "settings-close", 
+          "img_path": "screenshot/clickable/8-settings-close.png", 
+          "tag": "button", 
+          "xpath": "//html/body/article[1]/section[1]/gaia-header[1]/button[1]"
+        }, 
+        {
+          "form": [], 
+          "id": "b2g-monkey-43", 
+          "img_path": "screenshot/clickable/8-b2g-monkey-43.png", 
+          "tag": "button", 
+          "xpath": "//html/body/article[1]/section[1]/article[1]/section[1]/ul[2]/li[1]/button[1]"
+        }
+      ], 
+      "dom_path": "dom/8.txt", 
+      "form": [], 
+      "id": "8", 
+      "img_path": "screenshot/state/8.png"
+    }, 
+    {
+      "clickable": [], 
+      "dom_path": "dom/9.txt", 
+      "form": [], 
+      "id": "9", 
+      "img_path": "screenshot/state/9.png"
+    }, 
+    {
+      "clickable": [], 
+      "dom_path": "dom/10.txt", 
+      "form": [], 
+      "id": "10", 
+      "img_path": "screenshot/state/10.png"
+    }
+  ]
+}

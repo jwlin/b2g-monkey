@@ -1,0 +1,32 @@
+{
+  "app_id": "test-app-id", 
+  "app_name": "test-app-name", 
+  "automata_fname": "automata.json", 
+  "clickable_path": "test_data/clickable", 
+  "dom_path": "test_data/dom", 
+  "invariants": [
+    {
+      "attr": [
+        {
+          "name": "class", 
+          "value": "sister"
+        }, 
+        {
+          "name": "string", 
+          "value": "Anna"
+        }
+      ], 
+      "name": "tag", 
+      "tag": "a"
+    }, 
+    {
+      "name": "file-not-found"
+    }
+  ], 
+  "max_depth": 2, 
+  "max_states": 0, 
+  "max_time": 0, 
+  "root_path": "test_data", 
+  "sleep_time": 2, 
+  "state_path": "test_data/screenshot/state"
+}

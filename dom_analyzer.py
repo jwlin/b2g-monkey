@@ -22,8 +22,32 @@ class Tag:
     def get_attr(self):
         return self.__attr
 
+    def get_value(self):
+        return {
+            'name': self.__name,
+            'attr': self.__attr
+        }
+
+    def __eq__(self, other):
+        lhs = self.get_value()
+        rhs = other.get_value()
+        if lhs['name'] == rhs['name']:
+            if (not lhs['attr']) and (not rhs['attr']):
+                return True
+            elif (lhs['attr']) and (not rhs['attr']):
+                return False
+            elif (not lhs['attr']) and (rhs['attr']):
+                return False
+            elif len(lhs['attr']) == len(rhs['attr']):
+                for l_dict in lhs['attr']:
+                    if l_dict not in rhs['attr']:
+                        return False
+                return True
+        return False
+
 
 class DomAnalyzer:
+    # Currently only tag without attribute and with one attribute are tested.
     _clickable_tags = [
         Tag('a'),
         Tag('button'),
@@ -39,6 +63,7 @@ class DomAnalyzer:
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
 
+    # Fetch HTML elements matching any one of the defined tag name and corresponding attribute
     @classmethod
     def get_clickables(cls, dom, prev_dom=None):
         # only return newly discovered clickables and forms, i.e. clickables not in prev_clickables
@@ -151,3 +176,17 @@ class DomAnalyzer:
             return True
         else:
             return False
+
+    @classmethod
+    def get_clickable_tags(cls):
+        return cls._clickable_tags
+
+    @classmethod
+    def add_clickable_tags(cls, tag):
+        if tag not in cls._clickable_tags:
+            cls._clickable_tags.append(tag)
+
+    @classmethod
+    def remove_clickable_tags(cls, tag):
+        if tag in cls._clickable_tags:
+            cls._clickable_tags.remove(tag)

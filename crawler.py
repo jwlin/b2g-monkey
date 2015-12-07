@@ -31,8 +31,13 @@ class B2gCrawler(Crawler):
         self.automata = Automata()
         self.configuration = configuration
         self.executor = executor
-        self.exe_stack = []
+        self.exe_stack = []  # stack of executed clickables (events)
         self.invariant_violation = []
+        self.num_clickables = {
+            'unexamined': 0,  # num of candidate clickables found with rules in DomAnalyzer
+            'true':  0,  # num of clickables triggered new state (different screen dom)
+            'false': 0,  # num of clickables not triggering new state
+        }
 
     def run(self):
         self.executor.restart_app()
@@ -41,13 +46,15 @@ class B2gCrawler(Crawler):
         self.save_screenshot(initial_state.get_id() + '.png', self.executor.get_screenshot(), 'state')
         self.save_dom(initial_state)
         self.crawl(1)
-        return self.automata, self.invariant_violation
+        return self.automata, self.invariant_violation, self.num_clickables
 
     def crawl(self, depth, prev_state=None):
         if depth <= self.configuration.get_max_depth():
             cs = self.automata.get_current_state()
             if not self.violate_invariant(cs.get_dom(), cs.get_id()):
-                for clickable in DomAnalyzer.get_clickables(cs.get_dom(), prev_state.get_dom() if prev_state else None):
+                candidate_clickables = DomAnalyzer.get_clickables(cs.get_dom(), prev_state.get_dom() if prev_state else None)
+                self.num_clickables['unexamined'] += len(candidate_clickables)
+                for clickable in candidate_clickables:
                     # prefetch image of the clickable
                     time.sleep(0.2)  # time for correctly fetching image
                     img_name = cs.get_id() + '-' + clickable.get_id() + '.png'
@@ -65,12 +72,22 @@ class B2gCrawler(Crawler):
                         self.exe_stack.append(clickable)  # add the clickable triggering No Response
                         for c in self.exe_stack:
                             logger.error(c)
+                        logger.error('Total clickables found: %d (true: %d, false: %d, unexamined: %d)',
+                                     self.num_clickables['unexamined'] + self.num_clickables['true'] + self.num_clickables['false'],
+                                     self.num_clickables['true'],
+                                     self.num_clickables['false'],
+                                     self.num_clickables['unexamined']
+                                     )
                         logger.error('Program terminated.')
                         sys.exit()
                     time.sleep(self.configuration.get_sleep_time())
+                    self.num_clickables['unexamined'] -= 1
 
                     new_dom = self.executor.get_source()
-                    if not DomAnalyzer.is_equal(cs.get_dom(), new_dom):
+                    if DomAnalyzer.is_equal(cs.get_dom(), new_dom):
+                        self.num_clickables['false'] += 1
+                    else:
+                        self.num_clickables['true'] += 1
                         cs.add_clickable(clickable)
                         self.exe_stack.append(clickable)
                         self.save_screenshot(img_name, img_data, 'clickable')
@@ -106,17 +123,17 @@ class B2gCrawler(Crawler):
             f.write(state.get_dom())
 
     def violate_invariant(self, dom, statd_id):
-        violate = False
+        is_violated = False
         for inv in self.configuration.get_invariants():
             if inv.check(dom):
-                violate = True
+                is_violated = True
                 violation = {
                     'state': statd_id,
                     'name': str(inv),
                     'sequence': list(self.exe_stack)  # shallow copy of clickables
                 }
                 self.invariant_violation.append(violation)
-        return violate
+        return is_violated
 
 
 class FireEventThread(threading.Thread):
