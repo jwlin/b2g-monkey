@@ -48,14 +48,14 @@ class DomAnalyzer:
         prev_candidate_clickables_dict = prev_s.get_all_candidate_clickables() if prev_s else None
         clickables_iframe_list = []
 
-        for iframe_path_list in cs_candidate_clickables_dict.keys():
+        for iframe_path_key in cs_candidate_clickables_dict.keys():
             #find prev_candidate_clickables if prev_s exists and iframe_path_list same
-            cs_candidate_clickables = cs_candidate_clickables_dict[iframe_path_list]
+            cs_candidate_clickables = cs_candidate_clickables_dict[iframe_path_key]
             prev_candidate_clickables = None
             clickables = []
             if prev_candidate_clickables_dict:
                 for prev_i in prev_candidate_clickables_dict.keys():
-                    if iframe_path_list == prev_i:
+                    if iframe_path_key == prev_i:
                         prev_candidate_clickables = prev_candidate_clickables_dict[prev_i]
                         break
             for candidate_clickable, clickable_xpath in cs_candidate_clickables:
@@ -63,11 +63,11 @@ class DomAnalyzer:
                 if not cls._is_same_soup_in_prev( prev_candidate_clickables, candidate_clickable, clickable_xpath ) \
                         and not cls._is_duplicate(clickables, candidate_clickable):
                     clickable_id = cls.make_id( candidate_clickable.get('id') if candidate_clickable.has_attr('id') else None  )
-                    clickable_name = cls.make_id( candidate_clickable.get('name') if candidate_clickable.has_attr('name') else None )
+                    clickable_name = candidate_clickable.get('name') if candidate_clickable.has_attr('name') else clickable_id
                     clickable_xpath = cls._get_xpath(candidate_clickable)
                     clickable_tag = candidate_clickable.name
                     clickables.append( Clickable(clickable_id, clickable_name, clickable_xpath, clickable_tag) )
-            clickables_iframe_list.append( (clickables, iframe_path_list) )
+            clickables_iframe_list.append( (clickables, iframe_path_key) )
         return clickables_iframe_list
     #=============================================================================================
 
@@ -114,7 +114,7 @@ class DomAnalyzer:
                     value = ''.join(random.choice(string.lowercase) for i in xrange(8))
                 #==TODO GET_VALUE=====================================================
                 input_id = cls.make_id( my_input.get('id') )
-                input_name = cls.make_id( my_input.get('name') if my_input.has_attr('name') else None )
+                input_name = my_input.get('name') if my_input.has_attr('name') else input_id
                 inputs_list.append( InputField(input_id, input_name, cls._get_xpath(my_input), input_type, value))
         return inputs_list
 
@@ -135,12 +135,11 @@ class DomAnalyzer:
             option_num = len( my_select.find_all('option') )
             if data_set:
                 value = random.choice(list(data_set))
-                value = min(max(0, value), option_num)
             else:
                 value =  min(max(3, option_num/2), option_num)
             #==TODO GET_VALUE=====================================================
             select_id = cls.make_id( my_select.get('id') )
-            select_name = cls.make_id( my_select.get('name') if my_select.has_attr('name') else None )
+            select_name = my_select.get('name') if my_select.has_attr('name') else select_id
             selects_list.append(SelectField(select_id, select_name, cls._get_xpath(my_select), value))
         return selects_list
 
@@ -149,26 +148,28 @@ class DomAnalyzer:
         soup = BeautifulSoup(dom, 'html.parser')
         soup = cls.soup_visible(soup)
         #group radio by name
-        default_name = cls.make_id(None)
-        radio_dict = { default_name: [] }
+        radio_dict = {}
+        default_radio_list = []
         radio_field_list = []
         for my_radio in soup.find_all('input',{'type' : 'radio'}):
             radio_id = cls.make_id( my_radio.get('id') )
-            radio_name = my_radio.get('name') if my_radio.has_attr('name') else default_name
+            radio_name = my_radio.get('name') if my_radio.has_attr('name') else radio_id
             radio =  Radio( radio_id, radio_name, cls._get_xpath(my_radio) )
             if not my_radio.has_attr('name'):
-                radio_dict[default_name].append(radio)
+                default_radio_list.append(radio)
             elif my_radio['name'] in radio_dict.keys():
                 radio_dict[ my_radio['name'] ].append(radio)
             else:
                 radio_dict[ my_radio['name'] ] = [radio]
+        if default_radio_list:
+            radio_dict[cls.make_id(None)] = default_radio_list
         for radio_name_key in radio_dict.keys():
             #==TODO GET_VALUE=====================================================
             data_set = InlineDataBank.get_data('radio', radio_name_key)
             if data_set:
                 radio_value = random.choice(list(data_set))
             else:
-                radio_value = random.choice(range(len(radio_dict[radio_name_key])))
+                radio_value = random.randint(0, len(radio_dict[radio_name_key]))
             #==TODO GET_VALUE=====================================================
             radio_field_list.append( RadioField(radio_dict[radio_name_key], radio_name_key, radio_value) )
         return radio_field_list
@@ -178,26 +179,29 @@ class DomAnalyzer:
         soup = BeautifulSoup(dom, 'html.parser')
         soup = cls.soup_visible(soup)
         #group radio by name
-        default_name = cls.make_id(None)
-        checkbox_dict = { default_name: [] }
+        checkbox_dict = {}
+        default_checkbox_list = []
         checkbox_field_list = []
         for my_checkbox in soup.find_all('input',{'type' : 'checkbox'}):
             checkbox_id = cls.make_id( my_checkbox.get('id') )
-            checkbox_name = my_checkbox.get('name') if my_checkbox.has_attr('name') else default_name
+            checkbox_name = my_checkbox.get('name') if my_checkbox.has_attr('name') else checkbox_id
             checkbox =  Checkbox( checkbox_id, checkbox_name, cls._get_xpath(my_checkbox) )
             if not my_checkbox.has_attr('name'):
-                checkbox_dict[default_name].append(checkbox)
+                default_checkbox_list.append(checkbox)
             elif my_checkbox['name'] in checkbox_dict.keys():
                 checkbox_dict[ my_checkbox['name'] ].append(checkbox)
             else:
                 checkbox_dict[ my_checkbox['name'] ] = [checkbox]
+        if default_checkbox_list:
+            checkbox_dict[cls.make_id(None)] = default_checkbox_list
         for checkbox_name_key in checkbox_dict.keys():
             #==TODO GET_VALUE=====================================================
             data_set = InlineDataBank.get_data('checkbox', checkbox_name_key)
             if data_set:
-                checkbox_value = random.choice(list(data_set))
+                checkbox_value = random.choice(list(data_set)).split('/')
             else:
-                checkbox_value = [ random.choice(['True','False']) for i in len(checkbox_dict[checkbox_name_key]) ]
+                length = len(checkbox_dict[checkbox_name_key])
+                checkbox_value = random.sample( xrange(length), random.randint(0, length) )
             #==TODO GET_VALUE=====================================================
             checkbox_field_list.append( CheckboxField(checkbox_dict[checkbox_name_key], checkbox_name_key, checkbox_value) )
         return checkbox_field_list

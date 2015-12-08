@@ -74,20 +74,23 @@ class SeleniumConfiguration(Configuration):
         self._automata_fname = ''
         self._traces_fname = ''
         self._dom_inside_iframe = True
+        self._frame_tags = []
         self._domains = []
         self._scripts = []
         self._analyzer = {
             'simple_clickable_tags': False,
             'simple_inputs_tags': False,
             'simple_normalizers': False,
+            'simple_path_ignore_tags': False,
             'clickable_tags': [],
             'inputs_tags': [],
             'path_ignore_tags': [],
             'tag_normalizers': [],
-            'attributes_normalizer': []
+            'attributes_normalizer': [],
             'tag_with_attribute_normalizers': []
         }
         self._before_trace_fname = ''
+        self._mutant_scripts = ''
 
     def get_abs_path(self, my_type):
         abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
@@ -162,6 +165,12 @@ class SeleniumConfiguration(Configuration):
     def is_dom_inside_iframe(self):
         return self._dom_inside_iframe
 
+    def set_frame_tags(self, tags):
+        self._frame_tags += tags
+
+    def get_frame_tags(self):
+        return self._frame_tags
+
     def set_automata_fname(self, automata_fname):
         self._automata_fname = automata_fname
 
@@ -177,42 +186,59 @@ class SeleniumConfiguration(Configuration):
     def get_before_trace(self):
         return self._scripts
 
-    def set_before_trace_by_fname(self, trace_fname):
-        self._scripts = self.load_trace(trace_fname)
+    def set_before_script_by_fname(self, trace_fname):
+        data = self.load_json(trace_fname)
+        self._scripts = self.build_trace(data)
 
-    def load_trace(self, trace_fname):
+    def get_before_script(self):
+        return self._scripts
+
+    def set_mutant_trace(self, traces_fname, trace_id):
+        data = self.load_json(traces_fname)
+        self._mutant_scripts = self.build_trace(data['traces'][int(trace_id)])
+
+    def get_mutant_trace(self):
+        return self._mutant_scripts
+
+    def load_json(self, json_file):
         try:
-            with open(trace_fname) as data_file:    
+            with open(json_file) as data_file:      
                 data = json.load(data_file)
-                edges = []
-                for edge in data['edges']:
-                    state_from = edge['from']
-                    state_to = edge['to']
-                    c = edge['clickable']
-                    clickable = Clickable( c['id'], c['name'], c['xpath'], c['tag'] )
-                    inputs = []
-                    for i in edge['inputs']:
-                        inputs.append( InputField( i['id'], i['name'], i['xpath'], i['type'], i['value'] ) )
-                    selects = []
-                    for s in edge['selects']:
-                        selects.append( SelectField( s['id'], s['name'], s['xpath'], s['value'] ) )
-                    checkboxes = []
-                    for c_field in edge['checkboxes']:
-                        c_list = []
-                        for c in c_field['checkbox_list']:
-                            c_list.append( Checkbox( c['id'], c['name'], c['xpath'] ) )
-                        checkboxes.append( CheckboxField(c_list, c_field['checkbox_name'], c_field['checkbox_value_list']) )
-                    radios = []
-                    for r_field in edge['radios']:
-                        r_list = []
-                        for r in r_field['radio_list']:
-                            r_list.append( Radio( r['id'], r['name'], r['xpath'] ) )
-                        radios.append( RadioField(r_list, r_field['radio_name'], r_field['radio_value']) )
-                    iframe_list = edge['iframe_list']
-                    edges.append( Edge( state_from, state_to, clickable, inputs, selects, checkboxes, radios, iframe_list ) )
-                return edges
+                return data
         except Exception as e:
-            print '[ERROR] can not read trace json: %s' % (str(e))
+            print '[ERROR] can not read json: %s' % (str(e))
+
+    def build_trace(self, data):
+        try:
+            edges = []
+            for edge in data['edges']:
+                state_from = edge['from']
+                state_to = edge['to']
+                c = edge['clickable']
+                clickable = Clickable( c['id'], c['name'], c['xpath'], c['tag'] )
+                inputs = []
+                for i in edge['inputs']:
+                    inputs.append( InputField( i['id'], i['name'], i['xpath'], i['type'], i['value'] ) )
+                selects = []
+                for s in edge['selects']:
+                    selects.append( SelectField( s['id'], s['name'], s['xpath'], s['value'] ) )
+                checkboxes = []
+                for c_field in edge['checkboxes']:
+                    c_list = []
+                    for c in c_field['checkbox_list']:
+                        c_list.append( Checkbox( c['id'], c['name'], c['xpath'] ) )
+                    checkboxes.append( CheckboxField(c_list, c_field['checkbox_name'], c_field['checkbox_value_list']) )
+                radios = []
+                for r_field in edge['radios']:
+                    r_list = []
+                    for r in r_field['radio_list']:
+                        r_list.append( Radio( r['id'], r['name'], r['xpath'] ) )
+                    radios.append( RadioField(r_list, r_field['radio_name'], r_field['radio_value']) )
+                iframe_list = edge['iframe_list']
+                edges.append( Edge( state_from, state_to, clickable, inputs, selects, checkboxes, radios, iframe_list ) )
+            return edges
+        except Exception as e:
+            print '[ERROR] can not build trace: %s' % (str(e))
 
     def save_config(self, fname):
         config_data = {}

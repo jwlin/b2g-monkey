@@ -43,24 +43,31 @@ class SeleniumCrawler(Crawler):
         self.crawl(1)
         return self.automata
 
+    def run_mutant(self):
+        self.executor.start()
+        self.executor.goto_url()    
+        initial_state = self.get_initail_state()
+        self.run_mutant_script(initial_state)    
+        return self.automata
+
     def crawl(self, depth, prev_state=None):
         if depth > self.configuration.get_max_depth():
             return
         print "[LOG] now depth: ",depth," - max_depth: ",self.configuration.get_max_depth()
         current_state = self.automata.get_current_state()
         print "[LOG] current state", current_state.get_id()
-        for clickables, iframe_list in DomAnalyzer.get_clickables(current_state, prev_state if prev_state else None):
-            inputs = current_state.get_inputs(iframe_list)
-            selects = current_state.get_selects(iframe_list)
-            checkboxes = current_state.get_checkboxes(iframe_list)
-            radios = current_state.get_radios(iframe_list)
+        for clickables, iframe_key in DomAnalyzer.get_clickables(current_state, prev_state if prev_state else None):
+            inputs = current_state.get_inputs(iframe_key)
+            selects = current_state.get_selects(iframe_key)
+            checkboxes = current_state.get_checkboxes(iframe_key)
+            radios = current_state.get_radios(iframe_key)
 
             for clickable in clickables:
                 '''TODO: ADD OTHER EVENTS '''
                 '''TODO: get value'''
-                new_edge = Edge(current_state, None, clickable, inputs, selects, checkboxes, radios, iframe_list)
-                print "[LOG] state %s fire element in iframe(%s) " % ( current_state.get_id(), iframe_list )
-                self.click_event_by_edge(unknown_edge)
+                new_edge = Edge(current_state.get_id(), None, clickable, inputs, selects, checkboxes, radios, iframe_key)
+                print "[LOG] state %s fire element in iframe(%s) " % ( current_state.get_id(), iframe_key )
+                self.click_event_by_edge(new_edge)
 
                 dom_list, url, is_same = self.is_same_state_dom(current_state)
                 if is_same:
@@ -71,13 +78,13 @@ class SeleniumCrawler(Crawler):
                     temp_state = State(dom_list, url)
                     new_state, is_newly_added = self.automata.add_state_edge(temp_state, new_edge)
                     # save this click edge
-                    current_state.add_clickable(clickable, iframe_list)
+                    current_state.add_clickable(clickable, iframe_key)
                     '''TODO: value of inputs should connect with edges '''
                     if is_newly_added:
                         print "[LOG] add new state ",new_state.get_id()," of: ", url
                         self.save_state(new_state, depth)
                         self.event_history.append( new_edge )
-                        print "[DEBUG] event_history: ",  [ edge.get_state_from().get_id() for edge in self.event_history ]
+                        print "[DEBUG] event_history: ",  [ edge.get_state_from() for edge in self.event_history ]
                         if depth < self.configuration.get_max_depth():
                             self.automata.change_state(new_state)
                             self.crawl(depth+1, current_state)
@@ -111,7 +118,7 @@ class SeleniumCrawler(Crawler):
             return True
 
         #if can't , try do last edge of state history
-        if len(self.event_history) > 0:
+        if self.event_history:
             print "[LOG] <BACKTRACK> : try last edge of state history "
             self.executor.forward_history()
             self.click_event_by_edge( self.event_history[-1] )
@@ -136,6 +143,7 @@ class SeleniumCrawler(Crawler):
         for edge in edges:
             self.click_event_by_edge(edge)
             #check again if executor really turn back. if not, sth error, stop
+            state_to = self.automata.get_state_by_id( edge.get_state_to() )
             dom_list, url, is_same = self.is_same_state_dom(state_to)
             if not is_same:
                 try:
@@ -185,7 +193,7 @@ class SeleniumCrawler(Crawler):
         print "[LOG] get initial state"
         dom_list, url = self.get_dom_list()
         initial_state = State( dom_list, url )
-        self.automata.add_state(initial_state)
+        self.automata.set_initial_state(initial_state)
         self.save_state(initial_state, 0)
         time.sleep(self.configuration.get_sleep_time())
         return initial_state
@@ -203,13 +211,37 @@ class SeleniumCrawler(Crawler):
             temp_state = State(dom_list, url)
             new_state, is_newly_added = self.automata.add_state_edge(temp_state, edge)
             # save this click edge
-            prev_state.add_clickable(clickable, iframe_list)
-            '''TODO: value of inputs should connect with edges '''
+            prev_state.add_clickable(edge.get_clickable(), edge.get_iframe_list())
             if is_newly_added:
                 print "[LOG] add new state ", new_state.get_id(), " of: ", url
                 self.save_state(new_state, 0)
                 self.automata.change_state(new_state)
             prev_state = new_state
+
+#=========================================================================================
+# TODO FOR MUTATION
+#=========================================================================================
+    def run_mutant_script(self, prev_state):
+        for edge in self.configuration.get_mutant_trace():
+            self.click_event_by_edge(edge)
+            self.event_history.append(edge)
+
+            dom_list, url, is_same = self.is_same_state_dom(prev_state)
+            if is_same:
+                continue
+            print "[LOG] change dom to: ", self.executor.get_url()
+            # check if this is a new state
+            temp_state = State(dom_list, url)
+            new_state, is_newly_added = self.automata.add_state_edge(temp_state, edge)
+            # save this click edge
+            prev_state.add_clickable(edge.get_clickable(), edge.get_iframe_list())
+            if is_newly_added:
+                print "[LOG] add new state ", new_state.get_id(), " of: ", url
+                self.save_state(new_state, 0)
+                self.automata.change_state(new_state)
+            prev_state = new_state
+#=========================================================================================
+#=========================================================================================
 
     #Diff: check url domain
     def is_same_domain(self, url):
@@ -237,7 +269,7 @@ class SeleniumCrawler(Crawler):
         for stateDom in state.get_dom_list():
             iframe_path_list = stateDom.get_iframe_path_list()
             dom = stateDom.get_dom()
-            iframe_key = ';'.join(iframe_path_list) if iframe_path_list else 'None'
+            iframe_key = ';'.join(iframe_path_list) if iframe_path_list else None
             candidate_clickables[iframe_key] = DomAnalyzer.get_candidate_clickables_soup(dom)
             inputs[iframe_key] = DomAnalyzer.get_inputs(dom)
             selects[iframe_key] = DomAnalyzer.get_selects(dom)
@@ -283,7 +315,7 @@ class SeleniumCrawler(Crawler):
                         self.get_dom_of_iframe(dom_list, [iframe_xpath], iframe_src)
                     iframe_tag.clear()
                 except Exception as e:
-                    print "[ERROR] ", e
+                    print "[ERROR] get_dom_of_iframe: ", e
         dom_list.append( StateDom(None, str(soup), url) )
         return dom_list, url
 
@@ -299,7 +331,7 @@ class SeleniumCrawler(Crawler):
                     self.get_dom_of_iframe(dom_list, iframe_xpath_list, iframe_src)      
                     iframe_tag.clear()
                 except Exception as e:
-                    print "[ERROR] ", e
+                    print "[ERROR] get_dom_of_iframe: ", e
         dom_list.append( StateDom(iframe_xpath_list, str(soup), src) )
     #=============================================================================================
 #==============================================================================================================================

@@ -5,7 +5,7 @@
 Module docstring
 """
 
-import os, sys, json, posixpath, time
+import os, sys, json, posixpath, time, codecs
 from os.path import relpath
 from configuration import SeleniumConfiguration
 from automata import Automata, State
@@ -68,19 +68,21 @@ def debugTestMain():
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     print "setting config..."
-    config = SeleniumConfiguration(3, "https://ups.moe.edu.tw/index.php")
-    config.set_max_depth(1)
+    config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
+    config.set_max_depth(3)
+    config.set_max_states(100)
     config.set_automata_fname('automata.json')
     config.set_traces_fname('traces.json')
-    config.set_dom_inside_iframe(False)
+    config.set_frame_tags(['iframe'])
+    config.set_dom_inside_iframe(True)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
     #ups.moe.edu.tw
     config.set_tags_normalizer( ['iframe'] )
     config.set_tag_with_attribute_normalizer( "div", "class", "calendarToday" )
-    config.set_tag_with_attribute_normalizer( "table", None, u"人氣", 'contains') )
-    config.set_tag_with_attribute_normalizer( "table", "class", "clmonth") )
+    config.set_tag_with_attribute_normalizer( "table", None, u"人氣", 'contains')
+    config.set_tag_with_attribute_normalizer( "table", "class", "clmonth")
     config.set_tag_with_attribute_normalizer( "td", "class", "viewNum" )
     #jibako
     config.set_tags_normalizer( ["script","style"] )
@@ -92,7 +94,6 @@ def debugTestMain():
     config.set_tag_with_attribute_normalizer( "div", 'style', 'none', 'contains' )
     config.set_tag_with_attribute_normalizer( "div", 'class', 'ui-widget', 'contains' )
 
-    config.set_before_trace(before_trace)
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
     print "setting crawler..."
@@ -106,6 +107,23 @@ def debugTestMain():
     automata.save_automata(config, config.get_automata_fname())
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
+
+def SeleniumMutationTrace(config_fname, traces_fname, trace_id):
+    print "loading config..."
+    config = load_config(config_fname)
+    config.set_mutant_trace(traces_fname, trace_id)
+    print "setting executor..."
+    executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
+    print "setting crawler..."
+    automata = Automata()
+    crawler = SeleniumCrawler(config, executor, automata)    
+    print "crawler start run..."
+    crawler.run_mutant()
+    crawler.close()    
+    print "end! save automata..."
+    automata.save_traces(config)
+    automata.save_automata(config)
+    Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
 #==============================================================================================================================
 
 def load_automata(fname):
@@ -135,7 +153,7 @@ def load_config(fname):
     t_start = time.time()
     with codecs.open(fname, encoding='utf-8') as f:
         data = json.load(f)
-        config = B2gConfiguration(data['browser_id'], data['url'], data['dirname'], data['folderpath'])
+        config = SeleniumConfiguration(data['browser_id'], data['url'], data['dirname'], data['folderpath'])
         config.set_max_depth(int(data['max_depth']))
         config.set_max_states(int(data['max_states']))
         config.set_sleep_time(int(data['sleep_time']))
@@ -168,4 +186,7 @@ def load_config(fname):
     return config
 
 if __name__ == '__main__':
-    debugTestMain()
+    if len(sys.argv) < 4:
+        debugTestMain()
+    else:
+        SeleniumMutationTrace(sys.argv[1], sys.argv[2], sys.argv[3])

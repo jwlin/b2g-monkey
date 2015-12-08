@@ -44,10 +44,8 @@ class InlineDataBank(DataBank):
             'address':{'abc street'},
             'telephone':{'0912345678'},
             'mail':{'louis@gmail.com'},
-            'year':{'1999', '2015'},
             'degree2':{'true'},
             'interest':{'true'},
-            'city':{'2', '3'},
             'job1':{'1', '3'},
             #ups.moe.edu
             'uid': {'louisalflame@hotmail.com.tw'},
@@ -85,6 +83,7 @@ class InlineDataBank(DataBank):
         "select":
         {
             'city':{'2', '3'},
+            'year':{'3', '5'},
             'job1':{'1', '3'},
             #ups.moe.edu
             'dist_cd': {'0'},
@@ -96,7 +95,12 @@ class InlineDataBank(DataBank):
             #www.cloudopenlab.org.tw
             'industry':{'13','16','23'},
         },
+        "radio":{
+            'job':{'0','1','2'},
+            'degree':{'0','1','2'}
+        },
         "checkbox":{
+            'interest':{'0/1/2','0/2/3','1/2/3'},
             'agreement':{'True'},
             'private_date1':{'True'},
         }
@@ -109,8 +113,6 @@ class InlineDataBank(DataBank):
     @classmethod
     def get_data(cls, input_type, data_id):
         if input_type in cls.data.keys():
-            if input_type == 'checkbox':
-                return {'True'}
             if data_id and data_id in cls.data[input_type].keys():
                 return cls.data[input_type][data_id]
             else:

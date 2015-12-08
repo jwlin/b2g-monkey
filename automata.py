@@ -33,27 +33,24 @@ class Automata:
     def get_edges(self):
         return self._edges
 
+    def set_initial_state(self, state):
+        if not state.get_id():
+            state.set_id( str(len( self.get_states() )) )  
+        self._initial_state = state
+        self._current_state = state
+        self._states.append(state)
+
     def add_state_edge(self, state, edge):
         if not state.get_id():
-            state.set_id( str(len( self.get_states() )) )
-
-        # check if the automata is empty
-        if not self._initial_state:
-            self._initial_state = state
-            self._current_state = state
-            is_new, state_id = self._hash.put(state)
-        else:
-            # check if the dom is duplicated
-            is_new, state_id = self._hash.put(state)
-
+            state.set_id( str(len( self.get_states() )) )            
+        is_new, state_id = self._hash.put(state)
         #change state if not new
         if is_new:
             self._states.append(state)
         else:
             state = self.get_state_by_id(state_id)
-
         #add edge
-        edge.set_state_to(state)
+        edge.set_state_to(state.get_id())
         self.add_edge(edge)
         return state, is_new
 
@@ -106,7 +103,7 @@ class Automata:
         return edges
 
     def make_explored_history(self):
-        ready = [self.get_state_by_id('0')]
+        ready = ['0']
         explored = []
         explored_history = {}
         while len(ready) > 0:
@@ -126,10 +123,10 @@ class Automata:
             if s.get_depth() == configuration.get_max_depth():
                 state_trace = [s]
                 edge_trace = []
-                while s in explored_history.keys():
-                    parent = explored_history[s]
+                while s.get_id() in explored_history.keys():
+                    parent = self.get_state_by_id( explored_history[s.get_id()] )
                     state_trace.insert(0, parent)
-                    edge = self.get_edge_by_from_to(parent, s)
+                    edge = self.get_edge_by_from_to(parent.get_id(), s.get_id())
                     if edge:
                         edge_trace.insert(0, edge)
                     s = parent
@@ -169,7 +166,7 @@ class Automata:
             json.dump(traces_data, f, indent=2, sort_keys=True, ensure_ascii=False)
 
     def save_automata(self, configuration, automata_fname=None):
-        automata_fname = self._automata_fname if not automata_fname else automata_fname
+        automata_fname = configuration.get_automata_fname() if not automata_fname else automata_fname
         data = {
             'state': [],
             'edge': [], 
@@ -203,7 +200,9 @@ class Automata:
                 ),
                 'clickable': state.get_all_clickables_json(),
                 'inputs': state.get_all_inputs_json(),
-                'selects': state.get_all_selects_json()
+                'selects': state.get_all_selects_json(),
+                'radios': state.get_all_radios_json(),
+                'checkboxes': state.get_all_checkboxes_json()
             }
             data['state'].append(state_data)
         for edge in self._edges:
@@ -231,25 +230,25 @@ class State:
         self._checkboxes = {}
         #=============================================================================================
 
-    def add_clickable(self, clickable, iframe_list):
+    def add_clickable(self, clickable, iframe_key):
         # check if the clickable is duplicated
-        if iframe_list in self._clickables.keys():
+        if iframe_key in self._clickables.keys():
             if clickable.get_id():
-                for c in self._clickables[iframe_list]:
+                for c in self._clickables[iframe_key]:
                     if c.get_id() == clickable.get_id():
                         return False
             else:
-                for c in self._clickables[iframe_list]:
+                for c in self._clickables[iframe_key]:
                     if c.get_xpath() == clickable.get_xpath():
                         return False
-            self._clickables[iframe_list].append( clickable )
+            self._clickables[iframe_key].append( clickable )
         else:
-            self._clickables[iframe_list] = [clickable]
+            self._clickables[iframe_key] = [clickable]
         return True
 
     def get_clickable_by_id(self, c_id):
-        for iframe_list in self._clickables.keys():
-            for c in self._clickables[iframe_list]:
+        for iframe_key in self._clickables.keys():
+            for c in self._clickables[iframe_key]:
                 if c.get_id() == c_id:
                     return c
         return None
@@ -260,20 +259,19 @@ class State:
     def get_all_clickables_json(self):
         note = []
         for iframe_key in self._clickables.keys():
-            iframe = {
-                'iframe_list': iframe_key.split(';'),
+            iframe_data = {
                 'clickables': []
             }
+            iframe_data['iframe_list'] = iframe_key.split(';') if iframe_key else None
             for clickable in self._clickables[iframe_key]:
                 clickable_data = {
                     'id': clickable.get_id(),
                     'name': clickable.get_name(),
                     'xpath': clickable.get_xpath(),
-                    'tag': clickable.get_tag(),
-                    'iframe_list': []
+                    'tag': clickable.get_tag()
                 }
-                iframe['clickables'].append(clickable_data)
-            note.append(iframe)
+                iframe_data['clickables'].append(clickable_data)
+            note.append(iframe_data)
         return note
 
     def set_id(self, state_id):
@@ -310,10 +308,10 @@ class State:
     def get_all_inputs_json(self):
         note = []
         for iframe_key in self._inputs.keys():
-            iframe = {
-                'iframe_list': iframe_key.split(';'),
+            iframe_data = {
                 'inputs': []
             }
+            iframe_data['iframe_list'] = iframe_key.split(';') if iframe_key else None
             for my_input in self._inputs[iframe_key]:
                 input_data = {
                     'id': my_input.get_id(),
@@ -321,8 +319,8 @@ class State:
                     'xpath': my_input.get_xpath(),
                     'type': my_input.get_type(),
                 }
-                iframe['inputs'].append(input_data) 
-            note.append(iframe)
+                iframe_data['inputs'].append(input_data) 
+            note.append(iframe_data)
         return note
 
     def set_selects(self, selects):
@@ -337,19 +335,21 @@ class State:
     def get_all_selects_json(self):
         note = []
         for iframe_key in self._selects.keys():
-            iframe = {
-                'iframe_list': iframe_key.split(';'),
+            iframe_data = {
                 'selects': []
             }
+            iframe_data['iframe_list'] = iframe_key.split(';') if iframe_key else None
             for my_select in self._selects[iframe_key]:
                 select_data = {
                     'id': my_select.get_id(),
                     'name': my_select.get_name(),
                     'xpath': my_select.get_xpath(),
                 }
-                iframe['selects'].append(select_data) 
-            note.append(iframe)
-        return notedef set_inputs(self, inputs):
+                iframe_data['selects'].append(select_data) 
+            note.append(iframe_data)
+        return note
+
+    def set_inputs(self, inputs):
         self._inputs = inputs
 
     def set_checkboxes(self, checkboxes):
@@ -364,10 +364,10 @@ class State:
     def get_all_checkboxes_json(self):
         note = []
         for iframe_key in self._checkboxes.keys():
-            iframe = {
-                'iframe_list': iframe_key.split(';'),
+            iframe_data = {
                 'checkboxes': []
             }
+            iframe_data['iframe_list'] = iframe_key.split(';') if iframe_key else None
             for my_checkbox_field in self._checkboxes[iframe_key]:
                 checkbox_field_data = {
                     'checkbox_name': my_checkbox_field.get_checkbox_name(),
@@ -379,13 +379,16 @@ class State:
                         'name': my_checkbox.get_name(),
                         'xpath': my_checkbox.get_xpath()
                     }
-                    checkbox_field_data['radio_list'].append(checkbox_data)
-                iframe['checkboxes'].append(checkbox_field_data)  
-            note.append(iframe)
+                    checkbox_field_data['checkbox_list'].append(checkbox_data)
+                iframe_data['checkboxes'].append(checkbox_field_data)  
+            note.append(iframe_data)
         return note
 
     def set_checkboxes(self, checkboxes):
         self._checkboxes = checkboxes
+
+    def set_radios(self, radios):
+        self._radios = radios
 
     def get_radios(self, iframe_list):
         return self._radios[iframe_list]
@@ -396,10 +399,10 @@ class State:
     def get_all_radios_json(self):
         note = []
         for iframe_key in self._radios.keys():
-            iframe = {
-                'iframe_list': iframe_key.split(';'),
+            iframe_data = {
                 'radios': []
             }
+            iframe_data['iframe_list'] = iframe_key.split(';') if iframe_key else None
             for my_radio_field in self._radios[iframe_key]:
                 radio_field_data = {
                     'radio_name': my_radio_field.get_radio_name(),
@@ -412,8 +415,8 @@ class State:
                         'xpath': my_radio.get_xpath()
                     }
                     radio_field_data['radio_list'].append(radio_data)
-                iframe['radios'].append(radio_field_data) 
-            note.append(iframe)
+                iframe_data['radios'].append(radio_field_data) 
+            note.append(iframe_data)
         return note
 
     def set_candidate_clickables(self, candidate_clickables):
@@ -425,18 +428,18 @@ class State:
     def get_all_candidate_clickables_json(self):
         note = []
         for iframe_key in self._candidate_clickables.keys():
-            iframe = {
-                'iframe_list': iframe_key.split(';'),
+            iframe_data = {
                 'candidate_clickables': []
             }
+            iframe_data['iframe_list'] = iframe_key.split(';') if iframe_key else None
             for c, xpath in self._candidate_clickables[iframe_key]:
                 candidate_clickable = {}
                 candidate_clickable['id'] = c['id'] if c.has_attr('id') else None
                 candidate_clickable['name'] = c['name'] if c.has_attr('name') else None
                 candidate_clickable['xpath'] = xpath
                 candidate_clickable['tag'] = c.name
-                iframe['candidate_clickables'].append(candidate_clickable)
-            note.append(iframe)
+                iframe_data['candidate_clickables'].append(candidate_clickable)
+            note.append(iframe_data)
         return note
 
     def get_dom_list(self):
@@ -491,7 +494,7 @@ class StateDom:
 
 class Edge:
     def __init__(self, state_from, state_to, clickable, \
-                 inputs, selects, checkboxes, radios, iframe_list, cost = 1):
+                 inputs, selects, checkboxes, radios, iframe_key, cost = 1):
         self._state_from = state_from
         self._state_to = state_to
         self._clickable = clickable
@@ -499,7 +502,7 @@ class Edge:
         self._selects = selects
         self._checkboxes = checkboxes
         self._radios = radios
-        self._iframe_list = iframe_list
+        self._iframe_list = iframe_key.split(';') if iframe_key else None
 
     def get_state_from(self):
         return self._state_from
@@ -530,8 +533,8 @@ class Edge:
 
     def get_edge_json(self):
         edge_data = {
-            'from': self._state_from.get_id(),
-            'to': self._state_to.get_id(),
+            'from': self._state_from,
+            'to': self._state_to,
             'clickable': {
                 'id': self._clickable.get_id(),
                 'name': self._clickable.get_name(),
@@ -542,7 +545,7 @@ class Edge:
             'selects': [],
             'checkboxes': [],
             'radios': [],
-            'iframe_list': self._iframe_list.split(';')
+            'iframe_list': self._iframe_list
         }
         for my_input in self._inputs:
             input_data = {
@@ -564,14 +567,14 @@ class Edge:
         for checkbox_field in self._checkboxes:
             checkbox_field_data = {
                 'checkbox_list': [],
-                'checkbox_value_list': checkboxe_field.get_value(),
-                'checkbox_name': checkboxe_field.get_checkbox_name()
+                'checkbox_value_list': checkbox_field.get_value(),
+                'checkbox_name': checkbox_field.get_checkbox_name()
             }
             for checkbox in checkbox_field.get_checkbox_list():
                 checkbox_data = {
                     'id': checkbox.get_id(),
                     'name': checkbox.get_name(),
-                    'value': checkbox.get_value()
+                    'xpath': checkbox.get_xpath()
                 }
                 checkbox_field_data['checkbox_list'].append(checkbox_data)
             edge_data['checkboxes'].append(checkbox_field_data)
@@ -587,5 +590,6 @@ class Edge:
                     'name': radio.get_name(),
                     'xpath': radio.get_xpath()
                 }
+                radio_field_data['radio_list'].append(radio_data)
             edge_data['radios'].append(radio_field_data)
         return edge_data

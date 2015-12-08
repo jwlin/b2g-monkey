@@ -152,10 +152,10 @@ class SeleniumExecutor():
     def fill_selects(self, selects):
         for select_field in selects:
             try:
-                element = self.get_element_by_tag(select_field)
+                element =  Select( self.get_element_by_tag(select_field) )
                 if not element:
                     raise ValueError('No id nor xpath for an input field')
-                select.select_by_index( int(select_field.get_value()) )
+                element.select_by_index( int(select_field.get_value()) )
                 self.check_after_click()
             except Exception as e:
                 print 'Unknown Exception: %s' % (str(e))
@@ -170,13 +170,15 @@ class SeleniumExecutor():
                     element = self.get_element_by_tag(checkbox)
                     if not element:
                         raise ValueError('No id nor xpath for an input field')
-                    if checkbox.is_selected():
-                        checkbox.click()
+                    if element.is_selected():
+                        element.click()
+                        self.check_after_click()
                 for selected_id in checkbox_field.get_value():
                     selected_element = self.get_element_by_tag( checkbox_list[int(selected_id)] )
                     if not selected_element:
                         raise ValueError('No id nor xpath for an input field')
                     selected_element.click()
+                    self.check_after_click()
             except Exception as e:
                 #print 'Unknown Exception: %s' % (str(e))
                 pass
@@ -186,17 +188,12 @@ class SeleniumExecutor():
             try:
                 selected_id = int(radio_field.get_value())
                 radio_list = radio_field.get_radio_list()
-                #clear all
-                for radio in radio_list:
-                    element = self.get_element_by_tag(radio)
-                    if not element:
-                        raise ValueError('No id nor xpath for an input field')
-                    if element.is_selected():
-                        element.click()
-                selected_element = self.get_element_by_tag( radio_list[selected_id] )
-                if not selected_element:
+                element = self.get_element_by_tag( radio_list[selected_id] )
+                if not element:
                     raise ValueError('No id nor xpath for an input field')
-                selected_element.click()
+                if not element.is_selected():
+                    element.click()
+                self.check_after_click()
             except Exception as e:
                 #print 'Unknown Exception: %s' % (str(e))
                 pass
@@ -204,9 +201,9 @@ class SeleniumExecutor():
 
     def get_element_by_tag(self, element):
         if element.get_id() and not element.get_id().startswith(DomAnalyzer.serial_prefix):
-            return self.driver.find_element_by_id( input_field.get_id() )
-        elif input_field.get_xpath():
-            return self.driver.find_element_by_xpath( input_field.get_xpath() )
+            return self.driver.find_element_by_id( element.get_id() )
+        elif element.get_xpath():
+            return self.driver.find_element_by_xpath( elements.get_xpath() )
         else:
             return None
 
@@ -233,8 +230,8 @@ class SeleniumExecutor():
     def switch_iframe_and_get_source(self, iframe_xpath_list=None):
         try:
             self.driver.switch_to_default_content()
-            if iframe_xpath_list and iframe_xpath_list != 'None':
-                for xpath in iframe_xpath_list.split(';'):        
+            if iframe_xpath_list and iframe_xpath_list[0] != 'None':
+                for xpath in iframe_xpath_list:        
                     iframe = self.driver.find_element_by_xpath(xpath)
                     self.driver.switch_to_frame(iframe)
         except Exception as e:
@@ -314,7 +311,7 @@ class SeleniumExecutor():
         self.check_alert()
         self.check_window()
         self.check_tab()
-        time.sleep(1)
+        time.sleep(0.1)
 
     def check_alert(self):
         no_alert = False
