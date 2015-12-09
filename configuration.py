@@ -158,6 +158,10 @@ class SeleniumConfiguration(Configuration):
     def set_simple_normalizers(self):
         self._analyzer['simple_normalizers'] = True
         DomAnalyzer.set_simple_normalizers()
+        
+    def set_simple_path_ignore_tags(self):
+        self._analyzer['simple_path_ignore_tags'] = True
+        DomAnalyzer.set_simple_path_ignore_tags()
 
     def set_dom_inside_iframe(self, is_inside):
         self._dom_inside_iframe = is_inside

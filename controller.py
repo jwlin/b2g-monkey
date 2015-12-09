@@ -32,14 +32,14 @@ def B2gmain():
 #==============================================================================================================================
 # Selenium Web Driver
 #==============================================================================================================================
-def SeleniumMain():
+def SeleniumMain(web_submit_id, dirname=None, folderpath=None):
     print "connect to mysql"
     connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
-    _url, _deep, _time = connect.get_submit_by_id(sys.argv[1])
-    _web_inputs = connect.get_all_inputs_by_id(sys.argv[1])
+    _url, _deep, _time = connect.get_submit_by_id(web_submit_id)
+    _web_inputs = connect.get_all_inputs_by_id(web_submit_id)
 
     print "setting config..."
-    config = SeleniumConfiguration(3, _url, sys.argv[2])
+    config = SeleniumConfiguration(3, _url, dirname, folderpath)
     config.set_max_depth(_deep)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
@@ -108,7 +108,7 @@ def debugTestMain():
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
 
-def SeleniumMutationTrace(config_fname, traces_fname, trace_id):
+def SeleniumMutationTrace(folderpath, config_fname, traces_fname, trace_id):
     print "loading config..."
     config = load_config(config_fname)
     config.set_mutant_trace(traces_fname, trace_id)
@@ -186,7 +186,25 @@ def load_config(fname):
     return config
 
 if __name__ == '__main__':
-    if len(sys.argv) < 4:
-        debugTestMain()
+    if len(sys.argv)> 1:
+        #default mode
+        if  sys.argv[1] == '1':
+            try:
+                assert not os.path.exists( os.path.join(sys.argv[4], sys.argv[3]) )
+                SeleniumMain(sys.argv[2], sys.argv[3], sys.argv[4])
+            except Exception as e:                
+                print '[MAIN ERROR]: %s' % (str(e))
+        #mutant mode
+        elif sys.argv[1] == '2':
+            try:
+                assert os.path.isdir(sys.argv[2]) and os.path.exists(sys.argv[2])
+                assert os.path.isfile(sys.argv[3]) and os.path.exists(sys.argv[3])
+                assert os.path.isfile(sys.argv[4]) and os.path.exists(sys.argv[3])
+                SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+            except Exception as e:
+                print '[MAIN ERROR]: %s' % (str(e))
+        else:
+            debugTestMain()
     else:
-        SeleniumMutationTrace(sys.argv[1], sys.argv[2], sys.argv[3])
+        print "[WARNIING] needed argv: <Mode=1> <WebSubmitID> <Dirname> <FolderPath> default crawling "
+        print "                        <Mode=2> <FolderPath> <ConfigFile> <TracesFile> <TraceID> mutant crawling "

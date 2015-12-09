@@ -311,6 +311,12 @@ class DomAnalyzer:
         cls._input_types.append(tag)
 
     @classmethod
+    def set_simple_path_ignore_tags(cls):
+        cls._path_ignore_tags.append('br')
+        cls._path_ignore_tags.append('hr')
+        cls._path_ignore_tags.append('img')
+
+    @classmethod
     def set_simple_clickable_tags(cls):
         cls._clickable_tags.append( Tag('a') )
         cls._clickable_tags.append( Tag('button') )
