@@ -5,13 +5,14 @@
 Module docstring
 """
 
-import os, sys, json, posixpath, time, datetime
+import os, sys, json, posixpath, time, datetime, json, codecs
 from os.path import relpath
 from abc import ABCMeta
 
-from dom_analyzer import DomAnalyzer
-from clickable import Clickable, InputField, SelectField
-
+from dom_analyzer import DomAnalyzer, Tag
+from clickable import Clickable, InputField, SelectField, Checkbox, CheckboxField, Radio, RadioField
+from automata import Automata, State, StateDom, Edge
+from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
 
 class Configuration:
     __metaclass__ = ABCMeta
@@ -47,48 +48,6 @@ class Configuration:
     def get_sleep_time(self):
         return self._sleep_time
 
-
-class B2gConfiguration(Configuration):
-    def __init__(self, app_name, app_id):
-        super(B2gConfiguration, self).__init__()
-        self._app_name = app_name
-        self._app_id = app_id
-        self._automata_fname = 'automata.json'
-        self._root_path = os.path.join('trace', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
-        self._file_path = {
-            'root': self._root_path,
-            'dom': os.path.join(self._root_path, 'dom'),
-            'state': os.path.join(self._root_path, 'screenshot', 'state'),
-            'clickable': os.path.join(self._root_path, 'screenshot', 'clickable'),
-        }
-        for key, value in self._file_path.iteritems():
-            abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
-            if not os.path.exists(abs_path):
-                os.makedirs(abs_path)
-
-    def set_app_name(self, app_name):
-        self._app_name = app_name
-
-    def get_app_name(self):
-        return self._app_name
-
-    def set_app_id(self, app_id):
-        self._app_id = app_id
-
-    def get_app_id(self):
-        return self._app_id
-
-    def get_automata_fname(self):
-        return self._automata_fname
-
-    def get_abs_path(self, my_type):
-        abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
-        return abs_path
-
-    def get_path(self, my_type):
-        return self._file_path[my_type]
-
-
 #==============================================================================================================================
 # Selenium Web Driver
 #==============================================================================================================================
@@ -113,15 +72,25 @@ class SeleniumConfiguration(Configuration):
                 os.makedirs(abs_path)
 
         self._automata_fname = ''
+        self._traces_fname = ''
         self._dom_inside_iframe = True
+        self._frame_tags = []
         self._domains = []
         self._scripts = []
-
-    def set_automata_fname(self, automata_fname):
-        self._automata_fname = automata_fname
-
-    def get_automata_fname(self):
-        return self._automata_fname
+        self._analyzer = {
+            'simple_clickable_tags': False,
+            'simple_inputs_tags': False,
+            'simple_normalizers': False,
+            'simple_path_ignore_tags': False,
+            'clickable_tags': [],
+            'inputs_tags': [],
+            'path_ignore_tags': [],
+            'tag_normalizers': [],
+            'attributes_normalizer': [],
+            'tag_with_attribute_normalizers': []
+        }
+        self._before_trace_fname = ''
+        self._mutant_scripts = ''
 
     def get_abs_path(self, my_type):
         abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
@@ -150,38 +119,130 @@ class SeleniumConfiguration(Configuration):
     def get_domains(self):
         return self._domains
 
-    def set_normalizer(self, normalizer):
-        DomAnalyzer.add_normalizer(normalizer)
+    def set_clickable_tag(self, tag_name, attr=None, value=None):
+        self._analyzer['clickable_tags'].append({'tag':tag_name, 'attr':attr, 'value':value})
+        DomAnalyzer.add_clickable_tag(tag_name, attr, value)
+
+    def set_inputs_tag(self, input_type):
+        self._analyzer['inputs_tags'].append(input_type)
+        DomAnalyzer.add_inputs_tag(input_type)
+
+    def set_path_ignore_tag(self, tag):
+        self._analyzer['path_ignore_tags'].append(tag)
+        DomAnalyzer.add_path_ignore_tag(tag)
+
+    def set_path_ignore_tags(self, tags):
+        for tag in tags:
+            self.set_path_ignore_tag(tag)
+
+    def set_tags_normalizer(self, tags):
+        self._analyzer['tag_normalizers'] += tags
+        DomAnalyzer.add_tags_normalizer(tags)
+
+    def set_attributes_normalizer(self, attrs):
+        self._analyzer['attributes_normalizer'] += attrs
+        DomAnalyzer.add_attributes_normalizer(attrs)
+
+    def set_tag_with_attribute_normalizer(self, tag_name, attr=None, value=None, mode=None):
+        self._analyzer['tag_with_attribute_normalizers'].append({'tag':tag_name, 'attr':attr, 'value':value, 'mode':mode})
+        DomAnalyzer.add_tag_with_attribute_normalizer(tag_name, attr, value, mode)
 
     def set_simple_clickable_tags(self):
+        self._analyzer['simple_clickable_tags'] = True
         DomAnalyzer.set_simple_clickable_tags()
 
     def set_simple_inputs_tags(self):
+        self._analyzer['simple_inputs_tags'] = True
         DomAnalyzer.set_simple_inputs_tags()
 
     def set_simple_normalizers(self):
+        self._analyzer['simple_normalizers'] = True
         DomAnalyzer.set_simple_normalizers()
-
-    def get_before_script(self):
-        return self._scripts
-
-    def set_before_script(self, scripts):
-        for edge in scripts:
-            inputs = []
-            for _input in edge['inputs']:
-                inputs.append( InputField(_input['id'], _input['xpath'], _input['type'], _input['value']) )
-            selects = []
-            for _select in edge['selects']:
-                selects.append( SelectField(_select['id'], _select['xpath'], _select['value']) )
-            c = edge['clickable']
-            clickable = ( Clickable(c['id'], c['xpath'], c['tag']) )
-            self._scripts.append( ( inputs, selects, clickable, edge['iframe_list'] ) )
+        
+    def set_simple_path_ignore_tags(self):
+        self._analyzer['simple_path_ignore_tags'] = True
+        DomAnalyzer.set_simple_path_ignore_tags()
 
     def set_dom_inside_iframe(self, is_inside):
         self._dom_inside_iframe = is_inside
 
     def is_dom_inside_iframe(self):
         return self._dom_inside_iframe
+
+    def set_frame_tags(self, tags):
+        self._frame_tags += tags
+
+    def get_frame_tags(self):
+        return self._frame_tags
+
+    def set_automata_fname(self, automata_fname):
+        self._automata_fname = automata_fname
+
+    def get_automata_fname(self):
+        return self._automata_fname
+
+    def set_traces_fname(self, traces_fname):
+        self._traces_fname = traces_fname
+
+    def get_traces_fname(self):
+        return self._traces_fname
+
+    def get_before_trace(self):
+        return self._scripts
+
+    def set_before_script_by_fname(self, trace_fname):
+        data = self.load_json(trace_fname)
+        self._scripts = self.build_trace(data)
+
+    def get_before_script(self):
+        return self._scripts
+
+    def set_mutant_trace(self, traces_fname, trace_id):
+        data = self.load_json(traces_fname)
+        self._mutant_scripts = self.build_trace(data['traces'][int(trace_id)])
+
+    def get_mutant_trace(self):
+        return self._mutant_scripts
+
+    def load_json(self, json_file):
+        try:
+            with open(json_file) as data_file:      
+                data = json.load(data_file)
+                return data
+        except Exception as e:
+            print '[ERROR] can not read json: %s' % (str(e))
+
+    def build_trace(self, data):
+        try:
+            edges = []
+            for edge in data['edges']:
+                state_from = edge['from']
+                state_to = edge['to']
+                c = edge['clickable']
+                clickable = Clickable( c['id'], c['name'], c['xpath'], c['tag'] )
+                inputs = []
+                for i in edge['inputs']:
+                    inputs.append( InputField( i['id'], i['name'], i['xpath'], i['type'], i['value'] ) )
+                selects = []
+                for s in edge['selects']:
+                    selects.append( SelectField( s['id'], s['name'], s['xpath'], s['value'] ) )
+                checkboxes = []
+                for c_field in edge['checkboxes']:
+                    c_list = []
+                    for c in c_field['checkbox_list']:
+                        c_list.append( Checkbox( c['id'], c['name'], c['xpath'] ) )
+                    checkboxes.append( CheckboxField(c_list, c_field['checkbox_name'], c_field['checkbox_value_list']) )
+                radios = []
+                for r_field in edge['radios']:
+                    r_list = []
+                    for r in r_field['radio_list']:
+                        r_list.append( Radio( r['id'], r['name'], r['xpath'] ) )
+                    radios.append( RadioField(r_list, r_field['radio_name'], r_field['radio_value']) )
+                iframe_list = edge['iframe_list']
+                edges.append( Edge( state_from, state_to, clickable, inputs, selects, checkboxes, radios, iframe_list ) )
+            return edges
+        except Exception as e:
+            print '[ERROR] can not build trace: %s' % (str(e))
 
     def save_config(self, fname):
         config_data = {}
@@ -213,6 +274,14 @@ class SeleniumConfiguration(Configuration):
         config_data['clickable_path'] = posixpath.join(
             posixpath.join(*(self.get_path('clickable').split(os.sep)))
         )
-        with open(os.path.join(self.get_abs_path('root'), fname), 'w') as f:
+        #=============================================================================================
+        #new config
+        config_data['domains'] = self._domains
+        config_data['dom_inside_iframe'] = self._dom_inside_iframe
+        config_data['traces_fname'] = self._traces_fname
+        config_data['analyzer'] = self._analyzer
+        config_data['before_trace_fname'] = self._before_trace_fname
+        #=============================================================================================
+        with codecs.open(os.path.join(self.get_abs_path('root'), fname), 'w', encoding='utf-8') as f:
             json.dump(config_data, f, indent=2, sort_keys=True, ensure_ascii=False)
 #==============================================================================================================================

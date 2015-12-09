@@ -5,13 +5,13 @@
 Module docstring
 """
 
-import os, sys, json, posixpath, time
+import os, sys, json, posixpath, time, codecs
 from os.path import relpath
-from configuration import B2gConfiguration,SeleniumConfiguration
+from configuration import SeleniumConfiguration
 from automata import Automata, State
 from clickable import Clickable, InputField, SelectField
 from executor import SeleniumExecutor
-from crawler import B2gCrawler, SeleniumCrawler
+from crawler import SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
 from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
@@ -32,14 +32,14 @@ def B2gmain():
 #==============================================================================================================================
 # Selenium Web Driver
 #==============================================================================================================================
-def SeleniumMain():
+def SeleniumMain(web_submit_id, dirname=None, folderpath=None):
     print "connect to mysql"
     connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
-    _url, _deep, _time = connect.get_submit_by_id(sys.argv[1])
-    _web_inputs = connect.get_all_inputs_by_id(sys.argv[1])
+    _url, _deep, _time = connect.get_submit_by_id(web_submit_id)
+    _web_inputs = connect.get_all_inputs_by_id(web_submit_id)
 
     print "setting config..."
-    config = SeleniumConfiguration(3, _url, sys.argv[2])
+    config = SeleniumConfiguration(3, _url, dirname, folderpath)
     config.set_max_depth(_deep)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
@@ -63,45 +63,37 @@ def SeleniumMain():
 
 def debugTestMain():
     #config = SeleniumConfiguration(2, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
+    #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
     #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     print "setting config..."
-    config = SeleniumConfiguration(3, "https://ups.moe.edu.tw/index.php")
-    config.set_max_depth(1)
-    config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
+    config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
+    config.set_max_depth(3)
+    config.set_max_states(100)
     config.set_automata_fname('automata.json')
+    config.set_traces_fname('traces.json')
+    config.set_frame_tags(['iframe'])
     config.set_dom_inside_iframe(True)
-
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
-    config.set_normalizer( TagWithAttributeNormalizer("div", "class", "calendarToday") )
-    config.set_normalizer( TagWithAttributeNormalizer("table", None, u"人氣", 'contains') )
-    config.set_normalizer( TagWithAttributeNormalizer("table", "class", "clmonth") )
-    config.set_normalizer( TagNormalizer(['iframe']) )
-    config.set_normalizer( TagWithAttributeNormalizer("a", "href", "http://cloud.edu.tw/?token") )
-    config.set_normalizer( TagWithAttributeNormalizer("td", "class", "viewNum") )
+    #ups.moe.edu.tw
+    config.set_tags_normalizer( ['iframe'] )
+    config.set_tag_with_attribute_normalizer( "div", "class", "calendarToday" )
+    config.set_tag_with_attribute_normalizer( "table", None, u"人氣", 'contains')
+    config.set_tag_with_attribute_normalizer( "table", "class", "clmonth")
+    config.set_tag_with_attribute_normalizer( "td", "class", "viewNum" )
+    #jibako
+    config.set_tags_normalizer( ["script","style"] )
+    config.set_tag_with_attribute_normalizer( "div", 'class', 'fotorama', 'contains' )
+    config.set_tag_with_attribute_normalizer( "div", 'class', 'player', 'contains' )
+    config.set_path_ignore_tags( ['img', 'hr', 'br'] )
+    #member.cht.com.tw/
+    config.set_tag_with_attribute_normalizer( "div", 'style', 'visibility: hidden', 'contains' )
+    config.set_tag_with_attribute_normalizer( "div", 'style', 'none', 'contains' )
+    config.set_tag_with_attribute_normalizer( "div", 'class', 'ui-widget', 'contains' )
 
-    before_script = [
-        #{
-        #    "inputs":
-        #    [
-        #        {   "id":"uid", "xpath":"//html/body/div[1]/form[1]/input[3]", "type": "text", "value": "louisalflame@hotmail.com.tw" },
-        #        {   "id":"password", "xpath":"//html/body/div[1]/form[1]/input[4]", "type": "password", "value": "j6j6fu3fu3mp3mp3" }
-        #    ],
-        #    "selects": [],
-        #    "clickable": {   "id": "b2g-monkey-5", "xpath": "//html/body/div[1]/form[1]/input[5]", "tag": "input"  },
-        #    "iframe_list": None
-        #},
-        #{
-        #    "inputs":  [],
-        #    "selects": [],
-        #    "clickable": {   "id": "b2g-monkey-6", "xpath": "//html/body/div[1]/div[2]/div[1]/div[2]/div[1]/div[8]/a[1]", "tag": "a"  },
-        #    "iframe_list": None
-        #},
-    ]
-    config.set_before_script(before_script)
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
     print "setting crawler..."
@@ -111,9 +103,27 @@ def debugTestMain():
     crawler.run()
     crawler.close()    
     print "end! save automata..."
+    automata.save_traces(config)
     automata.save_automata(config, config.get_automata_fname())
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
+
+def SeleniumMutationTrace(folderpath, config_fname, traces_fname, trace_id):
+    print "loading config..."
+    config = load_config(config_fname)
+    config.set_mutant_trace(traces_fname, trace_id)
+    print "setting executor..."
+    executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
+    print "setting crawler..."
+    automata = Automata()
+    crawler = SeleniumCrawler(config, executor, automata)    
+    print "crawler start run..."
+    crawler.run_mutant()
+    crawler.close()    
+    print "end! save automata..."
+    automata.save_traces(config)
+    automata.save_automata(config)
+    Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
 #==============================================================================================================================
 
 def load_automata(fname):
@@ -141,17 +151,60 @@ def load_automata(fname):
 
 def load_config(fname):
     t_start = time.time()
-    with open(fname) as f:
+    with codecs.open(fname, encoding='utf-8') as f:
         data = json.load(f)
-        config = B2gConfiguration(data['browser_id'], data['url'], data['dirname'], data['folderpath'])
+        config = SeleniumConfiguration(data['browser_id'], data['url'], data['dirname'], data['folderpath'])
         config.set_max_depth(int(data['max_depth']))
         config.set_max_states(int(data['max_states']))
         config.set_sleep_time(int(data['sleep_time']))
         config.set_max_time(int(data['max_time']))
-        config.set_automata_fname(data['automata_fname'])
         # ignore the rest ('automata_fname', 'root_path', 'dom_path', 'state_path', 'clickable_path')
+        config.set_automata_fname(data['automata_fname'])
+        config.set_domains(data['domains'])
+        config.set_dom_inside_iframe(data['dom_inside_iframe'])
+        config.set_traces_fname(data['traces_fname'])
+
+        if data['analyzer']['simple_clickable_tags']:
+            config.set_simple_clickable_tags()
+        if data['analyzer']['simple_normalizers']:
+            config.set_simple_normalizers()
+        if data['analyzer']['simple_inputs_tags']:
+            config.set_simple_inputs_tags()
+        for tag in data['analyzer']['clickable_tags']:
+            config.set_clickable_tags(tag['tag'], tag['attr'], tag['value'])
+        for tag in data['analyzer']['inputs_tags']:
+            config.set_inputs_tags(tag)
+        config.set_path_ignore_tags(data['analyzer']['path_ignore_tags'])
+        config.set_tags_normalizer(data['analyzer']['tag_normalizers'])
+        config.set_attributes_normalizer(data['analyzer']['attributes_normalizer'])
+        for tag in data['analyzer']['tag_with_attribute_normalizers']:
+            config.set_tag_with_attribute_normalizer(tag['tag'], tag['attr'], tag['value'], tag['mode'])
+
+        if data['before_trace_fname']:
+            config.set_before_trace(data['before_trace_fname'])
         print 'config loaded. loading time: %f sec' % (time.time() - t_start)
     return config
 
 if __name__ == '__main__':
-    debugTestMain()
+    if len(sys.argv)> 1:
+        #default mode
+        if  sys.argv[1] == '1':
+            try:
+                assert not os.path.exists( os.path.join(sys.argv[4], sys.argv[3]) )
+                SeleniumMain(sys.argv[2], sys.argv[3], sys.argv[4])
+            except Exception as e:                
+                print '[MAIN ERROR]: %s' % (str(e))
+        #mutant mode
+        elif sys.argv[1] == '2':
+            try:
+                assert os.path.isdir(sys.argv[2]) and os.path.exists(sys.argv[2])
+                assert os.path.isfile(sys.argv[3]) and os.path.exists(sys.argv[3])
+                assert os.path.isfile(sys.argv[4]) and os.path.exists(sys.argv[3])
+                SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+            except Exception as e:
+                print '[MAIN ERROR]: %s' % (str(e))
+        else:
+            debugTestMain()
+    else:
+        print "[WARNIING] needed argv: <Mode=1> <WebSubmitID> <Dirname> <FolderPath> default crawling "
+        print "                        <Mode=2> <FolderPath> <ConfigFile> <TracesFile> <TraceID> mutant crawling "

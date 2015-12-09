@@ -44,32 +44,65 @@ class InlineDataBank(DataBank):
             'address':{'abc street'},
             'telephone':{'0912345678'},
             'mail':{'louis@gmail.com'},
-            'year':{'1999', '2015'},
             'degree2':{'true'},
             'interest':{'true'},
-            'city':{'2', '3'},
             'job1':{'1', '3'},
+            #ups.moe.edu
             'uid': {'louisalflame@hotmail.com.tw'},
             'textfield2':{'0911233456'}, #name=tel
             'personal_name':{'Louis','Alice'} ,
-            'id': {'1234'}
+            'id': {'1234'},
+            #jibako
+            'user_user_profile_attributes_name':{'louis'},
+            #member.cht.com.tw
+            'birthday':{'2000/10/22', '2000/11/22'},
+            #www.cloudopenlab.org.tw
+            'chnlastname':{'wu', 'wang', 'lin', 'li'},
+            'chnname':{'Cindy', 'Duck', 'Ellen'},
+            'engname':{'Ann', 'Bob'},
+            'companyname':{'bl618', },
+            'phone':{'1234567','000000'},
+            'applynote':{'***','<!---->'},
         },
         "password":
         {
-            'password': {'j6j6fu3fu3mp3mp3'}
+            'password': {'j6j6fu3fu3mp3mp3'},
+            #jibako
+            'user_password':{'j6j6fu3fu3mp3mp3'},
+            'user_password_confirmation':{'j6j6fu3fu3mp3mp3'},
+            #member.cht.com.tw
+            'password1':{'1apple2bee'},
+            'password2':{'1apple2bee'}
         },
         "email":
         {          
-            'email': {'user1@example.com', 'user2@mailhost.com'}
+            'email': {'user1@example.com', 'user2@mailhost.com'},
+            #jibako
+            'user_email':{'taadoopswow@gmail.com','bluehouseeverywhere@yahoo.com.tw'},
         },
         "select":
         {
-            'city':{2, 3},
-            'job1':{1, 3},
-            'dist_cd': {0},
-            'd_birthday': {70, 80},
-            'city_cd': {12, 13},
-            'doc_cd': {0}            
+            'city':{'2', '3'},
+            'year':{'3', '5'},
+            'job1':{'1', '3'},
+            #ups.moe.edu
+            'dist_cd': {'0'},
+            'd_birthday': {'70', '80'},
+            'city_cd': {'12', '13'},
+            'doc_cd': {'0'},
+            #member.cht.com.tw
+            'gender':{'1','2'},
+            #www.cloudopenlab.org.tw
+            'industry':{'13','16','23'},
+        },
+        "radio":{
+            'job':{'0','1','2'},
+            'degree':{'0','1','2'}
+        },
+        "checkbox":{
+            'interest':{'0/1/2','0/2/3','1/2/3'},
+            'agreement':{'True'},
+            'private_date1':{'True'},
         }
     }
 
