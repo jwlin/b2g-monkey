@@ -65,77 +65,15 @@ class SeleniumExecutor():
         #raw_input("enter to click")
         try:
             # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
-            if clickable.get_id() and not clickable.get_id().startswith(DomAnalyzer.serial_prefix):
-                el = self.driver.find_element_by_id( clickable.get_id() ).click()
-                self.check_after_click()
-            elif clickable.get_xpath():
-                self.driver.find_element_by_xpath( clickable.get_xpath() ).click()
-                self.check_after_click()
-            else:
-                raise ValueError('No id nor xpath for the clickable: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath()))
+            element = self.get_element_by_tag(clickable)
+            if not element:
+                raise ValueError('No id nor xpath for an clickable')
+            element.click()
+            self.check_after_click()
         except Exception as e:
             print 'Unknown Exception: %s in fire_event(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
 
-    def fill_form(self, all_inputs):
-        state_inputs = all_inputs[0]
-        state_selects = all_inputs[1]
-        for select_field in state_selects:
-            #raw_input("enter to fill")
-            try:
-                if select_field.get_id() and not select_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                    select = Select(self.driver.find_element_by_id(select_field.get_id()))
-                    select.select_by_index(select_field.get_value())
-                    self.check_after_click()
-                elif select_field.get_xpath():
-                    select = Select(self.driver.find_element_by_xpath(select_field.get_xpath()))
-                    select.select_by_index(select_field.get_value())
-                    self.check_after_click()
-                else:
-                    raise ValueError('No id nor xpath for an input field')
-            except Exception as e:
-                pass
-                #print 'Unknown Exception: %s' % (str(e))
-        for input_field in state_inputs:
-            #raw_input("enter to fill")
-            try:
-                if input_field.get_type() == 'checkbox':
-                    if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                        self.driver.find_element_by_id( input_field.get_id() ).click()
-                        self.check_after_click()
-                    elif input_field.get_xpath():
-                        self.driver.find_element_by_xpath( input_field.get_xpath() ).click()
-                        self.check_after_click()
-                elif input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                    self.driver.find_element_by_id( input_field.get_id() ).send_keys(input_field.get_value())
-                    self.check_after_click()
-                elif input_field.get_xpath():
-                    self.driver.find_element_by_xpath( input_field.get_xpath() ).send_keys(input_field.get_value())
-                    self.check_after_click()
-                else:
-                    raise ValueError('No id nor xpath for an input field')
-            except Exception as e:
-                pass
-                #print 'Unknown Exception: %s' % (str(e))
-
-
-    def empty_form(self, all_inputs):
-        state_inputs = all_inputs[0]
-        state_selects = all_inputs[1]
-        for input_field in state_inputs:
-            #raw_input("enter to empty")
-            try:
-                if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                    self.driver.find_element_by_id( input_field.get_id() ).clear()
-                    self.check_after_click()
-                elif input_field.get_xpath():
-                    self.driver.find_element_by_xpath( input_field.get_xpath() ).clear()
-                    self.check_after_click()
-                else:
-                    raise ValueError('No id nor xpath for an input field')
-            except Exception as e:
-                pass
-                #print 'Unknown Exception: %s' % (str(e))
-
+    
     def fill_inputs_text(self, inputs):
         for input_field in inputs:
             try:
@@ -154,7 +92,7 @@ class SeleniumExecutor():
             try:
                 element =  Select( self.get_element_by_tag(select_field) )
                 if not element:
-                    raise ValueError('No id nor xpath for an input field')
+                    raise ValueError('No id nor xpath for an select field')
                 element.select_by_index( int(select_field.get_value()) )
                 self.check_after_click()
             except Exception as e:
@@ -169,14 +107,14 @@ class SeleniumExecutor():
                 for checkbox in checkbox_list:
                     element = self.get_element_by_tag(checkbox)
                     if not element:
-                        raise ValueError('No id nor xpath for an input field')
+                        raise ValueError('No id nor xpath for an checkbox')
                     if element.is_selected():
                         element.click()
                         self.check_after_click()
                 for selected_id in checkbox_field.get_value():
                     selected_element = self.get_element_by_tag( checkbox_list[int(selected_id)] )
                     if not selected_element:
-                        raise ValueError('No id nor xpath for an input field')
+                        raise ValueError('No id nor xpath for an checkbox')
                     selected_element.click()
                     self.check_after_click()
             except Exception as e:
@@ -190,7 +128,7 @@ class SeleniumExecutor():
                 radio_list = radio_field.get_radio_list()
                 element = self.get_element_by_tag( radio_list[selected_id] )
                 if not element:
-                    raise ValueError('No id nor xpath for an input field')
+                    raise ValueError('No id nor xpath for an radio')
                 if not element.is_selected():
                     element.click()
                 self.check_after_click()
@@ -203,7 +141,7 @@ class SeleniumExecutor():
         if element.get_id() and not element.get_id().startswith(DomAnalyzer.serial_prefix):
             return self.driver.find_element_by_id( element.get_id() )
         elif element.get_xpath():
-            return self.driver.find_element_by_xpath( elements.get_xpath() )
+            return self.driver.find_element_by_xpath( element.get_xpath() )
         else:
             return None
 
@@ -243,20 +181,20 @@ class SeleniumExecutor():
 
     def start(self):
         '''
-        if self.browserID == 1:
-            self.driver = webdriver.Firefox();
-        elif self.browserID == 2:
-            self.driver = webdriver.Chrome(executable_path='/usr/local/share/chromedriver')
-        elif self.browserID == 3:
-            self.driver = webdriver.PhantomJS()
-        '''
-        try:
             if self.browserID == 1:
                 self.driver = webdriver.Firefox();
             elif self.browserID == 2:
                 self.driver = webdriver.Chrome(executable_path='C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
             elif self.browserID == 3:
                 self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
+        '''
+        try:
+            if self.browserID == 1:
+                self.driver = webdriver.Firefox();
+            elif self.browserID == 2:
+                self.driver = webdriver.Chrome(executable_path='/usr/local/share/chromedriver')
+            elif self.browserID == 3:
+                self.driver = webdriver.PhantomJS()
             else: #default in firefox
                 self.driver = webdriver.Firefox(); 
             self.driver.set_window_size(1280,960)

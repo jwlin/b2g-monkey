@@ -38,6 +38,7 @@ class Automata:
             state.set_id( str(len( self.get_states() )) )  
         self._initial_state = state
         self._current_state = state
+        self._hash.put(state)
         self._states.append(state)
 
     def add_state_edge(self, state, edge):

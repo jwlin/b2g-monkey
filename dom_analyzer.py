@@ -312,9 +312,16 @@ class DomAnalyzer:
 
     @classmethod
     def set_simple_path_ignore_tags(cls):
+        cls._path_ignore_tags.append('h1')
+        cls._path_ignore_tags.append('h2')
+        cls._path_ignore_tags.append('h3')
+        cls._path_ignore_tags.append('h4')
+        cls._path_ignore_tags.append('h5')
+        cls._path_ignore_tags.append('h6')
         cls._path_ignore_tags.append('br')
         cls._path_ignore_tags.append('hr')
         cls._path_ignore_tags.append('img')
+        cls._path_ignore_tags.append('input')
 
     @classmethod
     def set_simple_clickable_tags(cls):

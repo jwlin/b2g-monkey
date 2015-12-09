@@ -15,7 +15,7 @@ from crawler import SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
 from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
-#from connecter import mysqlConnect
+from connecter import mysqlConnect
 
 def B2gmain():
     config = B2gConfiguration('Contacts', 'contacts')
@@ -32,18 +32,20 @@ def B2gmain():
 #==============================================================================================================================
 # Selenium Web Driver
 #==============================================================================================================================
-def SeleniumMain(web_submit_id, dirname=None, folderpath=None):
+def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
     print "connect to mysql"
     connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
     _url, _deep, _time = connect.get_submit_by_id(web_submit_id)
     _web_inputs = connect.get_all_inputs_by_id(web_submit_id)
 
     print "setting config..."
-    config = SeleniumConfiguration(3, _url, dirname, folderpath)
+    config = SeleniumConfiguration(3, _url, folderpath, dirname)
+    config.make_dir()
     config.set_max_depth(_deep)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
+    config.set_simple_path_ignore_tags()
     
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
@@ -58,8 +60,9 @@ def SeleniumMain(web_submit_id, dirname=None, folderpath=None):
     
     print "end! save automata..."
     automata.save_automata(config)
+    automata.save_traces(config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
-    save_config(config, 'config.json')
+    config.save_config('config.json')
 
 def debugTestMain():
     #config = SeleniumConfiguration(2, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
@@ -69,6 +72,7 @@ def debugTestMain():
     #config.set_max_depth(1)
     print "setting config..."
     config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
+    config.make_dir()
     config.set_max_depth(3)
     config.set_max_states(100)
     config.set_automata_fname('automata.json')
@@ -108,9 +112,10 @@ def debugTestMain():
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
 
-def SeleniumMutationTrace(folderpath, config_fname, traces_fname, trace_id):
+def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace_id):
     print "loading config..."
     config = load_config(config_fname)
+    config.make_dir(folderpath=folderpath, dirname=dirname)
     config.set_mutant_trace(traces_fname, trace_id)
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
@@ -190,21 +195,27 @@ if __name__ == '__main__':
         #default mode
         if  sys.argv[1] == '1':
             try:
-                assert not os.path.exists( os.path.join(sys.argv[4], sys.argv[3]) )
+                if not os.path.isdir(sys.argv[3]) or not os.path.exists(sys.argv[3]):
+                    raise ValueError('not found folder')
+                if os.path.exists( os.path.join(sys.argv[3], sys.argv[4]) ):
+                    raise ValueError('dirname already exist')
                 SeleniumMain(sys.argv[2], sys.argv[3], sys.argv[4])
             except Exception as e:                
                 print '[MAIN ERROR]: %s' % (str(e))
         #mutant mode
         elif sys.argv[1] == '2':
             try:
-                assert os.path.isdir(sys.argv[2]) and os.path.exists(sys.argv[2])
-                assert os.path.isfile(sys.argv[3]) and os.path.exists(sys.argv[3])
-                assert os.path.isfile(sys.argv[4]) and os.path.exists(sys.argv[3])
-                SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+                if os.path.exists( os.path.join(sys.argv[2], sys.argv[3]) ):
+                    raise ValueError('dirname already exist')
+                if not os.path.isfile(sys.argv[4]) or not os.path.exists(sys.argv[4]):
+                    raise ValueError('not found config file')
+                if not os.path.isfile(sys.argv[5]) or not os.path.exists(sys.argv[5]):
+                    raise ValueError('not found traces file')
+                SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
             except Exception as e:
                 print '[MAIN ERROR]: %s' % (str(e))
         else:
             debugTestMain()
     else:
-        print "[WARNIING] needed argv: <Mode=1> <WebSubmitID> <Dirname> <FolderPath> default crawling "
-        print "                        <Mode=2> <FolderPath> <ConfigFile> <TracesFile> <TraceID> mutant crawling "
+        print "[WARNIING] needed argv: <Mode=1> <WebSubmitID> <FolderPath> <Dirname>: default crawling "
+        print "                        <Mode=2> <FolderPath> <Dirname> <ConfigFile> <TracesFile> <TraceID>: mutant crawling "

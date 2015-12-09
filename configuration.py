@@ -52,27 +52,23 @@ class Configuration:
 # Selenium Web Driver
 #==============================================================================================================================
 class SeleniumConfiguration(Configuration):
-    def __init__(self, browserID, url, dirname=None, folderpath=None ):
+    def __init__(self, browserID, url, folderpath=None, dirname=None ):
         super(SeleniumConfiguration, self).__init__()
         self._browserID = browserID
         self._url = url
         self._dirname = dirname
         self._folderpath = folderpath
-        dirname = datetime.datetime.now().strftime('%Y%m%d%H%M%S') if not dirname else dirname
-        self._root_path = os.path.join('trace', dirname ) if not folderpath else os.path.join( folderpath, dirname )
+        self._dirname = datetime.datetime.now().strftime('%Y%m%d%H%M%S') if not self._dirname else self._dirname
+        self._root_path = os.path.join('trace', self._dirname ) if not self._folderpath else os.path.join( self._folderpath, self._dirname )
         self._file_path = {
             'root': self._root_path,
             'dom': os.path.join(self._root_path, 'dom'),
             'state': os.path.join(self._root_path, 'screenshot', 'state'),
             'clickable': os.path.join(self._root_path, 'screenshot', 'clickable'),
         }
-        for key, value in self._file_path.iteritems():
-            abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
-            if not os.path.exists(abs_path):
-                os.makedirs(abs_path)
 
-        self._automata_fname = ''
-        self._traces_fname = ''
+        self._automata_fname = 'automata.json'
+        self._traces_fname = 'traces.json'
         self._dom_inside_iframe = True
         self._frame_tags = []
         self._domains = []
@@ -91,6 +87,23 @@ class SeleniumConfiguration(Configuration):
         }
         self._before_trace_fname = ''
         self._mutant_scripts = ''
+
+    def make_dir(self, folderpath=None, dirname=None):
+        if dirname:
+            self._dirname = dirname
+        if folderpath:
+            self._folderpath = folderpath
+            self._root_path = os.path.join( self._folderpath, self._dirname )
+        self._file_path = {
+            'root': self._root_path,
+            'dom': os.path.join(self._root_path, 'dom'),
+            'state': os.path.join(self._root_path, 'screenshot', 'state'),
+            'clickable': os.path.join(self._root_path, 'screenshot', 'clickable'),
+        }
+        for key, value in self._file_path.iteritems():
+            abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
+            if not os.path.exists(abs_path):
+                os.makedirs(abs_path)
 
     def get_abs_path(self, my_type):
         abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
