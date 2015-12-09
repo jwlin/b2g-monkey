@@ -98,7 +98,14 @@ class SeleniumExecutor():
         for input_field in state_inputs:
             #raw_input("enter to fill")
             try:
-                if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                if input_field.get_type() == 'checkbox':
+                    if input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                        self.driver.find_element_by_id( input_field.get_id() ).click()
+                        self.check_after_click()
+                    elif input_field.get_xpath():
+                        self.driver.find_element_by_xpath( input_field.get_xpath() ).click()
+                        self.check_after_click()
+                elif input_field.get_id() and not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
                     self.driver.find_element_by_id( input_field.get_id() ).send_keys(input_field.get_value())
                     self.check_after_click()
                 elif input_field.get_xpath():
@@ -129,6 +136,77 @@ class SeleniumExecutor():
                 pass
                 #print 'Unknown Exception: %s' % (str(e))
 
+    def fill_inputs_text(self, inputs):
+        for input_field in inputs:
+            try:
+                element = self.get_element_by_tag(input_field)
+                if not element:
+                    raise ValueError('No id nor xpath for an input field')
+                element.clear()
+                element.send_keys(input_field.get_value())
+                self.check_after_click()
+            except Exception as e:
+                print 'Unknown Exception: %s' % (str(e))
+                pass
+
+    def fill_selects(self, selects):
+        for select_field in selects:
+            try:
+                element =  Select( self.get_element_by_tag(select_field) )
+                if not element:
+                    raise ValueError('No id nor xpath for an input field')
+                element.select_by_index( int(select_field.get_value()) )
+                self.check_after_click()
+            except Exception as e:
+                print 'Unknown Exception: %s' % (str(e))
+                pass
+
+    def fill_checkboxes(self, checkboxes):
+        for checkbox_field in checkboxes:
+            try:
+                checkbox_list = checkbox_field.get_checkbox_list()
+                #clear all
+                for checkbox in checkbox_list:
+                    element = self.get_element_by_tag(checkbox)
+                    if not element:
+                        raise ValueError('No id nor xpath for an input field')
+                    if element.is_selected():
+                        element.click()
+                        self.check_after_click()
+                for selected_id in checkbox_field.get_value():
+                    selected_element = self.get_element_by_tag( checkbox_list[int(selected_id)] )
+                    if not selected_element:
+                        raise ValueError('No id nor xpath for an input field')
+                    selected_element.click()
+                    self.check_after_click()
+            except Exception as e:
+                #print 'Unknown Exception: %s' % (str(e))
+                pass
+
+    def fill_radios(self, radios):
+        for radio_field in radios:
+            try:
+                selected_id = int(radio_field.get_value())
+                radio_list = radio_field.get_radio_list()
+                element = self.get_element_by_tag( radio_list[selected_id] )
+                if not element:
+                    raise ValueError('No id nor xpath for an input field')
+                if not element.is_selected():
+                    element.click()
+                self.check_after_click()
+            except Exception as e:
+                #print 'Unknown Exception: %s' % (str(e))
+                pass
+
+
+    def get_element_by_tag(self, element):
+        if element.get_id() and not element.get_id().startswith(DomAnalyzer.serial_prefix):
+            return self.driver.find_element_by_id( element.get_id() )
+        elif element.get_xpath():
+            return self.driver.find_element_by_xpath( elements.get_xpath() )
+        else:
+            return None
+
     def get_source(self):
         try:
             text = self.driver.page_source
@@ -152,7 +230,7 @@ class SeleniumExecutor():
     def switch_iframe_and_get_source(self, iframe_xpath_list=None):
         try:
             self.driver.switch_to_default_content()
-            if iframe_xpath_list:
+            if iframe_xpath_list and iframe_xpath_list[0] != 'None':
                 for xpath in iframe_xpath_list:        
                     iframe = self.driver.find_element_by_xpath(xpath)
                     self.driver.switch_to_frame(iframe)
@@ -233,6 +311,7 @@ class SeleniumExecutor():
         self.check_alert()
         self.check_window()
         self.check_tab()
+        time.sleep(0.1)
 
     def check_alert(self):
         no_alert = False
@@ -242,7 +321,7 @@ class SeleniumExecutor():
                 print "[LOG] click with alert: %s" % alert.text
                 alert.dismiss()
             except Exception:
-                print "[LOG] click without alert"
+                #print "[LOG] click without alert"
                 no_alert = True
 
     def check_window(self):
