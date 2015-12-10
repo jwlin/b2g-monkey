@@ -20,30 +20,30 @@ from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNorma
 # Selenium Web Driver
 #==============================================================================================================================
 def SeleniumMain(web_submit_id, dirname=None, folderpath=None):
-    print "connect to mysql"
+    logging.info("connect to mysql")
     connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
     _url, _deep, _time = connect.get_submit_by_id(web_submit_id)
     _web_inputs = connect.get_all_inputs_by_id(web_submit_id)
 
-    print "setting config..."
+    logging.info("setting config...")
     config = SeleniumConfiguration(3, _url, folderpath, dirname)
     config.set_max_depth(_deep)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
     
-    print "setting executor..."
+    logging.info("setting executor...")
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
     
-    print "setting crawler..."
+    logging.info("setting crawler...")
     automata = Automata()
     crawler = SeleniumCrawler(config, executor, automata)    
     
-    print "crawler start run..."
+    logging.info("crawler start run...")
     automata = crawler.run()
     crawler.close()
     
-    print "end! save automata..."
+    logging.info("end! save automata...")
     automata.save_automata(config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     save_config(config, 'config.json')
@@ -54,7 +54,7 @@ def debugTestMain():
     #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
-    print "setting config..."
+    logging.info("setting config...")
     config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     config.set_max_depth(3)
     config.set_max_states(100)
@@ -81,35 +81,35 @@ def debugTestMain():
     config.set_tag_with_attribute_normalizer( "div", 'style', 'none', 'contains' )
     config.set_tag_with_attribute_normalizer( "div", 'class', 'ui-widget', 'contains' )
 
-    print "setting executor..."
-    executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
-    print "setting crawler..."
+    logging.info("setting executor...")
+    executor = SeleniumExecutor(config.get_browserID(), config.get_url())
+    logging.info("setting crawler...")
     automata = Automata()
-    crawler = SeleniumCrawler(config, executor, automata)    
-    print "crawler start run..."
+    crawler = SeleniumCrawler(config, executor, automata)
+    logging.info("crawler start run...")
     crawler.run()
-    crawler.close()    
-    print "end! save automata..."
+    crawler.close()
+    logging.info("end! save automata...")
     automata.save_traces(config)
     automata.save_automata(config, config.get_automata_fname())
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
 
 def SeleniumMutationTrace(folderpath, config_fname, traces_fname, trace_id):
-    print "loading config..."
+    logging.info("loading config...")
     config = load_config(config_fname)
     config.set_folderpath(folderpath)
     config.set_dirname(dirname)
     config.set_mutant_trace(traces_fname, trace_id)
-    print "setting executor..."
-    executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
-    print "setting crawler..."
+    logging.info("setting executor...")
+    executor = SeleniumExecutor(config.get_browserID(), config.get_url())
+    logging.info("setting crawler...")
     automata = Automata()
-    crawler = SeleniumCrawler(config, executor, automata)    
-    print "crawler start run..."
+    crawler = SeleniumCrawler(config, executor, automata)
+    logging.info("crawler start run...")
     crawler.run_mutant()
-    crawler.close()    
-    print "end! save automata..."
+    crawler.close()
+    logging.info("end! save automata...")
     automata.save_traces(config)
     automata.save_automata(config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))

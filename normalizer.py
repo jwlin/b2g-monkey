@@ -35,7 +35,7 @@ class AttributeNormalizer(AbstractNormalizer):
                     if attr not in self.attr_list:
                         filtered_attrs[attr] = tag[attr]
             tag.attrs = filtered_attrs
-        return str(soup)#.replace('\n', '')
+        return str(soup)
 
     def __str__(self):
         return 'AttributeNormalizer: attr_list: %s, mode: %s' % (self.attr_list, self.mode)
@@ -50,7 +50,7 @@ class TagContentNormalizer(AbstractNormalizer):
         for tag in soup.find_all():
             if self.tag_list and (tag.name in self.tag_list):
                 tag.clear()
-        return str(soup)#.replace('\n', '')
+        return str(soup)
 
     def __str__(self):
         return 'TagContentNormalizer: tag_list: %s' % self.tag_list
@@ -65,7 +65,7 @@ class TagNormalizer(AbstractNormalizer):
             if self.tag_list and (tag.name in self.tag_list):
                 tag.decompose()
 
-        return str(soup)#.replace('\n', '')
+        return str(soup)
 
     def __str__(self):
         return 'TagNormalizer: tag_list: %s' % self.tag_list
@@ -99,7 +99,7 @@ class TagWithAttributeNormalizer(AbstractNormalizer):
                     if self.is_attr_value(string):
                         tag.decompose()
                         break
-        return str(soup)#.replace('\n', '')
+        return str(soup)
 
     def is_attr_value(self, attr_value):
         if self.mode == 'startswith':

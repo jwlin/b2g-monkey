@@ -5,7 +5,7 @@
 Module docstring
 """
 
-import os, sys, json, posixpath, time, datetime, json, codecs
+import os, sys, json, posixpath, time, datetime, json, codecs, logging
 from os.path import relpath
 from abc import ABCMeta
 
@@ -218,7 +218,7 @@ class SeleniumConfiguration(Configuration):
                 data = json.load(data_file)
                 return data
         except Exception as e:
-            print '[ERROR] can not read json: %s' % (str(e))
+            logging.error('can not read json: %s', str(e))
 
     def build_trace(self, data):
         try:
@@ -250,7 +250,7 @@ class SeleniumConfiguration(Configuration):
                 edges.append( Edge( state_from, state_to, clickable, inputs, selects, checkboxes, radios, iframe_list ) )
             return edges
         except Exception as e:
-            print '[ERROR] can not build trace: %s' % (str(e))
+            logging.error('can not build trace: %s', str(e))
 
     def save_config(self, fname):
         config_data = {}

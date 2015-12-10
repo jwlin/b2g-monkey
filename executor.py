@@ -61,19 +61,16 @@ class SeleniumExecutor():
         self.main_window = None
 
     def fire_event(self, clickable):
-        print '[EVENT] fire_event: id: %s (xpath: %s)' % (clickable.get_id(), clickable.get_xpath())
-        #raw_input("enter to click")
+        logging.info(' fire_event: id(%s) xpath(%s)', clickable.get_id(), clickable.get_xpath())
         try:
-            # id staring with DomAnalyzer.serial_prefix is given by our monkey and should be ignored when locating
             element = self.get_element_by_tag(clickable)
             if not element:
                 raise ValueError('No id nor xpath for an clickable')
             element.click()
             self.check_after_click()
         except Exception as e:
-            print 'Unknown Exception: %s in fire_event(): id: %s (xpath: %s)' % (str(e), clickable.get_id(), clickable.get_xpath())
-
-    
+            logging.error(' Unknown Exception: %s in fire_event: id(%s) xpath(%s) \t\t__from executor.py fire_event()',str(e), clickable.get_id(), clickable.get_xpath())
+                
     def fill_inputs_text(self, inputs):
         for input_field in inputs:
             try:
@@ -84,9 +81,8 @@ class SeleniumExecutor():
                 element.send_keys(input_field.get_value())
                 self.check_after_click()
             except Exception as e:
-                print 'Unknown Exception: %s' % (str(e))
-                pass
-
+                logging.error(' Unknown Exception: %s in input: id(%s) xpath(%s) \t\t__from executor.py fill_inputs_text()',str(e), input_field.get_id(), input_field.get_xpath())
+                
     def fill_selects(self, selects):
         for select_field in selects:
             try:
@@ -96,9 +92,8 @@ class SeleniumExecutor():
                 element.select_by_index( int(select_field.get_value()) )
                 self.check_after_click()
             except Exception as e:
-                print 'Unknown Exception: %s' % (str(e))
-                pass
-
+                logging.error(' Unknown Exception: %s in select: id(%s) xpath(%s) \t\t__from executor.py fire_event()',str(e), select_field.get_id(), select_field.get_xpath())
+                
     def fill_checkboxes(self, checkboxes):
         for checkbox_field in checkboxes:
             try:
@@ -118,9 +113,8 @@ class SeleniumExecutor():
                     selected_element.click()
                     self.check_after_click()
             except Exception as e:
-                #print 'Unknown Exception: %s' % (str(e))
-                pass
-
+                logging.error(' Unknown Exception: %s in checkbox: id(%s) xpath(%s) \t\t__from executor.py fire_event()',str(e), checkbox_field.get_id(), checkbox_field.get_xpath())
+                
     def fill_radios(self, radios):
         for radio_field in radios:
             try:
@@ -133,10 +127,8 @@ class SeleniumExecutor():
                     element.click()
                 self.check_after_click()
             except Exception as e:
-                #print 'Unknown Exception: %s' % (str(e))
-                pass
-
-
+                logging.error(' Unknown Exception: %s in radio: id(%s) xpath(%s) \t\t__from executor.py fire_event()',str(e), radio_field.get_id(), radio_field.get_xpath())
+                
     def get_element_by_tag(self, element):
         if element.get_id() and not element.get_id().startswith(DomAnalyzer.serial_prefix):
             return self.driver.find_element_by_id( element.get_id() )
@@ -149,19 +141,20 @@ class SeleniumExecutor():
         try:
             text = self.driver.page_source
         except Exception as e:
+            logging.error(' %s \t\t__from executor.py get_source()', str(e))
             print "[ERROR] ", e
             self.driver.refresh()
             self.check_after_click()
             self.driver.page_source
         except Exception as e:
-            print "[ERROR] ", e
+            logging.error(' %s \t\t__from executor.py get_source()', str(e))
             url = self.driver.current_url
             self.driver.close()
             self.start()
             self.driver.get(url)
             self.driver.page_source
         except Exception as e:
-            print "[ERROR] ", e
+            logging.error(' %s \t\t__from executor.py get_source()', str(e))
             text = "ERROR! cannot load file"
         return text.encode('utf-8')
 
@@ -173,7 +166,7 @@ class SeleniumExecutor():
                     iframe = self.driver.find_element_by_xpath(xpath)
                     self.driver.switch_to_frame(iframe)
         except Exception as e:
-            print '[ERROR] switch_iframe : %s' % (str(e))
+            logging.error(' switch_iframe : %s \t\t__from executor.py switch_iframe_and_get_source()', str(e))
         return self.get_source()
 
     def get_screenshot(self, file_path):
@@ -200,20 +193,20 @@ class SeleniumExecutor():
             self.driver.set_window_size(1280,960)
             self.main_window = self.driver.current_window_handle
         except Exception as e:
-            print '[ERROR] start driver : %s' % (str(e))
+            logging.error(' start driver : %s \t\t__from executor.py start()', str(e))
 
     def goto_url(self):
         try:
             self.driver.get(self.startUrl)
         except Exception as e:
-            print '[ERROR] driver get url : %s' % (str(e))
+            logging.error(' driver get url : %s \t\t__from executor.py goto_url()', str(e))
 
     def refresh(self):
         try:
             self.driver.refresh()
             self.check_after_click()
         except Exception as e:
-            print '[ERROR] refresh : %s' % (str(e))
+            logging.error(' refresh : %s \t\t__from executor.py refresh()', str(e))
 
     def restart_app(self):
         self.close()
@@ -225,7 +218,7 @@ class SeleniumExecutor():
             self.driver.back()
             self.check_after_click()
         except Exception as e:
-            print '[ERROR] back : %s' % (str(e))
+            logging.error(' back : %s \t\t__from executor.py back_history()', str(e))
 
     def forward_history(self):
         try:
@@ -233,13 +226,13 @@ class SeleniumExecutor():
             self.driver.forward()
             self.check_after_click()
         except Exception as e:
-            print '[ERROR] back : %s' % (str(e))
+            logging.error(' forward : %s \t\t__from executor.py forward_history()', str(e))
 
     def get_url(self):
         try:
             return self.driver.current_url
         except Exception as e:
-            print '[ERROR] get url : %s' % (str(e))
+            logging.error(' get url : %s \t\t__from executor.py get_url()', str(e))
             return 'error url'
 
     #=============================================================================================
@@ -256,15 +249,14 @@ class SeleniumExecutor():
         while not no_alert:
             try:
                 alert = self.driver.switch_to_alert()
-                print "[LOG] click with alert: %s" % alert.text
+                logging.info(' click with alert: %s ', alert.text)
                 alert.dismiss()
             except Exception:
-                #print "[LOG] click without alert"
                 no_alert = True
 
     def check_window(self):
         if len(self.driver.window_handles) > 1:
-            print "[LOG] more than one window appear"
+            logging.info(' more than one window appear')
             for handle in self.driver.window_handles:
                 if handle != self.main_window:
                     self.driver.switch_to_window(handle)
@@ -279,5 +271,5 @@ class SeleniumExecutor():
         try:
             self.driver.close()
         except Exception as e:
-            print '[ERROR] close : %s' % (str(e))        
+            logging.error(' close : %s \t\t__from executor.py close()', str(e))
 #==============================================================================================================================
