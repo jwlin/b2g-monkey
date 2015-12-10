@@ -1,4 +1,8 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from dom_analyzer import DomAnalyzer
+from automata import Automata, State
 
 class Hash :
     def __init__(self, number, automata):
