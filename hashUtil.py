@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from dom_analyzer import DomAnalyzer
 
 class Hash :

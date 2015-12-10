@@ -5,8 +5,7 @@
 Module docstring
 """
 
-import os, sys, json, posixpath, time, codecs
-from os.path import relpath
+import os, sys, json, posixpath, time, codecs, datetime, logging
 from configuration import SeleniumConfiguration
 from automata import Automata, State
 from clickable import Clickable, InputField, SelectField
@@ -16,18 +15,6 @@ from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
 from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
 #from connecter import mysqlConnect
-
-def B2gmain():
-    config = B2gConfiguration('Contacts', 'contacts')
-    config.set_max_depth(3)
-    executor = B2gExecutor(config.get_app_name(), config.get_app_id())
-
-    crawler = B2gCrawler(config, executor)
-    automata = crawler.run()
-    save_automata(automata, config)
-    Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
-    save_config(config, 'config.json')
-
 
 #==============================================================================================================================
 # Selenium Web Driver
@@ -39,7 +26,7 @@ def SeleniumMain(web_submit_id, dirname=None, folderpath=None):
     _web_inputs = connect.get_all_inputs_by_id(web_submit_id)
 
     print "setting config..."
-    config = SeleniumConfiguration(3, _url, dirname, folderpath)
+    config = SeleniumConfiguration(3, _url, folderpath, dirname)
     config.set_max_depth(_deep)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
@@ -111,6 +98,8 @@ def debugTestMain():
 def SeleniumMutationTrace(folderpath, config_fname, traces_fname, trace_id):
     print "loading config..."
     config = load_config(config_fname)
+    config.set_folderpath(folderpath)
+    config.set_dirname(dirname)
     config.set_mutant_trace(traces_fname, trace_id)
     print "setting executor..."
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())    
@@ -185,25 +174,64 @@ def load_config(fname):
         print 'config loaded. loading time: %f sec' % (time.time() - t_start)
     return config
 
+
+def make_dir(folderpath=None, dirname=None):
+    dirname = datetime.datetime.now().strftime('%Y%m%d%H%M%S') if not dirname else dirname
+    root_path = os.path.join('trace', dirname ) if not folderpath else os.path.join( folderpath, dirname )
+    file_path = {
+        'root': root_path,
+        'dom': os.path.join(root_path, 'dom'),
+        'state': os.path.join(root_path, 'screenshot', 'state')
+    }
+    for key, value in file_path.iteritems():
+        abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
+        if not os.path.exists(abs_path):
+            os.makedirs(abs_path)
+
+def make_log(folderpath, dirname):
+    filename = os.path.join( os.path.dirname(os.path.realpath(__file__)), os.path.join(folderpath, dirname, 'log.txt') )
+    level = logging.DEBUG
+    format = '[%(asctime)s]<%(levelname)s>: %(message)s'
+    logging.basicConfig(filename=filename, level=level, format=format)
+
 if __name__ == '__main__':
     if len(sys.argv)> 1:
         #default mode
         if  sys.argv[1] == '1':
             try:
-                assert not os.path.exists( os.path.join(sys.argv[4], sys.argv[3]) )
-                SeleniumMain(sys.argv[2], sys.argv[3], sys.argv[4])
-            except Exception as e:                
-                print '[MAIN ERROR]: %s' % (str(e))
+                if not os.path.isdir(sys.argv[3]) or not os.path.exists(sys.argv[3]):
+                    raise ValueError('not found folder')
+                if os.path.exists( os.path.join(sys.argv[3], sys.argv[4]) ):
+                    raise ValueError('dirname already exist')
+                make_dir(sys.argv[3], sys.argv[4])
+                make_log(sys.argv[3], sys.argv[4])
+                try:
+                    SeleniumMain(sys.argv[2], sys.argv[3], sys.argv[4])
+                except Exception as e:
+                    logging.error('Unknown Exception - STOP CRAWLING : %s', str(e))
+            except Exception as e:  
+                with open("default_log.txt","a") as main_log:
+                    main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(e)) )
         #mutant mode
         elif sys.argv[1] == '2':
-            #try:
-                #assert os.path.isdir(sys.argv[2]) and os.path.exists(sys.argv[2])
-                #assert os.path.isfile(sys.argv[3]) and os.path.exists(sys.argv[3])
-                #assert os.path.isfile(sys.argv[4]) and os.path.exists(sys.argv[3])
-                SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
-            #except Exception as e:
-            #    print '[MAIN ERROR]: %s' % (str(e))
+            try:
+                if os.path.exists( os.path.join(sys.argv[2], sys.argv[3]) ):
+                    raise ValueError('dirname already exist')
+                if not os.path.isfile(sys.argv[4]) or not os.path.exists(sys.argv[4]):
+                    raise ValueError('not found config file')
+                if not os.path.isfile(sys.argv[5]) or not os.path.exists(sys.argv[5]):
+                    raise ValueError('not found traces file')
+                make_dir(sys.argv[2], sys.argv[3])
+                make_log(sys.argv[2], sys.argv[3])
+                try:
+                    SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+                except Exception as e:
+                    logging.error('Unknown Exception - STOP CRAWLING : %s', str(e))
+            except Exception as e:
+                with open("mutant_log.txt","a") as main_log:
+                    main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(e)) )
         else:
+            make_dir()
             debugTestMain()
     else:
         print "[WARNIING] needed argv: <Mode=1> <WebSubmitID> <Dirname> <FolderPath> default crawling "

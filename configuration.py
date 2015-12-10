@@ -58,14 +58,9 @@ class SeleniumConfiguration(Configuration):
         self._url = url
         self._dirname = dirname
         self._folderpath = folderpath
-        self._dirname = datetime.datetime.now().strftime('%Y%m%d%H%M%S') if not self._dirname else self._dirname
-        self._root_path = os.path.join('trace', self._dirname ) if not self._folderpath else os.path.join( self._folderpath, self._dirname )
-        self._file_path = {
-            'root': self._root_path,
-            'dom': os.path.join(self._root_path, 'dom'),
-            'state': os.path.join(self._root_path, 'screenshot', 'state'),
-            'clickable': os.path.join(self._root_path, 'screenshot', 'clickable'),
-        }
+        self._root_path = ''
+        self._file_path = {}
+        self.set_file_path()
 
         self._automata_fname = 'automata.json'
         self._traces_fname = 'traces.json'
@@ -88,22 +83,22 @@ class SeleniumConfiguration(Configuration):
         self._before_trace_fname = ''
         self._mutant_scripts = ''
 
-    def make_dir(self, folderpath=None, dirname=None):
-        if dirname:
-            self._dirname = dirname
-        if folderpath:
-            self._folderpath = folderpath
-            self._root_path = os.path.join( self._folderpath, self._dirname )
+    def set_folderpath(self, folderpath):
+        self._folderpath = folderpath
+        self.set_file_path()
+
+    def set_dirname(self, dirname):
+        self._dirname = dirname
+        self.set_file_path()
+
+    def set_file_path(self):
+        self._dirname = datetime.datetime.now().strftime('%Y%m%d%H%M%S') if not self._dirname else self._dirname
+        self._root_path = os.path.join('trace', self._dirname ) if not self._folderpath else os.path.join( self._folderpath, self._dirname )
         self._file_path = {
             'root': self._root_path,
             'dom': os.path.join(self._root_path, 'dom'),
-            'state': os.path.join(self._root_path, 'screenshot', 'state'),
-            'clickable': os.path.join(self._root_path, 'screenshot', 'clickable'),
+            'state': os.path.join(self._root_path, 'screenshot', 'state')
         }
-        for key, value in self._file_path.iteritems():
-            abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
-            if not os.path.exists(abs_path):
-                os.makedirs(abs_path)
 
     def get_abs_path(self, my_type):
         abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), self._file_path[my_type])
@@ -283,9 +278,6 @@ class SeleniumConfiguration(Configuration):
         )
         config_data['state_path'] = posixpath.join(
             posixpath.join(*(self.get_path('state').split(os.sep)))
-        )
-        config_data['clickable_path'] = posixpath.join(
-            posixpath.join(*(self.get_path('clickable').split(os.sep)))
         )
         #=============================================================================================
         #new config
