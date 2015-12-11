@@ -5,7 +5,7 @@
 Module docstring
 """
 
-import os, sys, json, posixpath, time, codecs, datetime, logging
+import os, sys, json, posixpath, time, codecs, datetime, logging, traceback
 from configuration import SeleniumConfiguration
 from automata import Automata, State
 from clickable import Clickable, InputField, SelectField
@@ -203,11 +203,11 @@ def make_log(folderpath, dirname):
     format = '[%(asctime)s]<%(levelname)s>: %(message)s'
     logging.basicConfig(filename=filename, level=level, format=format)
 
-def end_log(complete, note):
-    with open(os.path.join(config.get_abs_path('root'), 'end.json'), 'w') as end_file:
+def end_log(filename, complete, note):
+    with open(filename, 'w') as end_file:
         end = {
             'complete': complete,
-            'note': 'Unknown Exception - STOP CRAWLING : \n'+note
+            'note': note
         }
         json.dump(end, end_file, indent=2, sort_keys=True, ensure_ascii=False)
 
@@ -223,12 +223,12 @@ if __name__ == '__main__':
                 make_dir(sys.argv[3], sys.argv[4])
                 try:
                     SeleniumMain(sys.argv[2], sys.argv[3], sys.argv[4])
-                    end_log(True, 'done')
+                    end_log( os.path.join(sys.argv[3], sys.argv[4], 'end.json'), True, 'done')
                 except Exception as e:
-                    end_log(False, str(e))
+                    end_log( os.path.join(sys.argv[3], sys.argv[4], 'end.json'),False, traceback.format_exc())
             except Exception as e:  
                 with open("default_log.txt","a") as main_log:
-                    main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(e)) )
+                    main_log.write( '\n[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
         #mutant mode
         elif sys.argv[1] == '2':
             try:
@@ -241,12 +241,12 @@ if __name__ == '__main__':
                 make_dir(sys.argv[2], sys.argv[3])
                 try:
                     SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
-                    end_log(True, str(e))
+                    end_log( os.path.join(sys.argv[3], sys.argv[4], 'end.json'), True, 'done')
                 except Exception as e:
-                    end_log(False, str(e))
+                    end_log( os.path.join(sys.argv[3], sys.argv[4], 'end.json'),False, str(e)+traceback.format_exc())
             except Exception as e:
                 with open("mutant_log.txt","a") as main_log:
-                    main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(e)) )
+                    main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
         else:
             make_dir()
             debugTestMain()

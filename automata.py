@@ -6,7 +6,7 @@
 The automata (finite state machine) referenced by the monkey.
 """
 
-import os, sys, json, posixpath, time, codecs
+import os, sys, json, posixpath, time, codecs, random
 from os.path import relpath
 from dom_analyzer import DomAnalyzer
 from hashUtil import Hash
@@ -541,7 +541,7 @@ class Edge:
     def get_iframe_list(self):
         return self._iframe_list
 
-    def make_value_by_msq(self, databank, mode=None, id=None):
+    def make_value(self, databank, mode=None, id=None):
         for input_field in self._inputs:
             if not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
                 data_set = databank.get_data(input_field.get_type(), input_field.get_id())
@@ -567,7 +567,7 @@ class Edge:
             select_field.set_selected(selected)
 
         for checkbox_field in self._checkboxes:
-            if not checkbox_field.get_checkbox_name().startswith(cccccccccc):
+            if not checkbox_field.get_checkbox_name().startswith(DomAnalyzer.serial_prefix):
                 data_set = databank.get_data('checkbox', checkbox_field.get_checkbox_name())
             elif not checkbox_field.get_checkbox_by_id(0).get_id().startswith(DomAnalyzer.serial_prefix):
                 data_set = databank.get_data('checkbox', checkbox_field.get_checkbox_by_id(0).get_id())

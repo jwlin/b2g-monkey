@@ -132,10 +132,10 @@ class DomAnalyzer:
                         else cls.make_id(None) if my_radio.has_attr('id') else radio_id
             radio_value = my_radio.get('value') if my_radio.has_attr('value') else ''
             radio =  Radio( radio_id, radio_name, cls._get_xpath(my_radio), radio_value )
-            if my_radio['name'] in radio_dict.keys():
-                radio_dict[ my_radio['name'] ].append(radio)
+            if radio_name in radio_dict.keys():
+                radio_dict[ radio_name ].append(radio)
             else:
-                radio_dict[ my_radio['name'] ] = [radio]
+                radio_dict[ radio_name ] = [radio]
         for radio_name_key in radio_dict.keys():
             radio_field_list.append( RadioField(radio_dict[radio_name_key], radio_name_key ) )
         return radio_field_list
@@ -153,10 +153,10 @@ class DomAnalyzer:
                             else cls.make_id(None) if my_checkbox.has_attr('id') else checkbox_id 
             checkbox_value = my_checkbox.get('value') if my_checkbox.has_attr('value') else ''
             checkbox =  Checkbox( checkbox_id, checkbox_name, cls._get_xpath(my_checkbox), checkbox_value )
-            if my_checkbox['name'] in checkbox_dict.keys():
-                checkbox_dict[ my_checkbox['name'] ].append(checkbox)
+            if checkbox_name in checkbox_dict.keys():
+                checkbox_dict[ checkbox_name ].append(checkbox)
             else:
-                checkbox_dict[ my_checkbox['name'] ] = [checkbox]
+                checkbox_dict[ checkbox_name ] = [checkbox]
         for checkbox_name_key in checkbox_dict.keys():
             checkbox_field_list.append( CheckboxField(checkbox_dict[checkbox_name_key], checkbox_name_key) )
         return checkbox_field_list

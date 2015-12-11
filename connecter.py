@@ -33,7 +33,7 @@ class mysqlConnect:
 		return self.cursor.fetchall()
 
 	def get_all_column_names(self, table):
-		sql = "SELECT COLUMN_NAME FROM information_schema.columns WHERE table_name = %s" % (table)
+		sql = "SELECT COLUMN_NAME FROM information_schema.columns WHERE table_name = \'%s\'" % (table)
 		logging.info(str(self))
 		logging.info(sql)
 
