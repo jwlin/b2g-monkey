@@ -13,40 +13,42 @@ from executor import SeleniumExecutor
 from crawler import SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
+from data_bank import InlineDataBank, MysqlDataBank
 from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
-#from connecter import mysqlConnect
+from connecter import mysqlConnect
 
 #==============================================================================================================================
 # Selenium Web Driver
 #==============================================================================================================================
-def SeleniumMain(web_submit_id, dirname=None, folderpath=None):
-    logging.info("connect to mysql")
+def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
+    logging.info(" connect to mysql")
     connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
     _url, _deep, _time = connect.get_submit_by_id(web_submit_id)
     _web_inputs = connect.get_all_inputs_by_id(web_submit_id)
 
-    logging.info("setting config...")
+    logging.info(" setting config...")
     config = SeleniumConfiguration(3, _url, folderpath, dirname)
     config.set_max_depth(_deep)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
     
-    logging.info("setting executor...")
+    logging.info(" setting executor...")
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
     
-    logging.info("setting crawler...")
+    logging.info(" setting crawler...")
     automata = Automata()
-    crawler = SeleniumCrawler(config, executor, automata)    
+    databank = MysqlDataBank()
+    crawler = SeleniumCrawler(config, executor, automata, databank)
     
-    logging.info("crawler start run...")
+    logging.info(" crawler start run...")
     automata = crawler.run()
     crawler.close()
     
-    logging.info("end! save automata...")
+    logging.info(" end! save automata...")
     automata.save_automata(config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
-    save_config(config, 'config.json')
+    config.save_config('config.json')
 
 def debugTestMain():
     #config = SeleniumConfiguration(2, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
@@ -54,7 +56,7 @@ def debugTestMain():
     #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
-    logging.info("setting config...")
+    logging.info(" setting config...")
     config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     config.set_max_depth(3)
     config.set_max_states(100)
@@ -81,37 +83,43 @@ def debugTestMain():
     config.set_tag_with_attribute_normalizer( "div", 'style', 'none', 'contains' )
     config.set_tag_with_attribute_normalizer( "div", 'class', 'ui-widget', 'contains' )
 
-    logging.info("setting executor...")
+    logging.info(" setting executor...")
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
-    logging.info("setting crawler...")
+    logging.info(" setting crawler...")
     automata = Automata()
-    crawler = SeleniumCrawler(config, executor, automata)
-    logging.info("crawler start run...")
+    databank = InlineDataBank() 
+    crawler = SeleniumCrawler(config, executor, automata, databank)
+    logging.info(" crawler start run...")
     crawler.run()
     crawler.close()
-    logging.info("end! save automata...")
+    logging.info(" end! save automata...")
     automata.save_traces(config)
     automata.save_automata(config, config.get_automata_fname())
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
 
 def SeleniumMutationTrace(folderpath, config_fname, traces_fname, trace_id):
-    logging.info("loading config...")
+    logging.info(" loading config...")
     config = load_config(config_fname)
     config.set_folderpath(folderpath)
     config.set_dirname(dirname)
     config.set_mutant_trace(traces_fname, trace_id)
-    logging.info("setting executor...")
+
+    logging.info(" setting executor...")
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
-    logging.info("setting crawler...")
+
+    logging.info(" setting crawler...")
     automata = Automata()
-    crawler = SeleniumCrawler(config, executor, automata)
-    logging.info("crawler start run...")
+    databank = MysqlDataBank()
+    crawler = SeleniumCrawler(config, executor, automata, databank)
+
+    logging.info(" crawler start run...")
     crawler.run_mutant()
     crawler.close()
-    logging.info("end! save automata...")
+
+    logging.info(" end! save automata...")
     automata.save_traces(config)
-    automata.save_automata(config)
+    automata.save_automata(config)    
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
 #==============================================================================================================================
 
@@ -187,12 +195,21 @@ def make_dir(folderpath=None, dirname=None):
         abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), value)
         if not os.path.exists(abs_path):
             os.makedirs(abs_path)
+    make_log(folderpath, dirname)
 
 def make_log(folderpath, dirname):
     filename = os.path.join( os.path.dirname(os.path.realpath(__file__)), os.path.join(folderpath, dirname, 'log.txt') )
-    level = logging.DEBUG
+    level = logging.INFO
     format = '[%(asctime)s]<%(levelname)s>: %(message)s'
     logging.basicConfig(filename=filename, level=level, format=format)
+
+def end_log(complete, note):
+    with open(os.path.join(config.get_abs_path('root'), 'end.json'), 'w') as end_file:
+        end = {
+            'complete': complete,
+            'note': 'Unknown Exception - STOP CRAWLING : \n'+note
+        }
+        json.dump(end, end_file, indent=2, sort_keys=True, ensure_ascii=False)
 
 if __name__ == '__main__':
     if len(sys.argv)> 1:
@@ -204,11 +221,11 @@ if __name__ == '__main__':
                 if os.path.exists( os.path.join(sys.argv[3], sys.argv[4]) ):
                     raise ValueError('dirname already exist')
                 make_dir(sys.argv[3], sys.argv[4])
-                make_log(sys.argv[3], sys.argv[4])
                 try:
                     SeleniumMain(sys.argv[2], sys.argv[3], sys.argv[4])
+                    end_log(True, 'done')
                 except Exception as e:
-                    logging.error('Unknown Exception - STOP CRAWLING : %s', str(e))
+                    end_log(False, str(e))
             except Exception as e:  
                 with open("default_log.txt","a") as main_log:
                     main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(e)) )
@@ -222,11 +239,11 @@ if __name__ == '__main__':
                 if not os.path.isfile(sys.argv[5]) or not os.path.exists(sys.argv[5]):
                     raise ValueError('not found traces file')
                 make_dir(sys.argv[2], sys.argv[3])
-                make_log(sys.argv[2], sys.argv[3])
                 try:
                     SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+                    end_log(True, str(e))
                 except Exception as e:
-                    logging.error('Unknown Exception - STOP CRAWLING : %s', str(e))
+                    end_log(False, str(e))
             except Exception as e:
                 with open("mutant_log.txt","a") as main_log:
                     main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(e)) )

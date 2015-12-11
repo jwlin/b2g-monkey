@@ -5,7 +5,7 @@
 Test case executor (a.k.a. robot)
 """
 
-import sys, os, time
+import sys, os, time, logging
 
 from abc import ABCMeta, abstractmethod
 from dom_analyzer import DomAnalyzer
@@ -89,7 +89,7 @@ class SeleniumExecutor():
                 element =  Select( self.get_element_by_tag(select_field) )
                 if not element:
                     raise ValueError('No id nor xpath for an select field')
-                element.select_by_index( int(select_field.get_value()) )
+                element.select_by_index( int(select_field.get_selected()) )
                 self.check_after_click()
             except Exception as e:
                 logging.error(' Unknown Exception: %s in select: id(%s) xpath(%s) \t\t__from executor.py fire_event()',str(e), select_field.get_id(), select_field.get_xpath())
@@ -106,7 +106,7 @@ class SeleniumExecutor():
                     if element.is_selected():
                         element.click()
                         self.check_after_click()
-                for selected_id in checkbox_field.get_value():
+                for selected_id in checkbox_field.get_selected_list():
                     selected_element = self.get_element_by_tag( checkbox_list[int(selected_id)] )
                     if not selected_element:
                         raise ValueError('No id nor xpath for an checkbox')
@@ -118,7 +118,7 @@ class SeleniumExecutor():
     def fill_radios(self, radios):
         for radio_field in radios:
             try:
-                selected_id = int(radio_field.get_value())
+                selected_id = int(radio_field.get_selected())
                 radio_list = radio_field.get_radio_list()
                 element = self.get_element_by_tag( radio_list[selected_id] )
                 if not element:

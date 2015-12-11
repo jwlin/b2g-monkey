@@ -28,12 +28,13 @@ class Crawler:
 # Selenium Web Driver
 #==============================================================================================================================
 class SeleniumCrawler(Crawler):
-    def __init__(self, configuration, executor, automata):
+    def __init__(self, configuration, executor, automata, databank):
         self.configuration = configuration
         self.executor = executor
         self.automata = automata
         #list of event:(state, clickable, inputs, selects, iframe_list)
         self.event_history = []
+        self.databank = databank
     
     def run(self):
         self.executor.start()
@@ -62,9 +63,8 @@ class SeleniumCrawler(Crawler):
             radios = current_state.get_radios(iframe_key)
 
             for clickable in clickables:
-                '''TODO: ADD OTHER EVENTS '''
-                '''TODO: get value'''
                 new_edge = Edge(current_state.get_id(), None, clickable, inputs, selects, checkboxes, radios, iframe_key)
+                new_edge.make_value(self.databank)
                 logging.info('state %s fire element in iframe(%s)',current_state.get_id(), iframe_key)
                 self.click_event_by_edge(new_edge)
 
@@ -91,26 +91,26 @@ class SeleniumCrawler(Crawler):
                 else:
                     logging.info('out of domain: %s', url)
                 logging.info('==========< BACKTRACK START >==========')
-                logging.info(' <BACKTRACK> depth %s -> backtrack to state %s',depth ,current_state.get_id() )
+                logging.info('==<BACKTRACK> depth %s -> backtrack to state %s',depth ,current_state.get_id() )
                 self.backtrack(current_state)
                 self.configuration.save_config('config.json')
                 self.automata.save_automata(self.configuration)
                 Visualizer.generate_html('web', os.path.join(self.configuration.get_path('root'), self.configuration.get_automata_fname()))
                 logging.info('==========< BACKTRACK END   >==========')
-        print "[LOG] depth ", depth," -> state ", current_state.get_id()," crawl end"
+        logging.info(' depth %s -> state %s crawl end', depth, current_state.get_id())
 
     def backtrack(self, state):
         #if url are same, guess they are just javascipt edges
         if self.executor.get_url() == state.get_url():
             #first, just refresh for javascript button
-            logging.info(' <BACKTRACK> : try refresh')
+            logging.info('==<BACKTRACK> : try refresh')
             self.executor.refresh()
             dom_list, url, is_same = self.is_same_state_dom(state)
             if is_same:
                 return True
 
         #if can't , try go back form history
-        logging.info(' <BACKTRACK> : try back_history ')
+        logging.info('==<BACKTRACK> : try back_history ')
         self.executor.back_history()
         dom_list, url, is_same = self.is_same_state_dom(state)
         if is_same:
@@ -118,7 +118,7 @@ class SeleniumCrawler(Crawler):
 
         #if can't , try do last edge of state history
         if self.event_history:
-            logging.info(' <BACKTRACK> : try last edge of state history')
+            logging.info('==<BACKTRACK> : try last edge of state history')
             self.executor.forward_history()
             self.click_event_by_edge( self.event_history[-1] )
             dom_list, url, is_same = self.is_same_state_dom(state)
@@ -126,7 +126,7 @@ class SeleniumCrawler(Crawler):
                 return True
 
         #if can't, try go through all edge
-        logging.info(' <BACKTRACK> : start form base ur')
+        logging.info('==<BACKTRACK> : start form base ur')
         self.executor.goto_url()
         for history_edge in self.event_history:
             self.click_event_by_edge( history_edge )
@@ -135,7 +135,7 @@ class SeleniumCrawler(Crawler):
             return True
 
         #if can't, restart and try go again
-        logging,info(' <BACKTRACK> : retart driver')
+        logging,info('==<BACKTRACK> : retart driver')
         edges = self.automata.get_shortest_path(state)
         self.executor.restart_app()
         self.executor.goto_url()
@@ -155,9 +155,9 @@ class SeleniumCrawler(Crawler):
                         f.write( state_to.get_all_normalize_dom() )
                     with open('debug_restart_nor_'+state_to.get_id()+'.txt', 'w') as f:
                         f.write( err.get_all_normalize_dom() )
-                    logging.error(' <BACKTRACK> cannot traceback to %s \t\t__from crawler.py backtrack()', state_to.get_id() )
+                    logging.error('==<BACKTRACK> cannot traceback to %s \t\t__from crawler.py backtrack()', state_to.get_id() )
                 except Exception as e:  
-                    logging.info(' <BACKTRACK> save diff dom : %s', str(e))
+                    logging.info('==<BACKTRACK> save diff dom : %s', str(e))
 
         dom_list, url, is_same = self.is_same_state_dom(state)
         return is_same

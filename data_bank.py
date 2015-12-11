@@ -6,6 +6,7 @@ Module docstring
 """
 
 from abc import ABCMeta, abstractmethod
+from connecter import mysqlConnect
 
 
 class DataBank():
@@ -30,8 +31,7 @@ class DataBank():
     def remove_item(self, data_type, value):
         """IMPORTANT: this is class method, override it with @classmethod!"""
         pass
-
-
+s
 class InlineDataBank(DataBank):
     # data is a list of types and the corresponding input data (set)
     data = {
@@ -139,3 +139,55 @@ class InlineDataBank(DataBank):
             if data_id in cls.data[input_type].keys():
                 cls.data[input_type][data_id].discard(value)
 
+class MysqlDataBank(DataBank):
+    def __init__():
+        self._connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
+
+    @classmethod
+    def get_types(cls):
+        pass
+
+    @classmethod
+    def get_data(cls, data_type, data_id):
+        data_name = ''
+        columns = self._connect.get_all_column_names('databank_'+data_type)
+        data_name = self.find_similar_equal_name(columns[2:], data_id )
+        if data_name:
+            datas = self._connect.get_databank_by_column('databank_'+data_type, data_name)
+            return datas
+        data_name = self.find_similar_contain_name(columns[2:], data_id )
+        if data_name:
+            datas = self._connect.get_databank_by_column('databank_'+data_type, data_name)
+            return datas
+        data_name = self.find_similar_belong_name(columns[2:], data_id )
+        if data_name:
+            datas = self._connect.get_databank_by_column('databank_'+data_type, data_name)
+            return datas
+        return None
+
+
+    @classmethod
+    def add_item(cls, data_type, value):
+        pass
+
+    @classmethod
+    def remove_item(cls, data_type, value):
+        pass
+
+    def find_similar_equal_name(columns, data_id):
+        for column in columns[2:]:
+            if ''.join(data_id.lower().split()) == ''.join(column.lower().split()):
+                return column
+        return ''
+
+    def find_similar_contain_name(columns, data_id):
+        for column in columns[2:]:
+            if ''.join(data_id.lower().split()) in ''.join(column.lower().split()):
+                return column
+        return ''
+
+    def find_similar_belong_name(columns, data_id):
+        for column in columns[2:]:
+            if ''.join(column.lower().split()) in ''.join(data_id.lower().split()):
+                return column
+        return ''

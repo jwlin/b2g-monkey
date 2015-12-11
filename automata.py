@@ -345,6 +345,7 @@ class State:
                     'id': my_select.get_id(),
                     'name': my_select.get_name(),
                     'xpath': my_select.get_xpath(),
+                    'value': my_select.get_value()
                 }
                 iframe_data['selects'].append(select_data) 
             note.append(iframe_data)
@@ -378,7 +379,8 @@ class State:
                     checkbox_data = {
                         'id': my_checkbox.get_id(),
                         'name': my_checkbox.get_name(),
-                        'xpath': my_checkbox.get_xpath()
+                        'xpath': my_checkbox.get_xpath(),
+                        'value': my_checkbox.get_value()
                     }
                     checkbox_field_data['checkbox_list'].append(checkbox_data)
                 iframe_data['checkboxes'].append(checkbox_field_data)  
@@ -413,7 +415,8 @@ class State:
                     radio_data = {
                         'id': my_radio.get_id(),
                         'name': my_radio.get_name(),
-                        'xpath': my_radio.get_xpath()
+                        'xpath': my_radio.get_xpath(),
+                        'value': my_radio.get_value()
                     }
                     radio_field_data['radio_list'].append(radio_data)
                 iframe_data['radios'].append(radio_field_data) 
@@ -505,6 +508,12 @@ class Edge:
         self._radios = radios
         self._iframe_list = iframe_key.split(';') if iframe_key else None
 
+    def set_id(self, edge_id):
+        self._id = edge_id
+
+    def get_id(self):
+        return self._id
+
     def get_state_from(self):
         return self._state_from
 
@@ -531,6 +540,55 @@ class Edge:
 
     def get_iframe_list(self):
         return self._iframe_list
+
+    def make_value_by_msq(self, databank, mode=None, id=None):
+        for input_field in self._inputs:
+            if not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                data_set = databank.get_data(input_field.get_type(), input_field.get_id())
+            elif not input_field.get_name().startswith(DomAnalyzer.serial_prefix):
+                data_set = databank.get_data(input_field.get_type(), input_field.get_name())
+            else:
+                data_set = databank.get_data(input_field.get_type(), None)
+            #check data set
+            value = random.choice(data_set) if data_set \
+                else ''.join( [random.choice(string.lowercase) for i in xrange(8)] )
+            input_field.set_value(value)
+
+        for select_field in self._selects:
+            if not select_field.get_id().startswith(DomAnalyzer.serial_prefix):
+                data_set = databank.get_data('select', select_field.get_id())
+            elif not select_field.get_name().startswith(DomAnalyzer.serial_prefix):
+                data_set = databank.get_data('select', select_field.get_name())
+            else:
+                data_set = databank.get_data('select', None)
+            #check data set
+            selected = random.choice(data_set) if data_set \
+                else min(max(3, option_num/2), option_num)
+            select_field.set_selected(selected)
+
+        for checkbox_field in self._checkboxes:
+            if not checkbox_field.get_checkbox_name().startswith(cccccccccc):
+                data_set = databank.get_data('checkbox', checkbox_field.get_checkbox_name())
+            elif not checkbox_field.get_checkbox_by_id(0).get_id().startswith(DomAnalyzer.serial_prefix):
+                data_set = databank.get_data('checkbox', checkbox_field.get_checkbox_by_id(0).get_id())
+            else:
+                data_set = databank.get_data('checkbox', None)
+            #check data set
+            selected_list = random.choice(data_set).split('/') if data_set \
+                else random.sample( xrange(len(checkbox_field.get_checkbox_list())), random.randint(0, len(checkbox_field.get_checkbox_list())) )
+            checkbox_field.set_selected_list(selected_list)
+
+        for radio_field in self._radios:
+            if not radio_field.get_radio_name().startswith(DomAnalyzer.serial_prefix):
+                data_set = databank.get_data('radio', radio_field.get_radio_name())
+            elif not radio_field.get_radio_by_id(0).get_id().startswith(DomAnalyzer.serial_prefix):
+                data_set = databank.get_data('radio', radio_field.get_radio_by_id(0).get_id())
+            else:
+                data_set = databank.get_data('radio', None)
+            #check data set
+            selected = random.choice(data_set) if data_set \
+                else andom.randint(0, len(radio_field.get_radio_list()))
+            radio_field.set_selected(selected)
 
     def get_edge_json(self):
         edge_data = {
@@ -562,34 +620,37 @@ class Edge:
                 'id': select.get_id(),
                 'name': select.get_name(),
                 'xpath': select.get_xpath(),
-                'value': select.get_value()
+                'value': select.get_value(),
+                'selected': select.get_selected()
             }
             edge_data['selects'].append(select_data)
         for checkbox_field in self._checkboxes:
             checkbox_field_data = {
                 'checkbox_list': [],
-                'checkbox_value_list': checkbox_field.get_value(),
+                'checkbox_selected_list': checkbox_field.get_selected_list(),
                 'checkbox_name': checkbox_field.get_checkbox_name()
             }
             for checkbox in checkbox_field.get_checkbox_list():
                 checkbox_data = {
                     'id': checkbox.get_id(),
                     'name': checkbox.get_name(),
-                    'xpath': checkbox.get_xpath()
+                    'xpath': checkbox.get_xpath(),
+                    'value': checkbox.get_value()
                 }
                 checkbox_field_data['checkbox_list'].append(checkbox_data)
             edge_data['checkboxes'].append(checkbox_field_data)
         for radio_field in self._radios:
             radio_field_data = {
                 'radio_list': [],
-                'radio_value': radio_field.get_value(),
+                'radio_selected': radio_field.get_selected(),
                 'radio_name': radio_field.get_radio_name()
             }
             for radio in radio_field.get_radio_list():
                 radio_data = {
                     'id': radio.get_id(),
                     'name': radio.get_name(),
-                    'xpath': radio.get_xpath()
+                    'xpath': radio.get_xpath(),
+                    'value': radio.get_value()
                 }
                 radio_field_data['radio_list'].append(radio_data)
             edge_data['radios'].append(radio_field_data)

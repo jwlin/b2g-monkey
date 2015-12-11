@@ -7,7 +7,6 @@ Module docstring
 import random, string, re
 from bs4 import BeautifulSoup
 from clickable import Clickable, InputField, SelectField, Checkbox, CheckboxField, Radio, RadioField
-from data_bank import InlineDataBank
 from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
 
 
@@ -101,21 +100,9 @@ class DomAnalyzer:
         for input_type in cls._input_types:
             inputs = soup.find_all('input', attrs={'type': input_type})
             for my_input in inputs:
-                #==TODO GET_VALUE=====================================================
-                if my_input.has_attr('id'):
-                    data_set = InlineDataBank.get_data(input_type, my_input['id']) 
-                elif my_input.has_attr('name'):
-                    data_set = InlineDataBank.get_data(input_type, my_input['name']) 
-                else:
-                    data_set = InlineDataBank.get_data(input_type, None)
-                if data_set:
-                    value = random.choice(list(data_set))
-                else:
-                    value = ''.join(random.choice(string.lowercase) for i in xrange(8))
-                #==TODO GET_VALUE=====================================================
                 input_id = cls.make_id( my_input.get('id') )
                 input_name = my_input.get('name') if my_input.has_attr('name') else input_id
-                inputs_list.append( InputField(input_id, input_name, cls._get_xpath(my_input), input_type, value))
+                inputs_list.append( InputField(input_id, input_name, cls._get_xpath(my_input), input_type))
         return inputs_list
 
     @classmethod
@@ -123,24 +110,13 @@ class DomAnalyzer:
         soup = BeautifulSoup(dom, 'html.parser')
         soup = cls.soup_visible(soup)
         selects_list = []
-        selects = soup.find_all('select')
-        for my_select in selects:
-            #==TODO GET_VALUE=====================================================
-            if my_select.has_attr('id'):
-                data_set = InlineDataBank.get_data('select', my_select['id']) 
-            elif my_select.has_attr('name'):
-                data_set = InlineDataBank.get_data('select', my_select['name'])                    
-            else:
-                data_set = InlineDataBank.get_data('select', None)
-            option_num = len( my_select.find_all('option') )
-            if data_set:
-                value = random.choice(list(data_set))
-            else:
-                value =  min(max(3, option_num/2), option_num)
-            #==TODO GET_VALUE=====================================================
+        for my_select in soup.find_all('select'):
             select_id = cls.make_id( my_select.get('id') )
             select_name = my_select.get('name') if my_select.has_attr('name') else select_id
-            selects_list.append(SelectField(select_id, select_name, cls._get_xpath(my_select), value))
+            select_value = []
+            for option in my_select.find_all('option'):
+                select_value.append( option.get('value') ) if option.has_attr('value') else ''
+            selects_list.append(SelectField(select_id, select_name, cls._get_xpath(my_select), select_value) )
         return selects_list
 
     @classmethod
@@ -149,29 +125,19 @@ class DomAnalyzer:
         soup = cls.soup_visible(soup)
         #group radio by name
         radio_dict = {}
-        default_radio_list = []
         radio_field_list = []
         for my_radio in soup.find_all('input',{'type' : 'radio'}):
             radio_id = cls.make_id( my_radio.get('id') )
-            radio_name = my_radio.get('name') if my_radio.has_attr('name') else radio_id
-            radio =  Radio( radio_id, radio_name, cls._get_xpath(my_radio) )
-            if not my_radio.has_attr('name'):
-                default_radio_list.append(radio)
-            elif my_radio['name'] in radio_dict.keys():
+            radio_name = my_radio.get('name') if my_radio.has_attr('name') \
+                        else cls.make_id(None) if my_radio.has_attr('id') else radio_id
+            radio_value = my_radio.get('value') if my_radio.has_attr('value') else ''
+            radio =  Radio( radio_id, radio_name, cls._get_xpath(my_radio), radio_value )
+            if my_radio['name'] in radio_dict.keys():
                 radio_dict[ my_radio['name'] ].append(radio)
             else:
                 radio_dict[ my_radio['name'] ] = [radio]
-        if default_radio_list:
-            radio_dict[cls.make_id(None)] = default_radio_list
         for radio_name_key in radio_dict.keys():
-            #==TODO GET_VALUE=====================================================
-            data_set = InlineDataBank.get_data('radio', radio_name_key)
-            if data_set:
-                radio_value = random.choice(list(data_set))
-            else:
-                radio_value = random.randint(0, len(radio_dict[radio_name_key]))
-            #==TODO GET_VALUE=====================================================
-            radio_field_list.append( RadioField(radio_dict[radio_name_key], radio_name_key, radio_value) )
+            radio_field_list.append( RadioField(radio_dict[radio_name_key], radio_name_key ) )
         return radio_field_list
 
     @classmethod
@@ -180,30 +146,19 @@ class DomAnalyzer:
         soup = cls.soup_visible(soup)
         #group radio by name
         checkbox_dict = {}
-        default_checkbox_list = []
         checkbox_field_list = []
         for my_checkbox in soup.find_all('input',{'type' : 'checkbox'}):
             checkbox_id = cls.make_id( my_checkbox.get('id') )
-            checkbox_name = my_checkbox.get('name') if my_checkbox.has_attr('name') else checkbox_id
-            checkbox =  Checkbox( checkbox_id, checkbox_name, cls._get_xpath(my_checkbox) )
-            if not my_checkbox.has_attr('name'):
-                default_checkbox_list.append(checkbox)
-            elif my_checkbox['name'] in checkbox_dict.keys():
+            checkbox_name = my_checkbox.get('name') if my_checkbox.has_attr('name') \
+                            else cls.make_id(None) if my_checkbox.has_attr('id') else checkbox_id 
+            checkbox_value = my_checkbox.get('value') if my_checkbox.has_attr('value') else ''
+            checkbox =  Checkbox( checkbox_id, checkbox_name, cls._get_xpath(my_checkbox), checkbox_value )
+            if my_checkbox['name'] in checkbox_dict.keys():
                 checkbox_dict[ my_checkbox['name'] ].append(checkbox)
             else:
                 checkbox_dict[ my_checkbox['name'] ] = [checkbox]
-        if default_checkbox_list:
-            checkbox_dict[cls.make_id(None)] = default_checkbox_list
         for checkbox_name_key in checkbox_dict.keys():
-            #==TODO GET_VALUE=====================================================
-            data_set = InlineDataBank.get_data('checkbox', checkbox_name_key)
-            if data_set:
-                checkbox_value = random.choice(list(data_set)).split('/')
-            else:
-                length = len(checkbox_dict[checkbox_name_key])
-                checkbox_value = random.sample( xrange(length), random.randint(0, length) )
-            #==TODO GET_VALUE=====================================================
-            checkbox_field_list.append( CheckboxField(checkbox_dict[checkbox_name_key], checkbox_name_key, checkbox_value) )
+            checkbox_field_list.append( CheckboxField(checkbox_dict[checkbox_name_key], checkbox_name_key) )
         return checkbox_field_list
         
     @classmethod
