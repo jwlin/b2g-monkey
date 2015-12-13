@@ -105,3 +105,14 @@ You have to manually add or delete normalizers in the list. There are four norma
 `TagNormalizer(tag_list)`: Content in tag and tag itself will be deleted for tag in `tag_list`.
 
 `TagWithAttributeNormalizer`: Remove tag with: 1. matched name, attr containing value; 2. matched name, tag content containing value
+
+## Running with real device 
+
+(Only tested on InFocus New Tab F1)
+
+1. Make sure you have [adb tool](http://developer.android.com/intl/zh-tw/tools/help/adb.html) in your environment, and can see your device through `adb devices`
+2. Put the App under test in footer section
+
+```
+executor = B2gExecutor(config.get_app_name(), config.get_app_id(), device=True)
+```
