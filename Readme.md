@@ -99,6 +99,9 @@ _normalizers = [
 You have to manually add or delete normalizers in the list. There are four normalizers (refer to `normalizer.py` and `NormalizerTestCase` in `test.py`)
 
 `AttributeNormalizer(attr_list)`: All attributes not in `attr_list` will be deleted.
+
 `TagContentNormalizer(tag_list)`: Content in tag will be deleted for tag in `tag_list`.
+
 `TagNormalizer(tag_list)`: Content in tag and tag itself will be deleted for tag in `tag_list`.
+
 `TagWithAttributeNormalizer`: Remove tag with: 1. matched name, attr containing value; 2. matched name, tag content containing value
