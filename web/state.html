@@ -1,7 +1,24 @@
 <!doctype html>
 
+<head>
 <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
 <title>State Diagram</title>
+
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
 
 <script src="js/d3.v3.min.js"></script>
 <script src="js/graphlib-dot.min.js"></script>
@@ -11,7 +28,11 @@
 svg {
   border: 1px solid #999;
   overflow: hidden;
-  position: fixed; height:100%; width:100%;
+  position: relative; height:100%; width:100%;
+}
+
+.label {
+	color: black;
 }
 
 .node {
@@ -39,25 +60,7 @@ svg {
   fill: none;
 }
 </style>
-
-<style>
-h1, h2 {
-  color: #333;
-}
-
-textarea {
-  width: 800px;
-}
-
-label {
-  margin-top: 1em;
-  display: block;
-}
-
-.error {
-  color: red;
-}
-</style>
+</head>
 
 <body onload="tryDraw();">
 <div id="images" style="display:none">
@@ -185,14 +188,21 @@ digraph {
 }
 </textarea>
 
-<h1>State Diagram</h1> 
+<h1>State Diagram (Scrolling on the canvas to zoom in / zoom out)</h1>
 
-<svg viewBox="0 0 1024 768">
+<svg width=800 height=600>
   <g/>
 </svg>
 
-<script>
+<p>Graph drawn with <a href="https://github.com/cpettitt/dagre-d3" target="_blank">dagre-d3</a></p>
 
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="js/ie10-viewport-bug-workaround.js"></script>
+<script>
 var inputGraph = document.querySelector("#inputGraph");
 
 // Set up zoom support

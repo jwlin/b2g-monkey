@@ -1,0 +1,22 @@
+{
+  "app_id": "f440f25a-9594-4339-bb8a-c07a45293c3c", 
+  "app_name": "App example", 
+  "automata_fname": "automata.json", 
+  "clickable_path": "trace/20151213140540/screenshot/clickable", 
+  "dom_path": "trace/20151213140540/dom", 
+  "invariants": [
+    {
+      "name": "file-not-found"
+    }, 
+    {
+      "name": "string", 
+      "str": "display this page because the file cannot be found."
+    }
+  ], 
+  "max_depth": 4, 
+  "max_states": 0, 
+  "max_time": 0, 
+  "root_path": "trace/20151213140540", 
+  "sleep_time": 2, 
+  "state_path": "trace/20151213140540/screenshot/state"
+}

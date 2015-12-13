@@ -10,6 +10,7 @@ import os
 import time
 import logging
 from abc import ABCMeta, abstractmethod
+from subprocess import call
 from marionette import Marionette
 from marionette_driver.errors import ElementNotVisibleException, InvalidElementStateException, NoSuchElementException
 from marionette_driver import Wait, By
@@ -46,9 +47,15 @@ class Executor():
     def restart_app(self):
         pass
 
-
+# Executor for b2g simulator (desktop client). For real devices (device=True), Have to:
+# 1. Install adb tools first
+# 2. Put the App under test in footer section
+# (only tested on InFocus New Tab F1)
 class B2gExecutor(Executor):
-    def __init__(self, app_name, app_id):
+    def __init__(self, app_name, app_id, device=False):
+        self.device = device
+        if self.device:
+            call(['adb', 'forward', 'tcp:2828', 'tcp:2828'])
         self._app_name = app_name
         self._app_id = app_id
         self._marionette = Marionette()
@@ -179,21 +186,29 @@ class B2gExecutor(Executor):
         self._marionette.switch_to_frame()  # switch to the top-level frame
 
     def restart_app(self):
-        # disable screen timeout and screen lock
-
+        # remember to disable screen timeout and screen lock before testing
         # todo: open b2g simulator, install app,
-        # launch the app
         # unlock_screen
-        #self._marionette.execute_script('window.wrappedJSObject.lockScreen.unlock();')
+        # self._marionette.execute_script('window.wrappedJSObject.lockScreen.unlock();')
 
         self.kill_all_apps()
+        # kill_all_apps() will also kill the 'homescreen app' on real device
+        # so trigger a home event to restore homescreen
+        if self.device:
+            self._dispatch_home_button_event()
         self.clear_data()
         self.touch_home_button()
 
-        icon = self._marionette.find_element('xpath', "//div[contains(@class, 'icon')]//span[contains(text(),'" + self._app_name + "')]")
+        # launch the app
+        if self.device:
+            icon = self._marionette.find_element('xpath', "//li[contains(@aria-label, '" + self._app_name + "')]")
+        else:
+            icon = self._marionette.find_element('xpath', "//div[contains(@class, 'icon')]//span[contains(text(),'" + self._app_name + "')]")
         icon.tap()
-        time.sleep(0.5)
+        time.sleep(5)  # wait for app screen
         self._marionette.switch_to_frame()
+        # this wait seems not working, need to find another useful one
+        Wait(self._marionette).until(lambda m: m.find_element('css selector', "iframe[data-url*='" + self._app_id + "']").is_displayed())
         app_frame = self._marionette.find_element('css selector', "iframe[data-url*='" + self._app_id + "']")
         self._marionette.switch_to_frame(app_frame)
 
@@ -223,6 +238,7 @@ class B2gExecutor(Executor):
     def _dispatch_home_button_event(self):
         self._marionette.switch_to_frame()
         self._marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
+        time.sleep(0.5)
 
     def clear_data(self):
         # for now, clear contact data

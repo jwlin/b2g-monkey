@@ -46,6 +46,7 @@ class B2gCrawler(Crawler):
         self.save_screenshot(initial_state.get_id() + '.png', self.executor.get_screenshot(), 'state')
         self.save_dom(initial_state)
         self.crawl(1)
+        self.invariant_violation = sorted(self.invariant_violation, key=lambda k: int(k['state']))
         return self.automata, self.invariant_violation, self.num_clickables
 
     def crawl(self, depth, prev_state=None):

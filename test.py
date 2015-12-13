@@ -252,7 +252,6 @@ class DomAnalyzerTestCase(unittest.TestCase):
         self.add_remove_clickable_tags()
 
 
-
 class ConfigurationTestCase(unittest.TestCase):
     def test_b2g_configuration(self):
         app_name = 'app-name'
@@ -450,12 +449,39 @@ class InvariantTestCase(unittest.TestCase):
 
 
 class VisualizerTestCase(unittest.TestCase):
-    def test_visualizer(self):
-        Visualizer.generate_html(
+    def test_generate_automata(self):
+        Visualizer.generate_automata(
             'web',
-            'trace/example-contact-depth-2/automata.json'
+            'trace/example-app-4-webide',
+            'automata.json'
         )
 
+    def test_generate_report(self):
+        num_clickables = {
+            'unexamined': 5,
+            'true':  10,
+            'false': 30
+        }
+        form1 = FormField('form1')
+        form1.add_input(InputField('username', '//*[@id="username"]', 'castman'))
+        form1.add_input(InputField('password', '', 'p@ssw0rd'))
+        form_list = [{
+            'state': 1,
+            'form': form1,
+            'execution_seq': [Clickable('exe1', '//html/body/button[1]'), Clickable('exe2', '//html/body/button[1]')],
+            'clickable': [Clickable('btn1', '//html/body/button[1]'), Clickable('btn2', '//html/body/button[1]')]
+        }]
+        inv_violation = [{
+            'state': 2,
+            'name': '{"name": "file-not-found"}',
+            'sequence': [Clickable('inv-btn1', '//html/body/button[1]'), Clickable('inv-btn2', '//html/body/button[1]')]
+        }]
+        Visualizer.generate_report(
+            'web',
+            'trace/example-app-4-webide',
+            'automata.json',
+            3, num_clickables, form_list, inv_violation, 9.987
+        )
 
 if __name__ == '__main__':
     unittest.main()

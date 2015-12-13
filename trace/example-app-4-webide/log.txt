@@ -1,0 +1,40 @@
+2015-12-13 14:05:41,348 [root] [INFO] Start crawling, depth 4
+2015-12-13 14:05:50,816 [root] [DEBUG] Fire event in state 0
+2015-12-13 14:05:50,819 [root] [INFO] fire_event: id: b2g-monkey-1 (xpath: //html/body/p[1]/a[1])
+2015-12-13 14:05:54,161 [root] [DEBUG] Fire event in state 1
+2015-12-13 14:05:54,167 [root] [INFO] fire_event: id: b2g-monkey-4 (xpath: //html/body/h1[1]/button[1])
+2015-12-13 14:05:56,694 [root] [DEBUG] Backtrack to state 1
+2015-12-13 14:06:07,316 [root] [INFO] fire_event: id: b2g-monkey-1 (xpath: //html/body/p[1]/a[1])
+2015-12-13 14:06:07,533 [root] [DEBUG] Backtrack to state 0
+2015-12-13 14:06:16,579 [root] [DEBUG] Fire event in state 0
+2015-12-13 14:06:16,582 [root] [INFO] fire_event: id: b2g-monkey-2 (xpath: //html/body/p[2]/a[1])
+2015-12-13 14:06:20,204 [root] [DEBUG] Backtrack to state 0
+2015-12-13 14:06:29,069 [root] [DEBUG] Fire event in state 0
+2015-12-13 14:06:29,071 [root] [INFO] fire_event: id: b2g-monkey-3 (xpath: //html/body/p[3]/a[1])
+2015-12-13 14:06:31,792 [root] [DEBUG] Fire event in state 3
+2015-12-13 14:06:33,792 [root] [INFO] fire_event: id: b2g-monkey-6 (xpath: //html/body/form[1]/p[3]/a[1])
+2015-12-13 14:06:36,216 [root] [DEBUG] Backtrack to state 3
+2015-12-13 14:06:46,983 [root] [INFO] fire_event: id: b2g-monkey-3 (xpath: //html/body/p[3]/a[1])
+2015-12-13 14:06:47,450 [root] [DEBUG] Fire event in state 3
+2015-12-13 14:06:49,078 [root] [INFO] fire_event: id: b2g-monkey-7 (xpath: //html/body/form[1]/p[3]/button[1])
+2015-12-13 14:06:51,549 [root] [DEBUG] Backtrack to state 3
+2015-12-13 14:07:02,186 [root] [INFO] fire_event: id: b2g-monkey-3 (xpath: //html/body/p[3]/a[1])
+2015-12-13 14:07:02,417 [root] [DEBUG] Backtrack to state 0
+2015-12-13 14:07:11,091 [root] [INFO] Crawling finished.
+2015-12-13 14:07:11,092 [root] [INFO] Forms: 1
+2015-12-13 14:07:11,092 [root] [INFO] state: 3, form-id: b2g-monkey-5 (xpath: //html/body/form[1]), input_value:
+2015-12-13 14:07:11,094 [root] [INFO] type: text, id: id_username (xpath: //html/body/form[1]/p[1]/input[1]), value: nzpxcgkq
+2015-12-13 14:07:11,094 [root] [INFO] type: password, id: id_password (xpath: //html/body/form[1]/p[2]/input[1]), value: P@ssw0rd
+2015-12-13 14:07:11,095 [root] [INFO] path-to-form:
+2015-12-13 14:07:11,095 [root] [INFO] id: b2g-monkey-3 (xpath: //html/body/p[3]/a[1])
+2015-12-13 14:07:11,095 [root] [INFO] clickables in the form:
+2015-12-13 14:07:11,095 [root] [INFO] id: b2g-monkey-6 (xpath: //html/body/form[1]/p[3]/a[1])
+2015-12-13 14:07:11,095 [root] [INFO] id: b2g-monkey-7 (xpath: //html/body/form[1]/p[3]/button[1])
+2015-12-13 14:07:11,096 [root] [INFO] Total clickables found: 6 (True: 6, False: 0, Unexamined: 0)
+2015-12-13 14:07:11,096 [root] [INFO] Violated invariants: 2
+2015-12-13 14:07:11,096 [root] [INFO] state: 2, violated invariant: {"name": "file-not-found"}, execution sequence:
+2015-12-13 14:07:11,098 [root] [INFO] id: b2g-monkey-2 (xpath: //html/body/p[2]/a[1])
+2015-12-13 14:07:11,098 [root] [INFO] state: 2, violated invariant: {"name": "string", "str": "display this page because the file cannot be found."}, execution sequence:
+2015-12-13 14:07:11,098 [root] [INFO] id: b2g-monkey-2 (xpath: //html/body/p[2]/a[1])
+2015-12-13 14:07:11,920 [root] [ERROR] Exception: [Error 183] ???????,????????: 'trace\\20151213140540\\js' in copy_files() of Visualizer
+2015-12-13 14:07:12,042 [root] [INFO] time elapsed: 1.519633 minutes

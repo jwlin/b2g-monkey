@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" dir="ltr" data-no-complete-bug="true"><head>
+    <meta content="width=device-width, user-scalable=no, initial-scale=1" name="viewport" />
+    <meta charset="utf-8" />
+    <style type="text/css">html {
+  font-size: 10px;
+}
+
+#net-error.hidden {
+  display: none;
+}
+
+#net-error #actions {
+  display: none;
+}
+
+#net-error.no-frame #actions {
+  display: flex;
+}
+
+#net-error.framed form[role="dialog"] {
+  background-image: none;
+  background-color: #f4f4f4;
+  color: black;
+  padding-bottom: 0;
+}
+
+#net-error.framed form[role="dialog"] p {
+  border-top-color: rgba(0, 0, 0, 0.10);
+  padding-top: 1.2rem;
+}
+
+#net-error.framed .title {
+  color: black;
+}
+
+#net-error.framed .message {
+  color: black;
+  font-size: 1.5rem;
+  width: calc(100% - 3rem);
+  line-height: 1.9rem;
+}
+
+#net-error #retry-icon {
+  display: none;
+}
+
+#net-error.framed #retry-icon {
+  display: inline-block;
+  float: right;
+  height: 3rem;
+  width: 3rem;
+  padding-top: 0.2rem;
+}
+
+#net-error.framed #retry-icon.still {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAACCklEQVR42tXYy0tUYRjH8bdjOYy1zUJNpEVBOItu4rZFezVIdFNEBOEmqBbt2pYJlUpBRhvJLnSDFv0HUbQYS4LIRoXcFBEIUY6XX1/oCQ7v4szlnMOMi88chjmLL+/hHd7nOEl149/H26V6sLFj2nEOzzGL3xCWUcALnEdHmjF78ARrUBnW8RJdScY0YRQrUBXWcRvb4sa0YhryzOIqepHDbnTa9xv2uzwzaK82pg3zUMhnHMcmuAgB+vAeCplDW6UxWeShkAlk4CrQiGtQyDSaKokZhUIuwMVwCQoZLzdmP1YhcxMuAWOQWcOBcmKeQqaATEIxWXyEzLNSMS3eqgzCJagHMqtojYoZgswCgoRjAhQgMxQV8wgy1+FSMAKZx1ExM5DpTziiA72YhMwiBpBD4Mf8hMyhhCK24BVUwhx2hWP+QCYHl5C9WIwIWcaxqJU5DIe0g4r/Q/yYD5AZgEs5yEJK76YxuJSC5vELfVG76SxkviJIKWgztpb6B272DlH9tT4DP4DMF2RrGdPprc5EzWLMMBRyGS6GI3FiGvHaC7pTxSPL4haEK3EO5NvxyQtawCk0wEVowAm7XyEX40wHO/AG8nzHPZzEURxENwZxF98gzzvsjDs3ZTAcY25awQgySU6U+zCFYpkRRTxELs1ZuxmnMYk8fmDJrnncxxm7b+O/hagX9RXzF1JM8zBKDqHYAAAAAElFTkSuQmCC) center / 3rem no-repeat;
+  animation: none;
+}
+
+#net-error.framed.netOffline #retry-icon {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAABXElEQVR42uWXQUvDMBiGm91mT4LQniaICNtv3HCwTdiPsDusv6HdbxBUFJyHsduYHsVePDW+h9dLSEgyU8vw8MBI8vVZ0i/J10hK2Qrti6O7z7/gYLEAsdrONtGE+AxMwQ5kmv5b9s1BGlL8DCSpQQGGpGCbJOuQ4hxIR/JQ4hR8uIo5Nv2tuAceDIIvIjXcM9ZLfAqewFIz0wpMwABEZMC2SjPzJd954iKeGGaxARemJWTfxhA7tYkF2GsCK3BplBKOqXR/2iaOwQLUSuDMKjWvWM1ndl2Sq1SC+x7ivhK78snqkZK9wkMslGwfHYW4CLjUpYu4C7IGkisDsW3G2wa20xvo2MSzBg6Qucs7TsAryA1H5hhc/Yzn72vDkZnzWYnvJXEOHn0vCcb0WrkWj7cQIGtle6zAkJTK9nsJKU6Zme9goenPWOzdhCr2VDqG8vbE8Vhtv6D/f99O31FaGRqwUzzIAAAAAElFTkSuQmCC) center / 3rem no-repeat;
+}
+
+form[role="dialog"][data-type="action"] &gt; menu &gt; button.icon {
+  background-repeat: no-repeat;
+  -moz-padding-start: 4rem;
+  background-size: 3rem;
+  background-position: 0.5rem center;
+}
+
+form[role="dialog"][data-type="action"] &gt; menu &gt; button.icon-settings {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAABOElEQVR42u2WPQrCQBCF1U7IATSCgohgzqgoBAvjGYyFOYPmEmoXC0Fb7QJprLK+YkAZRt0libHwwdfs7svbJPszlb9+UkqpGrCEdgvUighsAQ9cgC/0L6hvDlp5BkfqoRSswZBYU5siRXkGB0pfQV6hDRAbBMegkTW0DXZK1o2QtAVt07AmiMBKeNMEuMB5Gu9QWyK8eUDPsnWCPSXrCLpvfF0aI8nT2acXwZiAnsakezSW68r2uXgQLEHKjFODX+Uyb0rPtHTMG2YeGAQPmDc0WWAjtnqrBt4qW+2j0oNL/tSyqQ78AhaXD+qfjKcCttNZZ8azIg4QnWAbRCB4cWROQP9pfB+Msx6ZfBIdsDe9JMjTKf9aLL8QyF76hGBIbNj2O+Rd7M3BFSyFfp/6qNj7dnn71y/qDi8YbfX8udsIAAAAAElFTkSuQmCC);
+}
+
+#net-error.no-frame.dialog .message {
+  line-height: 3rem;
+  font-size: 2.2rem;
+  color: #fff;
+  font-weight: normal;
+}
+
+#net-error.no-frame.alert .close {
+  width: 100%;
+}
+
+#net-error.no-frame.alert .reload {
+  display: none;
+}
+
+#net-error.no-frame.netOffline form[role="dialog"] &gt; section {
+  text-align: center;
+  margin-top: -7rem;
+  bottom: 14rem;
+}
+
+#net-error.no-frame.netOffline .title {
+  font-size: 2.3rem;
+  line-height: 3.6rem;
+  font-weight: normal;
+}
+
+#failed-logo {
+  display: inline-block;
+  width: 7.4rem;
+  height: 12.5rem;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEoAAAB9CAMAAAAycQVWAAAB2lBMVEUAAAAAq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80Aq80cmS9XAAAAnXRSTlMAAQIDBQYHCAkKCwwNDg8QERIUFxgZGhscHiEiIyQlJy0uMTIzNDU3ODk6Ozw9P0BETE1SVVdYWVpbXF1eX2JlaGltbm9wc3V2d3h5e31+gIGDhIWHiI6RkpOUlpednp+goqOkpaanqKmrrbS1tre4ubq7vL2/wMHCw8TFxsfIycrM3ODh4uXn6Onq6+zt7u/w8fLz9PX29/j5+vv+PVQ6SgAAAxNJREFUeAHt2QtzE1UYxvEnSVfZpCaIFZWKSq2AFy0RCCpV8QJIVZaASku8SNWIeEFArZIm2pBAsqZBbRoD8nxXlzRz9vSSTfacDjOd2d8H+M/szNn3PTMHrvDYycvlJvvWLF8+ORbGaoPHSlRQOjaIFV6pUFHlIGTRLDVkoxC2FHjHfGbvozH0LbZ978fzvOOPLegw26X6m/fCt01v36CjYGJJlo6fhqBk6Gc6smg7SMfXA1BknKNjHI7BKslfDCgzfiVp3wdgguSNrdDw0N8kJ4BwmeQRaDlKshzGGMm/otAS+4fkCzhF8lNoOkvyFC6RfBmaxkleRJnkDmgaIVlGg+SD0PQwyQXQEYemOB0bLRWkglSQClJBKkgFqYHk6dlKq1WZPZ0c0EolLJvCn1ZCPZWqcJlKSjEVyXCVTEQlFTnPNZyPKKSmuKYz/lP7KaT37HmPwn6/qUSVwkvAAQrVhM+URdchYJwuy1/KsOl6C3iDLtvwlUpSMgEcoSTpKzVJSRp4l5IpX6krlHwIfEBJzlfKpiQDfESJ7St1k5JPgAwlN9VTXwJn1VM2JTOjoz+of2COHnI+D4OHKfUjmt85eoWSF32ljBpdjwPb1X8cWHQNAQ/QZWkMma/M6DQFO6Ex+tj6j64U/KZwRmMga6yJu7G8hFSVy1RTGov+RI1C7URC8/oxma/eulXNTyaN4KoWpIJUkApSQSpIbcTUVmh6RKRGoOkpkXoVml4TqS+gKStSjTi0JBZFiu9Di0U31dgGDcOLUoq/m1BmzlFO8XvlVvQCl6c4Nwwlj82xAw12NK3N8O3+dJMdCyhRaJ57fde2zX0b3nXomyaFEi5ynfyINNdJGs+zt3qdvT2H8FX2cGkH8OQMe7gaBo7S24WIeD338g6A2HV6egJtO+npegyOFL3U0LFALwfQNk0P81gSWqSHaSwx8/Qwgran6aFgoiP+G7ubMeC4J8/uZuMQNn3G7nLPhELPFtjd5yZk+66xu39b7O7aPqwQPVykguLhKFYL7T7+bbF+m326XS9+d3x3CML/FaCCVafVOBMAAAAASUVORK5CYII=);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+@media (max-height: 380px) and (orientation: landscape) {
+  #net-error.no-frame.netOffline form[role="dialog"] &gt; section {
+    text-align: left;
+  }
+
+  #net-error.no-frame.netOffline .title {
+    font-size: 2rem;
+    line-height: 2.8rem;
+    margin-left: 6.8rem;
+  }
+
+  #failed-logo {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    width: 5rem;
+    height: 8.5rem;
+  }
+}
+
+:-moz-dir(rtl) form[role="dialog"][data-type="action"] &gt; menu &gt; button.icon {
+  background-position: right 0.5rem center;
+}
+
+:-moz-dir(rtl) #net-error.framed #retry-icon {
+  float: left;
+}
+</style>
+    <style type="text/css">/* ----------------------------------
+ * Confirm
+ * ---------------------------------- */
+
+/* Main dialog setup */
+form[role="dialog"][data-type="confirm"] {
+  background: #2d2d2d;
+  overflow: hidden;
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-bottom: 7rem;
+  font-size: 0;
+  /* Using font-size: 0; we avoid the unwanted visual space (about 3px)
+  created by white-spaces and break lines in the code betewen inline-block elements */
+  color: #fff;
+  text-align: left;
+}
+
+form[role="dialog"][data-type="confirm"]:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 0.1rem;
+  height: 100%;
+  margin-left: -0.1rem;
+}
+
+form[role="dialog"][data-type="confirm"] &gt; section {
+  font-weight: 300;
+  font-size: 2.2rem;
+  color: #FAFAFA;
+  padding: 0 1.5rem;
+  -moz-box-sizing: padding-box;
+  width: 100%;
+  display: inline-block;
+  overflow-y: scroll;
+  max-height: 100%;
+  vertical-align: middle;
+  white-space: normal;
+}
+
+form[role="dialog"][data-type="confirm"] h1 {
+  font-weight: normal;
+  font-size: 1.6rem;
+  line-height: 1.5em;
+  color: #fff;
+  margin: 0;
+  padding: 1rem 1.5rem 0;
+}
+
+/* Menu &amp; buttons setup */
+form[role="dialog"][data-type="confirm"] menu {
+  white-space: nowrap;
+  margin: 0;
+  padding: 1.5rem;
+  background: #4d4d4d;
+  display: flex;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+form[role="dialog"][data-type="confirm"] menu button::-moz-focus-inner {
+  border: none;
+  outline: none;
+  margin-top: -0.2rem; /* To fix line-height bug (697451) */
+}
+
+form[role="dialog"][data-type="confirm"] menu button {
+  font-family: sans-serif;
+  font-style: italic;
+  width: 100%;
+  height: 4rem;
+  margin: 0 0 1rem;
+  padding: 0 1.2rem;
+  -moz-box-sizing: border-box;
+  display: inline-block;
+  vertical-align: middle;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  background: #d8d8d8;
+  border: none;
+  border-radius: 2rem;
+  font-weight: normal;
+  font-size: 1.6rem;
+  line-height: 4rem;
+  color: #333;
+  text-align: center;
+  text-shadow: none;
+  text-decoration: none;
+  outline: none;
+}
+
+/* Recommend */
+form[role="dialog"][data-type="confirm"] menu button.recommend {
+  background-color: #00caf2;
+  color: #fff;
+}
+
+/* Danger */
+form[role="dialog"][data-type="confirm"] menu button.danger {
+  background-color: #e51e1e;
+  color: #fff;
+}
+
+/* Pressed */
+form[role="dialog"][data-type="confirm"] menu button:active {
+  background: #00aacc;
+  color: #fff;
+}
+
+/* Disabled */
+form[role="dialog"][data-type="confirm"] &gt; menu &gt; button[disabled] {
+  background-color: #565656;
+  color: rgba(255,255,255,0.4);
+  pointer-events: none;
+}
+
+form[role="dialog"][data-type="confirm"] &gt; menu &gt; button[disabled].recommend {
+  background-color: #006579;
+}
+
+form[role="dialog"][data-type="confirm"] &gt; menu &gt; button[disabled].danger {
+  background-color: #730f0f;
+}
+
+button[disabled]::-moz-selection {
+  -moz-user-select: none;
+}
+
+form[role="dialog"][data-type="confirm"] menu button {
+  margin: 0;
+  -moz-margin-end: 1rem;
+}
+
+form[role="dialog"][data-type="confirm"] menu button:last-child {
+  -moz-margin-end: 0;
+}
+
+/*
+** Specific component code
+**
+** 1. Text in confirm dialog should not be selectable.
+ */
+form[role="dialog"][data-type="confirm"] p {
+  word-wrap: break-word;
+  margin: 1rem 0 0;
+  padding: 1rem 1.5rem;
+  border-top: 0.1rem solid #686868;
+  line-height: 3rem;
+  -moz-user-select: none; /* 1 */
+}
+
+form[role="dialog"][data-type="confirm"] p &gt; span {
+  font-size: 1.5rem;
+  display: block;
+  line-height: 1.7rem;
+  color: rgba(255,255,255,0.6);
+}
+
+form[role="dialog"][data-type="confirm"] p img {
+  left: 2rem;
+  right: auto;
+}
+
+form[role="dialog"][data-type="confirm"] p strong {
+  font-weight: 300;
+}
+
+form[role="dialog"][data-type="confirm"] p small {
+  font-size: 1.4rem;
+  font-weight: normal;
+  color: #cbcbcb;
+  display: block;
+}
+
+form[role="dialog"][data-type="confirm"] dl {
+  border-top: 0.1rem solid #686868;
+  margin: 1rem 0 0;
+  overflow: hidden;
+  padding-top: 1rem;
+  font-size: 1.6rem;
+  line-height: 2.2rem;
+}
+
+form[role="dialog"][data-type="confirm"] dl &gt; dt {
+  clear: both;
+  float: left;
+  width: 7rem;
+  padding-left: 1.5rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+form[role="dialog"][data-type="confirm"] dl &gt; dd {
+  padding-right: 1.5rem;
+  font-weight: 300;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  overflow: hidden;
+}
+
+form[role="dialog"][data-type="confirm"] figure {
+  margin: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+form[role="dialog"][data-type="confirm"] figure img {
+  padding-right: 1.5rem;
+  flex-shrink: 0;
+}
+
+form[role="dialog"][data-type="confirm"] figure figcaption {
+  font-size: 2.1rem;
+  font-weight: 300;
+}
+
+form[role="dialog"][data-type="confirm"] ul {
+  margin: 0;
+  padding: 2rem 1.5rem;
+  border-top: 0.1rem solid #686868;
+  list-style: none;
+  font-size: 1.6rem;
+  font-weight: normal;
+}
+
+form[role="dialog"][data-type="confirm"] ul li {
+  word-wrap: break-word;
+  line-height: 2rem;
+  padding-bottom: 1.5rem;
+}
+
+form[role="dialog"][data-type="confirm"] ul li:last-child {
+  padding-bottom: 0;
+}
+
+form[role="dialog"][data-type="confirm"] ul li ul {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Right to left View
+ */
+
+html[dir="rtl"] form[role="dialog"][data-type="confirm"] {
+  text-align: right;
+}
+
+html[dir="rtl"] form[role="dialog"][data-type="confirm"]:before {
+  margin-left: auto;
+  margin-right: -0.1rem;
+}
+
+html[dir="rtl"] form[role="dialog"][data-type="confirm"] p img {
+  right: 2rem;
+  left: auto;
+}
+
+html[dir="rtl"] form[role="dialog"][data-type="confirm"] dl &gt; dt {
+  float: right;
+  padding-left: inherit;
+  padding-right: 1.5rem;
+  text-align: right;
+}
+
+html[dir="rtl"] form[role="dialog"][data-type="confirm"] dl &gt; dd {
+  padding-left: 1.5rem;
+  padding-right: inherit;
+}
+
+html[dir="rtl"] form[role="dialog"][data-type="confirm"] figure img {
+  padding-left: 1.5rem;
+  padding-right: inherit;
+}
+
+</style>
+    <style type="text/css">/* ----------------------------------
+ * Action menu
+ * ---------------------------------- */
+
+/* Main dialog setup */
+[role="dialog"][data-type="action"] {
+  background: #2d2d2d;
+  overflow: hidden;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 0 7rem;
+  /**
+   * Using "font-size: 0" to avoid the unwanted visual space (about 3px) created
+   * by white spaces and line breaks in the code between inline-block elements.
+   */
+  font-size: 0;
+  color: #fff;
+}
+
+[role="dialog"][data-type="action"]:before {
+  content: '';
+  display: inline-block;
+  vertical-align: top;
+  width: 0.1rem;
+  height: 100%;
+  margin-left: -0.1rem;
+}
+
+[role="dialog"][data-type="action"] &gt; header {
+  -moz-box-sizing: border-box;
+  font-size: 1.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 5rem;
+  line-height: 4.9rem;
+  color: #fff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  overflow: hidden;
+  font-weight: normal;
+  padding: 0 3rem;
+  border-bottom: 0.1rem solid #616262;
+}
+
+[role="dialog"][data-type="action"] &gt; header h1 {
+  font-size: 1.6rem;
+  line-height: 4.9rem;
+  text-align: left;
+  color: #fff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  height: 100%;
+  font-weight: normal;
+}
+
+/* Generic set of actions in toolbar */
+[role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] {
+  height: 100%;
+  float: right;
+  margin: 0 -3rem 0 1rem;
+  padding: 0;
+}
+
+[role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] a,
+[role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] button {
+  -moz-box-sizing: border-box;
+  position: relative;
+  float: left;
+  width: auto;
+  min-width: 5rem;
+  height: 4.9rem;
+  margin-bottom: 0;
+  padding: 0 1rem;
+  border-radius: 0;
+  line-height: 4.9rem;
+  background: none;
+  text-align: center;
+  text-shadow: none;
+  z-index: 5;
+}
+
+[role="dialog"][data-type="action"] &gt; header a,
+[role="dialog"][data-type="action"] &gt; header button {
+  border: none;
+  padding: 0;
+  overflow: hidden;
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.1em;
+  color: #fff;
+  border-radius: 0;
+  text-decoration: none;
+}
+
+[role="dialog"][data-type="action"] button::-moz-focus-inner {
+  outline: none;
+  border: none;
+}
+
+/* Pressed state */
+[role="dialog"][data-type="action"] &gt; header a:active .icon:after,
+[role="dialog"][data-type="action"] &gt; header button:active .icon:after,
+[role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] a:active,
+[role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] button:active  {
+  background: #008aaa !important;
+}
+
+/* Disabled state */
+[role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] a[aria-disabled="true"],
+[role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] button[disabled]  {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Icon definitions */
+[role="dialog"][data-type="action"] &gt; header .icon {
+  position: relative;
+  float: none;
+  display: inline-block;
+  vertical-align: top;
+  width: 4rem;
+  height: 4.9rem;
+  margin: 0 -1rem;
+  background: transparent no-repeat center center / 3rem auto;
+  font-size: 0;
+  overflow: hidden;
+}
+
+[role="dialog"][data-type="action"] &gt; header .icon.icon-close {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAvElEQVR42u3TvQrCMBTF8bxK6RtYQQsuDrYogpMOvoCTr+nH01gQFRfjGQKB0INC7810/3CmBn6EEmdZVra89wus/vNshTVS8AnrEpyhN+wsgRbYB0MRpygK54uhcIW9PCJ4RGNvbCJx65bgDF27kBZ+0EQ5jhiqgW8JvNd+0xsC7zTROfYg8BNrcqB37Ih1Cd5qo7PwrZbFIzrqQ5Mz0x58PBQuGfoDLyVufSEow69S/3hFUIYvnWVZOfsCS9gN4pni6R0AAAAASUVORK5CYII=);
+}
+
+[role="dialog"][data-type="action"] &gt; header .icon.icon-back {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAeUlEQVR42u3TsQmAQAyF4TiAuMSNqTiClc4jCKfOINjZukIMSIjY++6E/PDqr3rkeVnHzIWskwU8etdiUWvGolZMga6yytEfogbXL3RR9Gv4YGtXFAGfbG2yEgU3smeT4ojvDo6nwPuc8JE0MB5JA+MtaWA8kOel7gLvGJ0AeaRuLAAAAABJRU5ErkJggg==);
+}
+
+/* Navigation links (back, cancel, etc) */
+[role="dialog"][data-type="action"] &gt; header &gt; button,
+[role="dialog"][data-type="action"] &gt; header &gt; a {
+  float: left;
+  width: 5rem;
+  height: 4.9rem;
+  background: none;
+  overflow: visible;
+  margin: 0 -1rem 0 -3rem;
+  position: relative;
+}
+
+[role="dialog"][data-type="action"] &gt; header &gt; button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+[role="dialog"][data-type="action"] &gt; header &gt; button .icon,
+[role="dialog"][data-type="action"] &gt; header &gt; a .icon {
+  position: static;
+  display: block;
+  width: 3rem;
+  height: 4.9rem;
+  margin: 0;
+  overflow: visible;
+  font-size: 0;
+}
+
+[role="dialog"][data-type="action"] &gt; header &gt; button .icon:after,
+[role="dialog"][data-type="action"] &gt; header &gt; a .icon:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 3rem;
+  height: 4.9rem;
+}
+
+/* Content */
+[role="dialog"][data-type="action"] &gt; section {
+  color: #fff;
+  position: absolute;
+  top: 7rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 2rem;
+  font-size: 1.6rem;
+  overflow: scroll;
+}
+
+/* Specific component code */
+[role="dialog"][data-type="action"] &gt; menu {
+  margin: 0;
+  padding: 0;
+  max-height: calc(100% - 13.5rem); /*header(5rem) + footer(7rem) + padding(1.5rem)*/
+  height: auto;
+  padding-top: 1.5rem;
+  overflow: auto;
+  width: auto;
+  border: none;
+  background: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 7rem;
+}
+
+[role="dialog"][data-type="action"] &gt; menu &gt; button {
+  width: calc(100% - 3rem);
+  height: 4rem;
+  -moz-box-sizing: border-box;
+  vertical-align: middle;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-weight: normal;
+  line-height: 4rem;
+  outline: none;
+  font-size: 1.6rem;
+  text-shadow: none;
+  text-align: start;
+  padding: 0 1.2rem;
+  margin: 0 1.5rem 1rem 1.5rem;
+  background: rgba(87, 87, 87, 0.8);
+  border: none;
+  border-radius: 0;
+  position: relative;
+  color: #fff;
+  font-family: sans-serif;
+  font-style: italic;
+}
+
+[role="dialog"][data-type="action"] &gt; menu &gt; button:last-child {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  color: #333;
+  background: #d8d8d8;
+  text-align: center;
+  border: none;
+  margin-bottom: 1.5rem;
+  border-radius: 2rem;
+}
+
+[role="dialog"][data-type="action"] &gt; menu &gt; button:last-child:before {
+  content: '';
+  position: fixed;
+  width: 100%;
+  background-color: #4d4d4d;
+  height: 7rem;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+[role="dialog"][data-type="action"] &gt; menu &gt; button:nth-last-child(2) {
+  margin-bottom: 1.5rem;
+}
+
+/* Press state */
+[role="dialog"][data-type="action"] &gt; menu &gt; button:active {
+  background: #00aacc;
+  color: #fff;
+}
+
+/* Disabled */
+[role="dialog"][data-type="action"] &gt; menu &gt; button[disabled] {
+  background-color: rgba(87, 87, 87, 0.8);
+  color: rgba(255, 255, 255, 0.4);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+[role="dialog"][data-type="action"] &gt; menu &gt; button[disabled]:last-child {
+  background-color: #e7e7e7;
+  color: #a6a6a6;
+  opacity: 1;
+}
+
+/*
+ * Right to Left view
+ */
+
+html[dir="rtl"] [role="dialog"][data-type="action"]:before {
+  margin-left: auto;
+  margin-right: -0.1rem;
+}
+
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header h1 {
+  text-align: right;
+}
+
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] {
+  float: left;
+  margin-left: -3rem;
+  margin-right: 1rem;
+}
+
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] a,
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] button {
+  float: right;
+}
+
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] a:last-child,
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header menu[type="toolbar"] button:last-child {
+  background-position: right center;
+  margin-left: auto;
+  margin-right: -0.1rem;
+}
+
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header &gt; button,
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header &gt; a {
+  float: right;
+  margin-left: -1rem;
+  margin-right: -3rem;
+}
+
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header &gt; button:after,
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header &gt; a:after {
+  left: auto;
+  right: 0;
+  background-position: 0 top;
+}
+
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header &gt; button .icon:after,
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; header &gt; a .icon:after {
+  left: auto;
+  right: 0;
+}
+
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; menu &gt; button:last-child {
+  left: auto;
+  right: 0;
+}
+
+html[dir="rtl"] [role="dialog"][data-type="action"] &gt; menu &gt; button:last-child:before {
+  left: auto;
+  right: 0;
+}
+
+</style>
+    <style type="text/css">/* ----------------------------------
+ * Progress + activities
+ * ---------------------------------- */
+
+/* Spinner */
+progress:not([value]) {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAYAAABWk2cPAAAC3ElEQVR4AbXWzYvV9R/G4ev+njMPTdpMKloYZpaBldbWSooiW7UKahVF0B/QIgpaaFSrFhFBe4tfUouwVWBQEZTUQgaCNgX2Iwk0MstJmzkP7yQPDHPwDBpnXnDzWV7wXn3arqCNHxy7rni02FvljuLOwmBnq8wXx/E1vmH12jOHjxnVtU22lzpQPGN0N2EXHil+xrt4e1W0XL71rRyscgBiuTKcPhaxhE6xD//DmStG51qZw+fFPYKKUgAyjJfhVLkAo9ECYGM7c8Vn/4LICqoUP4kjyv8xjzncjV24t1jAO4nV0QSA8Cn2oJBa9ubxfMMXIJaLI66y9roGmG7ycrE79JRCM9griYPEuGq3EpOxDS+hh0ZQ4NlwyJhrNwgvDsBisHh1LUBoTzXWVXligPbR4GR4zRrVDvfLJTCkShNeh7VEd6OLIOIcDq8xmk3oIFTCl7DGqE2hCyXBd8bcnplWUMtobEQHAvSMuWII5QfcAqg1QYvh855DB4UKO4yx26dbKTKMnsDSACxx17hPm8ui0QmFPibDfhwdE9qClWgcRyf00R+8T44DvXmyaQ3Q3gp0x1Tr/InF3ifhoQHaC7PiaRzyH9s60aS4RlVPhs5bSngv7EMvuTh6eDjyI75ylW2ZSFPMGlyuahgttk02p08u9d8Xj4fupaWLpxq24CNX2IZ2porr0ccSwjAK2DrZfPhLp78z7ByA3dBJ3BduC0cxb0TrWpkOGzCrnBeLRZBgBcpykTfDC7hxAHbQxfrwWOLB8H3D2XCqSWZCE2YxjYXiLzRIyADujPwN3jCR86c69UZ4LrE9dDMYepgIu7CEDhYNViyEIGiqRCT8XfRGorD5Ioy3fuvW/rA3NKGfXBx9FEoUIIiSigZBQlf5o+iO/IIOt6GVo7/36ls8gFvRtoyKFWiDNhr0cLr4s1y+dt/oZls5i48X+jWFbdiMmbAeQRdncAGn8WtxoazeP9KSE46VyGrFAAAAAElFTkSuQmCC) no-repeat center center / 100% auto;
+  animation: 0.9s rotate infinite steps(30);
+  width: 2.9rem;
+  height: 2.9rem;
+  border: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+progress:not([value]).light {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAQAAAD8mq+EAAABvUlEQVR4AZXVv0tVYRzH8dc53rIkSyocIsxsKhV0CcoiIrCpoYaaogjaa2lp0KJaS4T+gIKE1gahIaIhqMCkxiCDNvtBmXrRc663w+EB7+mm3vv+zC++z1nujdRV3e60Iw7pBb9Mm/LaG8VEVYW6jbisWMV3Xz0yrlCstlEzdXDFkmWJ43auRTu8N2K9ynU0wBcGrPbFA9eddNZtzzDvYaB13/rOoFgEpjP00obF4KZ+lWwruGWwEUjLKF0mhFwxBo3Se/oAd4xruNg251WkUp8zqhl6LMDUXZqj/QH+MNEs3S3J94rmaZrTjxotAkp2SUClCVqV00/2o6rS/IP/SCxn62n4ZiTQGcv5+mieJvndzYY1UssqnZKEuxcagdkIdNFkuLvDpQ0fu7X2wTwOdxOnDFm7WIeWIp31RCrJ8UXn/L9WnTaJipSnPkjChtwwoNgWe/RoFQdYQ7lvRprTVLszrhl22D4H9Tqaba84wEjy7+9wm6u6JeHh4est5ZvPtqCcbcmcpHiVRWMmLUit5KvmEy7lF6V+B4iS2p5764QDSjkVaKwkVjFrbr0/DmjVpVOb9vzOT2Wzvikr5i/gPaXf5qR2wAAAAABJRU5ErkJggg==);
+}
+
+progress:not([value])::-moz-progress-bar {
+ background: none;
+}
+
+/* Progress bar */
+progress[value] {
+  width: 100%;
+  background: #333;
+  border: none;
+  border-radius: 0;
+  height: 0.4rem;
+  display: block;
+}
+
+progress[value]::-moz-progress-bar {
+  background: #01c5ed;
+  border-radius: 0;
+}
+
+/* Progress bar */
+progress[value].pack-activity {
+  background-size: 15rem;
+  background-image: repeating-linear-gradient( 135deg, #92F4FE, #92F4FE 5rem, #00CDF0 5rem, #00CDF0 10rem );
+  animation: move 1.5s steps(15) infinite;
+}
+
+/* Labels */
+p[role="status"] {
+  padding: 0.5rem;
+  font-weight: 300;
+  font-size: 2.25rem;
+  line-height: 1.4em;
+  color: #fff;
+}
+
+p[role="status"] progress:not([value]) {
+  margin-right: 0.5rem;
+}
+
+p[role="status"] progress:not([value]) + span {
+  margin-bottom: 0;
+}
+
+p[role="status"] span {
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 0.5rem;
+}
+
+/* Progress steps */
+.bb-steps {
+  position: relative;
+  height: 0.3rem;
+}
+
+.bb-steps:before {
+  position: absolute;
+  content: "";
+  height: 0;
+  left: 0;
+  top: 0.1rem;
+  right: 0;
+  border-top: 0.1rem solid #b7b7b7;
+  border-bottom: 0.1rem solid #fff;
+}
+
+.bb-steps progress[value] {
+  position: absolute;
+  height: 0.3rem;
+  left: 0;
+  top: 0;
+  background: #858585;
+  transition: transform 0.35s cubic-bezier(0, 1, 0.5, 1.1);
+}
+
+.bb-steps progress[value]::-moz-progress-bar {
+  background: none;
+}
+
+/* Animations */
+@keyframes rotate {
+  from { transform: rotate(1deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes move {
+  from { background-position: 0 0; }
+  to   { background-position: -15rem 0; }
+}
+</style>
+
+    <meta content="en-US" name="defaultLanguage" />
+    <meta content="ar:201502300150, bg:201502300150, bn-BD:201502300150, ca:201502300150, cs:201502300150, da:201502300150, de:201502300150, el:201502300150, en-US:201502300150, es:201502300150, eu:201502300150, fr:201502300150, gl:201502300150, hr:201502300150, hu:201502300150, it:201502300150, ja:201502300150, km:201502300150, ko:201502300150, lt:201502300150, mk:201502300150, ms:201502300150, ne-NP:201502300150, nl:201502300150, pa:201502300150, pl:201502300150, pt-BR:201502300150, ro:201502300150, ru:201502300150, sk:201502300150, sq:201502300150, sr-Cyrl:201502300150, sr-Latn:201502300150, sv-SE:201502300150, tr:201502300150, zh-CN:201502300150, zh-TW:201502300150" name="availableLanguages" />
+    
+    
+    
+
+    
+    
+  <meta name="appVersion" content="2.2" /><script lang="ar" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"    ."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"},"    ."]},{"$i":"server-not-found","$v":"    "},{"$i":"server-not-found-error","$v":["      ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"    "},{"$i":"file-not-found-error","$v":"           ."},{"$i":"connection-failed","$v":" "},{"$i":"connection-failed-error","$v":"        ."},{"$i":"invalid-connection","$v":" "},{"$i":"invalid-connection-error","$v":"        ."},{"$i":"malformed-uri","$v":"  "},{"$i":"malformed-uri-error","$v":"         ."},{"$i":"redirect-loop","$v":"   "},{"$i":"redirect-loop-error","$v":"            .     ."},{"$i":"not-cached","$v":"  "},{"$i":"not-cached-error","$v":"         ."},{"$i":"is-printing-error","$v":"        ."},{"$i":"denied-port-access","$v":"    "},{"$i":"denied-port-access-error","$v":"        .         ."},{"$i":"proxy-resolve-failure","$v":"   "},{"$i":"proxy-resolve-failure-error","$v":"          ."},{"$i":"proxy-connect-failure","$v":"   "},{"$i":"proxy-connect-failure-error","$v":"        ."},{"$i":"content-encoding","$v":"   "},{"$i":"content-encoding-error","$v":"           ."},{"$i":"remote-xul","$v":"  "},{"$i":"remote-xul-error","$v":"          ."},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":"              ."},{"$i":"malware-blocked","$v":"    "},{"$i":"malware-blocked-error","$v":"              ."},{"$i":"unsafe-content-type","$v":"  "},{"$i":"unsafe-content-type-error","$v":"         ."},{"$i":"corrupted-content","$v":"   "},{"$i":"corrupted-content-error","$v":"        ."},{"$i":"unable-to-connect","$v":" "},{"$i":"cancel","$v":""},{"$i":"close","$v":""},{"$i":"try-again","$v":"  "},{"$i":"check-settings","$v":"  "},{"$i":"tap-to-check-settings","$v":"   "}]
+</script><script lang="bg" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"     ."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"},"    ."]},{"$i":"server-not-found","$v":"   "},{"$i":"server-not-found-error","$v":["       ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"   "},{"$i":"file-not-found-error","$v":"     ,       ."},{"$i":"connection-failed","$v":" "},{"$i":"connection-failed-error","$v":"         ."},{"$i":"invalid-connection","$v":" "},{"$i":"invalid-connection-error","$v":"         ."},{"$i":"malformed-uri","$v":"URL-   "},{"$i":"malformed-uri-error","$v":" URL         ."},{"$i":"redirect-loop","$v":"     "},{"$i":"redirect-loop-error","$v":"     ,     .   -."},{"$i":"not-cached","$v":"   "},{"$i":"not-cached-error","$v":"  ,       ,       ."},{"$i":"is-printing-error","$v":"     ,       ."},{"$i":"denied-port-access","$v":"   "},{"$i":"denied-port-access-error","$v":"    ,       ,    .   ,    ."},{"$i":"proxy-resolve-failure","$v":"   "},{"$i":"proxy-resolve-failure-error","$v":"      ,      ."},{"$i":"proxy-connect-failure","$v":"   "},{"$i":"proxy-connect-failure-error","$v":"      ,   ."},{"$i":"content-encoding","$v":"     "},{"$i":"content-encoding-error","$v":"     ,       ."},{"$i":"remote-xul","$v":"   "},{"$i":"remote-xul-error","$v":"      ,   ,      ."},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":"    ,           ."},{"$i":"malware-blocked","$v":"  "},{"$i":"malware-blocked-error","$v":"        ."},{"$i":"unsafe-content-type","$v":" "},{"$i":"unsafe-content-type-error","$v":"     ,       ."},{"$i":"corrupted-content","$v":"     "},{"$i":"corrupted-content-error","$v":"     ,        ."},{"$i":"unable-to-connect","$v":" "},{"$i":"cancel","$v":""},{"$i":"close","$v":""},{"$i":"try-again","$v":" "},{"$i":"check-settings","$v":"  "},{"$i":"tap-to-check-settings","$v":"    "}]
+</script><script lang="bn-BD" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"No access to the Internet right now."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," requires an Internet connection."]},{"$i":"server-not-found","$v":"Server not found"},{"$i":"server-not-found-error","$v":["Can’t find the server at ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"File not found"},{"$i":"file-not-found-error","$v":"The device can’t display this page because the file cannot be found."},{"$i":"connection-failed","$v":"Unable to connect"},{"$i":"connection-failed-error","$v":"A network error occurred while trying to reach the site."},{"$i":"invalid-connection","$v":"Unable to connect"},{"$i":"invalid-connection-error","$v":"A network error occurred while trying to reach the site."},{"$i":"malformed-uri","$v":"URL not valid"},{"$i":"malformed-uri-error","$v":"The URL entered is not valid and cannot be loaded."},{"$i":"redirect-loop","$v":"Can’t display page"},{"$i":"redirect-loop-error","$v":"The device can’t display this page because the page is not redirecting properly. Try this page again at a later time."},{"$i":"not-cached","$v":"Page expired"},{"$i":"not-cached-error","$v":"As a security precaution, this page cannot be displayed by the device because it has expired."},{"$i":"is-printing-error","$v":"The document cannot change while Printing or in Print Preview."},{"$i":"denied-port-access","$v":"This address is restricted"},{"$i":"denied-port-access-error","$v":"This address uses a network port which is normally used for purposes other than Web browsing. The device has cancelled the request for your protection."},{"$i":"proxy-resolve-failure","$v":"Proxy Server Error"},{"$i":"proxy-resolve-failure-error","$v":"The device is configured to use a proxy server that can’t be found."},{"$i":"proxy-connect-failure","$v":"Proxy Server Error"},{"$i":"proxy-connect-failure-error","$v":"The device is configured to use a proxy server that is refusing connections."},{"$i":"content-encoding","$v":"Can’t display page"},{"$i":"content-encoding-error","$v":"The device can’t display this page because a content encoding error occurred."},{"$i":"remote-xul","$v":"Page unsupported"},{"$i":"remote-xul-error","$v":"This page can’t be displayed because it uses a technology that is not supported on the device."},{"$i":"phishing-blocked","$v":"Warning"},{"$i":"phishing-blocked-error","$v":"The website has been reported as a web forgery designed to trick users into sharing personal or financial information."},{"$i":"malware-blocked","$v":"Malware attack blocked"},{"$i":"malware-blocked-error","$v":"The site at has been reported as an attack site and has been blocked."},{"$i":"unsafe-content-type","$v":"Unsafe content"},{"$i":"unsafe-content-type-error","$v":"The page cannot be shown because it may not be safe to open."},{"$i":"corrupted-content","$v":"Can’t display page"},{"$i":"corrupted-content-error","$v":"The page cannot be shown because an error in the data transmission was detected."},{"$i":"unable-to-connect","$v":"Unable to connect"},{"$i":"cancel","$v":"Cancel"},{"$i":"close","$v":"Close"},{"$i":"try-again","$v":"Try again"},{"$i":"check-settings","$v":"Check settings"},{"$i":"tap-to-check-settings","$v":"Tap to check settings"}]
+</script><script lang="ca" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"No access to the Internet right now."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," necessita una connexió a Internet."]},{"$i":"server-not-found","$v":"No s'ha trobat el servidor"},{"$i":"server-not-found-error","$v":["No s'ha trobat el servidor de ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"No s'ha trobat el fitxer"},{"$i":"file-not-found-error","$v":"El dispositiu no pot mostrar aquesta pàgina perquè no s'ha trobat el fitxer."},{"$i":"connection-failed","$v":"No s'ha pogut connectar"},{"$i":"connection-failed-error","$v":"S'ha produït un error de xarxa en intentar connectar-se al lloc."},{"$i":"invalid-connection","$v":"No s'ha pogut connectar"},{"$i":"invalid-connection-error","$v":"S'ha produït un error de xarxa en intentar connectar-se al lloc."},{"$i":"malformed-uri","$v":"L'URL no és vàlid"},{"$i":"malformed-uri-error","$v":"L'URL que s'ha indicat no és vàlid i no es pot carregar."},{"$i":"redirect-loop","$v":"No es pot mostrar la pàgina"},{"$i":"redirect-loop-error","$v":"El dispositiu no pot mostrar aquesta pàgina perquè la pàgina no està redirigint correctament. Torneu-ho a provar més tard."},{"$i":"not-cached","$v":"La pàgina ha caducat"},{"$i":"not-cached-error","$v":"Com a mesura de precaució, el dispositiu no pot mostrar aquesta pàgina perquè ha caducat."},{"$i":"is-printing-error","$v":"El document no es pot canviar durant la impressió o mentre es mostra l'exemple d'impressió."},{"$i":"denied-port-access","$v":"Aquesta adreça està restringida"},{"$i":"denied-port-access-error","$v":"Aquesta adreça utilitza un port de xarxa que normalment es fa servir per a altres propòsits que no són la navegació web. El dispositiu ha cancel·lat la sol·licitud per a la vostra protecció."},{"$i":"proxy-resolve-failure","$v":"Error del servidor intermediari"},{"$i":"proxy-resolve-failure-error","$v":"El dispositiu està configurat per utilitzar un servidor intermediari que no pot trobar-se."},{"$i":"proxy-connect-failure","$v":"Error del servidor intermediari"},{"$i":"proxy-connect-failure-error","$v":"El dispositiu està configurat per utilitzar un servidor intermediari que està rebutjant les connexions."},{"$i":"content-encoding","$v":"No es pot mostrar la pàgina"},{"$i":"content-encoding-error","$v":"El dispositiu no pot mostrar aquesta pàgina perquè s'ha produït un error de codificació del contingut."},{"$i":"remote-xul","$v":"Pàgina incompatible"},{"$i":"remote-xul-error","$v":"Aquesta pàgina no es pot mostrar perquè utilitza una tecnologia que el dispositiu no admet."},{"$i":"phishing-blocked","$v":"Avís"},{"$i":"phishing-blocked-error","$v":"S'ha informat que aquest lloc web seria una falsificació dissenyada per enganyar als usuaris perquè comparteixin informació personal o financera."},{"$i":"malware-blocked","$v":"S'ha blocat un atac de programari maliciós"},{"$i":"malware-blocked-error","$v":"S'ha informat que aquest lloc és un lloc atacant i s'ha blocat."},{"$i":"unsafe-content-type","$v":"Contingut insegur"},{"$i":"unsafe-content-type-error","$v":"No es pot mostrar la pàgina perquè pot ser que no sigui segur obrir-la."},{"$i":"corrupted-content","$v":"No es pot mostrar la pàgina"},{"$i":"corrupted-content-error","$v":"No es pot mostrar la pàgina perquè s'ha detectat un error en la transmissió de dades."},{"$i":"unable-to-connect","$v":"No s'ha pogut connectar"},{"$i":"cancel","$v":"Cancel·la"},{"$i":"close","$v":"Tanca"},{"$i":"try-again","$v":"Reintenta"},{"$i":"check-settings","$v":"Comprova els paràmetres"},{"$i":"tap-to-check-settings","$v":"Toqueu per comprovar els paràmetres"}]
+</script><script lang="cs" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Aktuáln není k dispozici žádné pipojení k Internetu"},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," vyžaduje pipojení k Internetu."]},{"$i":"server-not-found","$v":"Server nebyl nalezen"},{"$i":"server-not-found-error","$v":["Nelze nalézt server na ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Soubor nenalezen"},{"$i":"file-not-found-error","$v":"Zaízení nemže zobrazit tuto stránku, soubor nebyl nalezen."},{"$i":"connection-failed","$v":"Nelze se pipojit"},{"$i":"connection-failed-error","$v":"Bhem naítání stránky nastala chyba pipojení."},{"$i":"invalid-connection","$v":"Nelze se pipojit"},{"$i":"invalid-connection-error","$v":"Bhem naítání stránky nastala chyba pipojení."},{"$i":"malformed-uri","$v":"URL není platná"},{"$i":"malformed-uri-error","$v":"Vložená adresa URL není platná a nemže být natena."},{"$i":"redirect-loop","$v":"Stránku nelze zobrazit"},{"$i":"redirect-loop-error","$v":"Zaízení nemže zobrazit tuto stránku, stránka nebyla v poádku pesmrována. Zkuste tuto stránku naíst pozdji."},{"$i":"not-cached","$v":"Platnost stránky vypršela"},{"$i":"not-cached-error","$v":"Z bezpenostních dvod nemže být tato stránka zobrazena, vypršela její platnost."},{"$i":"is-printing-error","$v":"Bhem tisku i jeho náhledu nelze dokument upravovat."},{"$i":"denied-port-access","$v":"Tato adresa je zakázána"},{"$i":"denied-port-access-error","$v":"Tato stránka využívá port pro pipojení, který je normáln používán pro jiné úely, než pro prohlížení webu. Z dvodu bezpenosti bylo naítání stránky zrušeno."},{"$i":"proxy-resolve-failure","$v":"Chyba proxy serveru"},{"$i":"proxy-resolve-failure-error","$v":"Zaízení je nakonfigurováno pro používání proxy serveru, který však nelze najít."},{"$i":"proxy-connect-failure","$v":"Chyba proxy serveru"},{"$i":"proxy-connect-failure-error","$v":"Zaízení je nakonfigurováno pro používání proxy serveru, který však odmítá pipojení."},{"$i":"content-encoding","$v":"Stránku nelze zobrazit."},{"$i":"content-encoding-error","$v":"Stránku nelze zobrazit, pi dekódování obsahu došlo k chyb."},{"$i":"remote-xul","$v":"Stránka nepodporována"},{"$i":"remote-xul-error","$v":"Stránka nemže být zobrazena, protože používá technologii, kterou toto zaízení nepodporuje."},{"$i":"phishing-blocked","$v":"Varování"},{"$i":"phishing-blocked-error","$v":"Stránka byla nahlášena jako nebezpená, pokouší se pimt návštvníky ke sdílení osobních i finanních informací."},{"$i":"malware-blocked","$v":"Zablokován útok malware"},{"$i":"malware-blocked-error","$v":"Tato stránka byla nahlášena jako zavirovaná a byla zablokována."},{"$i":"unsafe-content-type","$v":"Nebezpený obsah"},{"$i":"unsafe-content-type-error","$v":"Tuto stránku nelze zobrazit, její otevení by mohlo být nebezpené."},{"$i":"corrupted-content","$v":"Stránku nelze zobrazit"},{"$i":"corrupted-content-error","$v":"Stránku nelze zobrazit, bhem penosu dat se vyskytla chyba."},{"$i":"unable-to-connect","$v":"Nelze se pipojit"},{"$i":"cancel","$v":"Zrušit"},{"$i":"close","$v":"Zavít"},{"$i":"try-again","$v":"Zkusit znovu"},{"$i":"check-settings","$v":"Zkontrolovat nastavení"},{"$i":"tap-to-check-settings","$v":"Klepnout pro kontrolu nastavení"}]
+</script><script lang="da" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Der er ikke forbindelse til internettet."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," kræver en internetforbindelse."]},{"$i":"server-not-found","$v":"Server ikke fundet"},{"$i":"server-not-found-error","$v":["Kan ikke finde serveren på ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Filen blev ikke fundet"},{"$i":"file-not-found-error","$v":"Enheden kan ikke vise denne side, fordi filen ikke kan findes."},{"$i":"connection-failed","$v":"Kan ikke forbinde"},{"$i":"connection-failed-error","$v":"Der opstod en netværksfejl ved indlæsning af webstedet."},{"$i":"invalid-connection","$v":"Kan ikke forbinde"},{"$i":"invalid-connection-error","$v":"Der opstod en netværksfejl ved indlæsning af webstedet."},{"$i":"malformed-uri","$v":"Ugyldig URL"},{"$i":"malformed-uri-error","$v":"Den angivne URL er ugyldig og kan ikke indlæses."},{"$i":"redirect-loop","$v":"Kan ikke vise side"},{"$i":"redirect-loop-error","$v":"Enheden kan ikke vise denne side, fordi siden ikke viderestiller korrekt. Prøv igen senere."},{"$i":"not-cached","$v":"Siden er udløbet"},{"$i":"not-cached-error","$v":"Af sikkerhedsgrunde kan siden ikke vises af enheden, fordi siden er udløbet."},{"$i":"is-printing-error","$v":"Dokumentet kan ikke ændres, mens der udskrives eller funktionen vis udskrift er aktiv."},{"$i":"denied-port-access","$v":"Adressen er blokeret"},{"$i":"denied-port-access-error","$v":"Denne adresse benytter en netværksport, der normalt er forbeholdt andre formål. Enheden har annulleret forespørgslen for at beskytte dig."},{"$i":"proxy-resolve-failure","$v":"Fejl på proxyserver"},{"$i":"proxy-resolve-failure-error","$v":"Enheden er konfigureret til at benytte en proxyserver, der ikke kan findes."},{"$i":"proxy-connect-failure","$v":"Fejl på proxyserver"},{"$i":"proxy-connect-failure-error","$v":"Enheden er konfigureret til at benytte en proxyserver, der ikke tillader forbindelser."},{"$i":"content-encoding","$v":"Siden kan ikke vises"},{"$i":"content-encoding-error","$v":"Enheden kan ikke vise siden, fordi der opstod en indholdskodningsfejl."},{"$i":"remote-xul","$v":"Ikke understøttet side"},{"$i":"remote-xul-error","$v":"Siden kan ikke vises, fordi den bruger en teknologi, som ikke er understøttet på denne enhed."},{"$i":"phishing-blocked","$v":"Advarsel"},{"$i":"phishing-blocked-error","$v":"Dette websted er blevet rapporteret som en forfalskning med henblik på at narre folk til at oplyse deres personlige eller økonomiske informationer."},{"$i":"malware-blocked","$v":"Malware-angreb blokeret"},{"$i":"malware-blocked-error","$v":"Dette websted er blevet identificeret som indeholdende malware, og er blevet blokeret af hensyn til din sikkerhed."},{"$i":"unsafe-content-type","$v":"Farligt indhold"},{"$i":"unsafe-content-type-error","$v":"Denne side kan ikke vises, da det kan være farligt at åbne den."},{"$i":"corrupted-content","$v":"Siden kan ikke vises"},{"$i":"corrupted-content-error","$v":"Siden kan ikke vises, da der opstod en fejl i overførslen."},{"$i":"unable-to-connect","$v":"Kan ikke oprette forbindelse"},{"$i":"cancel","$v":"Annuller"},{"$i":"close","$v":"Luk"},{"$i":"try-again","$v":"Prøv igen"},{"$i":"check-settings","$v":"Kontroller indstillinger"},{"$i":"tap-to-check-settings","$v":"Tryk for at kontrollere indstillinger."}]
+</script><script lang="de" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Derzeit keine Verbindung zum Internet."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," benötigt eine Internetverbindung."]},{"$i":"server-not-found","$v":"Server nicht gefunden"},{"$i":"server-not-found-error","$v":["Server ",{"t":"idOrVar","v":"name"}," wurde nicht gefunden."]},{"$i":"file-not-found","$v":"Datei nicht gefunden"},{"$i":"file-not-found-error","$v":"Das Gerät kann die Seite nicht anzeigen, da die Datei nicht gefunden wurde."},{"$i":"connection-failed","$v":"Fehler: Verbindung fehlgeschlagen"},{"$i":"connection-failed-error","$v":"Beim Aufrufen der Seite trat ein Netzwerkfehler auf."},{"$i":"invalid-connection","$v":"Fehler: Verbindung fehlgeschlagen"},{"$i":"invalid-connection-error","$v":"Beim Aufrufen der Seite trat ein Netzwerkfehler auf."},{"$i":"malformed-uri","$v":"Ungültige Adresse"},{"$i":"malformed-uri-error","$v":"Die eingegebene Adresse ist ungültig und kann nicht geladen werden."},{"$i":"redirect-loop","$v":"Seite kann nicht angezeigt werden"},{"$i":"redirect-loop-error","$v":"Die Seite kann nicht angezeigt werden, weil sie nicht ordnungsgemäßg weiterleitet. Rufen Sie diese Seite später erneut auf."},{"$i":"not-cached","$v":"Seite erloschen"},{"$i":"not-cached-error","$v":"Die Seite kann als Vorsichtsmaßnahme nicht angezeigt werden, da sie abgelaufen ist."},{"$i":"is-printing-error","$v":"Das Dokument kann nicht verändert werden, während es gedruckt wird oder die Druckvorschau angezeigt wird."},{"$i":"denied-port-access","$v":"Fehler: Port aus Sicherheitsgründen blockiert"},{"$i":"denied-port-access-error","$v":"Die aufgerufene Adresse fordert einen Port, der normalerweise nicht zum Browsen im Web verwendet wird. Die Anfrage wurde vom Gerät zu Ihrem Schutz abgebrochen."},{"$i":"proxy-resolve-failure","$v":"Proxy-Server-Fehler"},{"$i":"proxy-resolve-failure-error","$v":"Das Gerät wurde konfiguriert, einen Proxy-Server zu verwenden, der aber nicht gefunden werden kann."},{"$i":"proxy-connect-failure","$v":"Proxy-Server-Fehler"},{"$i":"proxy-connect-failure-error","$v":"Das Gerät wurde konfiguriert, einen Proxy-Server zu verwenden, der aber Verbindungen ablehnt."},{"$i":"content-encoding","$v":"Seite kann nicht angezeigt werden"},{"$i":"content-encoding-error","$v":"Das Gerät kann die Seite nicht anzeigen, da beim Kodieren des Inhalts ein Fehler auftrat."},{"$i":"remote-xul","$v":"Seite nicht unterstützt"},{"$i":"remote-xul-error","$v":"Die Seite verwendet eine Methode (Remote-XUL), welche von diesem Gerät nicht unterstützt wird."},{"$i":"phishing-blocked","$v":"Warnung"},{"$i":"phishing-blocked-error","$v":"Die Webseite wurde als Betrugsversuch gemeldet, die erstellt wurde, um Anwender dazu zu bringen, persönliche bzw. finanzielle Daten preiszugeben."},{"$i":"malware-blocked","$v":"Attackierende Seite blockiert"},{"$i":"malware-blocked-error","$v":"Die Webseite wurde als attackierende Seite (Malware) gemeldet und daher blockiert."},{"$i":"unsafe-content-type","$v":"Nicht sicherer Inhalt"},{"$i":"unsafe-content-type-error","$v":"Der Inhalt dieser Seite kann nicht angezeigt werden, da es nicht sicher ist, ihn zu öffnen."},{"$i":"corrupted-content","$v":"Seite kann nicht angezeigt werden"},{"$i":"corrupted-content-error","$v":"Die Seite kann nicht angezeigt werden, da ein Fehler in der Datenübertragung festgestellt wurde."},{"$i":"unable-to-connect","$v":"Verbindung fehlgeschlagen"},{"$i":"cancel","$v":"Abbrechen"},{"$i":"close","$v":"Schließen"},{"$i":"try-again","$v":"Neu versuchen"},{"$i":"check-settings","$v":"Einstellungen überprüfen"},{"$i":"tap-to-check-settings","$v":"Zum Überprüfen der Einstellungen antippen"}]
+</script><script lang="el" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"       ."},{"$i":"network-error-launching","$v":["  «",{"t":"idOrVar","v":"name"},"»    ."]},{"$i":"server-not-found","$v":"   "},{"$i":"server-not-found-error","$v":["     ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"   "},{"$i":"file-not-found-error","$v":"           ."},{"$i":"connection-failed","$v":"    "},{"$i":"connection-failed-error","$v":"         ."},{"$i":"invalid-connection","$v":"    "},{"$i":"invalid-connection-error","$v":"         ."},{"$i":"malformed-uri","$v":"  URL"},{"$i":"malformed-uri-error","$v":" URL          ."},{"$i":"redirect-loop","$v":"      "},{"$i":"redirect-loop-error","$v":"            .   ."},{"$i":"not-cached","$v":"  "},{"$i":"not-cached-error","$v":"   ,          ."},{"$i":"is-printing-error","$v":"             ."},{"$i":"denied-port-access","$v":"    "},{"$i":"denied-port-access-error","$v":"              .         ."},{"$i":"proxy-resolve-failure","$v":"  "},{"$i":"proxy-resolve-failure-error","$v":"             ."},{"$i":"proxy-connect-failure","$v":"  "},{"$i":"proxy-connect-failure-error","$v":"            ."},{"$i":"content-encoding","$v":"      "},{"$i":"content-encoding-error","$v":"            ."},{"$i":"remote-xul","$v":"   "},{"$i":"remote-xul-error","$v":"                ."},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":"                   ."},{"$i":"malware-blocked","$v":"   "},{"$i":"malware-blocked-error","$v":"           ."},{"$i":"unsafe-content-type","$v":"  "},{"$i":"unsafe-content-type-error","$v":"              ."},{"$i":"corrupted-content","$v":"      "},{"$i":"corrupted-content-error","$v":"             ."},{"$i":"unable-to-connect","$v":"    "},{"$i":"cancel","$v":""},{"$i":"close","$v":""},{"$i":"try-again","$v":" "},{"$i":"check-settings","$v":" "},{"$i":"tap-to-check-settings","$v":"   "}]
+</script><script lang="es" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Sin acceso a Internet en este momento."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," necesita una conexión a Internet."]},{"$i":"server-not-found","$v":"Servidor no encontrado"},{"$i":"server-not-found-error","$v":["No se encuentra el servidor en ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Archivo no encontrado"},{"$i":"file-not-found-error","$v":"El dispositivo no puede mostrar la página porque no se encuentra el archivo."},{"$i":"connection-failed","$v":"Imposible conectar"},{"$i":"connection-failed-error","$v":"Se produjo un error de red al intentar conectar con el sitio."},{"$i":"invalid-connection","$v":"Imposible conectar"},{"$i":"invalid-connection-error","$v":"Se produjo un error de red al intentar conectar con el sitio."},{"$i":"malformed-uri","$v":"URL no válida"},{"$i":"malformed-uri-error","$v":"La URL no es válida y no puede cargarse."},{"$i":"redirect-loop","$v":"No se puede mostrar página"},{"$i":"redirect-loop-error","$v":"El dispositivo no puede mostrar la página porque ésta no redirige correctamente. Vuelva pasados unos minutos."},{"$i":"not-cached","$v":"Página caducada"},{"$i":"not-cached-error","$v":"Como medida de seguridad, el dispositivo no puede mostrar la página porque ha caducado."},{"$i":"is-printing-error","$v":"El documento no puede cambiarse mientras se imprime o previsualiza."},{"$i":"denied-port-access","$v":"Esta dirección está restringida"},{"$i":"denied-port-access-error","$v":"Esta dirección usa un puerto de red que normalmente se utiliza para propósitos diferentes a la navegación web. Firefox ha cancelado la petición para garantizar su protección."},{"$i":"proxy-resolve-failure","$v":"Error del servidor proxy"},{"$i":"proxy-resolve-failure-error","$v":"El dispositivo está configurado para usar un servidor proxy que no puede encontrar."},{"$i":"proxy-connect-failure","$v":"Error del servidor proxy"},{"$i":"proxy-connect-failure-error","$v":"El dispositivo está configurado para usar un servidor proxy que está rechazando las conexiones."},{"$i":"content-encoding","$v":"No se puede mostrar página"},{"$i":"content-encoding-error","$v":"El dispositivo no puede mostrar la página porque se produjo un error de codificación de contenido."},{"$i":"remote-xul","$v":"Página incompatible"},{"$i":"remote-xul-error","$v":"La página no puede mostrarse porque usa una tecnología incompatible con el dispositivo."},{"$i":"phishing-blocked","$v":"Aviso"},{"$i":"phishing-blocked-error","$v":"El sitio web ha sido denunciado como una falsificación diseñada con el fin de engañar a los usuarios para que compartan información financiera y personal."},{"$i":"malware-blocked","$v":"Ataque de malware bloqueado"},{"$i":"malware-blocked-error","$v":"El sito ha sido denunciado como atacante y ha sido bloqueado."},{"$i":"unsafe-content-type","$v":"Contenido no seguro"},{"$i":"unsafe-content-type-error","$v":"No puede mostrarse la página porque no es seguro abrirla."},{"$i":"corrupted-content","$v":"No puede mostrarse página"},{"$i":"corrupted-content-error","$v":"La página no puede mostrarse porque se detectó un error en la transmisión de los datos."},{"$i":"unable-to-connect","$v":"Imposible conectar"},{"$i":"cancel","$v":"Cancelar"},{"$i":"close","$v":"Cerrar"},{"$i":"try-again","$v":"Intentar"},{"$i":"check-settings","$v":"Comprobar ajustes"},{"$i":"tap-to-check-settings","$v":"Pulse para comprobar los ajustes"}]
+</script><script lang="eu" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Internet-sarbiderik ez une honetan."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"},"(e)k Internet-konexioa behar du."]},{"$i":"server-not-found","$v":"Ez da zerbitzaria aurkitu"},{"$i":"server-not-found-error","$v":["Ezin da zerbitzaria aurkitu ",{"t":"idOrVar","v":"name"}," helbidean."]},{"$i":"file-not-found","$v":"Ez da fitxategia aurkitu"},{"$i":"file-not-found-error","$v":"Gailuak ezin du orri hau erakutsi fitxategia ez delako aurkitu."},{"$i":"connection-failed","$v":"Ezin da konektatu"},{"$i":"connection-failed-error","$v":"Sare-errore bat gertatu da gunea atzitzen saiatzean."},{"$i":"invalid-connection","$v":"Ezin da konektatu"},{"$i":"invalid-connection-error","$v":"Sare-errore bat gertatu da gunea atzitzen saiatzean."},{"$i":"malformed-uri","$v":"URLa baiogabea da"},{"$i":"malformed-uri-error","$v":"Idatzitako URLa ez da baliozkoa eta ezin da kargatu."},{"$i":"redirect-loop","$v":"Ezin da orria bistaratu"},{"$i":"redirect-loop-error","$v":"Gailuak ezin du orri hau erakutsi orria ez delako behar den bezala berbideratzen. Saiatu berriro geroago."},{"$i":"not-cached","$v":"Orria iraungita"},{"$i":"not-cached-error","$v":"Orri hau iraungita dagoenez, ez da gailuan erakutsiko segurtasun-neurri gisa."},{"$i":"is-printing-error","$v":"Dokumentua ezin da aldatu inprimatzen edo inprimatze-aurrebistan dagoenean."},{"$i":"denied-port-access","$v":"Helbide hau murriztuta dago"},{"$i":"denied-port-access-error","$v":"Helbide honek darabilen sare-ataka normalean web nabigazioa ez den beste helburu batzuetarako erabiltzen da. Gailuak eskaria bertan behera utzi du zu babesteko."},{"$i":"proxy-resolve-failure","$v":"Proxy-zerbitzariaren errorea"},{"$i":"proxy-resolve-failure-error","$v":"Aurkitu ezin daitekeen proxy-zerbitzari bat erabiltzeko dago konfiguratuta gailua."},{"$i":"proxy-connect-failure","$v":"Proxy-zerbitzariaren errorea"},{"$i":"proxy-connect-failure-error","$v":"Konexioak ukatzen ari den proxy-zerbitzari bat erabiltzeko dago konfiguratuta gailua."},{"$i":"content-encoding","$v":"Ezin da orria bistaratu"},{"$i":"content-encoding-error","$v":"Gailuak ezin du orri hau bistaratu edukiaren kodeketa-errore bat gertatu delako."},{"$i":"remote-xul","$v":"Euskarririk gabeko orria"},{"$i":"remote-xul-error","$v":"Ezin da orria bistaratu gailuan euskarririk ez duen teknologia bat erabiltzen duelako."},{"$i":"phishing-blocked","$v":"Abisua"},{"$i":"phishing-blocked-error","$v":"Webgunea informazio pertsonala edo finantza-informazioa osteko web iruzur bezala salatua dago."},{"$i":"malware-blocked","$v":"Malware erasoa blokeatuta"},{"$i":"malware-blocked-error","$v":"Gune hau gune erasotzaile bezala dago salatuta eta blokeatu egin da."},{"$i":"unsafe-content-type","$v":"Eduki ez-segurua"},{"$i":"unsafe-content-type-error","$v":"Ezin da orria erakutsi irekitzeko ez-segurua izan daitekeelako."},{"$i":"corrupted-content","$v":"Ezin da orria bistaratu"},{"$i":"corrupted-content-error","$v":"Ezin da orria erakutsi datu-transmisioan errore bat detektatu delako."},{"$i":"unable-to-connect","$v":"Ezin da konektatu"},{"$i":"cancel","$v":"Utzi"},{"$i":"close","$v":"Itxi"},{"$i":"try-again","$v":"Saiatu berriro"},{"$i":"check-settings","$v":"Egiaztatu ezarpenak"},{"$i":"tap-to-check-settings","$v":"Sakatu ezarpenak egiaztatzeko"}]
+</script><script lang="fr" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Aucun accès à Internet."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," nécessite une connexion Internet."]},{"$i":"server-not-found","$v":"Adresse introuvable"},{"$i":"server-not-found-error","$v":["Impossible de trouver le serveur à l’adresse ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Fichier introuvable"},{"$i":"file-not-found-error","$v":"L’appareil ne peut pas afficher cette page car le fichier est introuvable."},{"$i":"connection-failed","$v":"Connexion impossible"},{"$i":"connection-failed-error","$v":"Une erreur réseau s’est produite lors de la connexion à ce site."},{"$i":"invalid-connection","$v":"Connexion impossible"},{"$i":"invalid-connection-error","$v":"Une erreur réseau s’est produite lors de la connexion à ce site."},{"$i":"malformed-uri","$v":"L’URL n’est pas valide"},{"$i":"malformed-uri-error","$v":"L’URL n’est pas valide et ne peut être chargée."},{"$i":"redirect-loop","$v":"Impossible d’afficher la page"},{"$i":"redirect-loop-error","$v":"L’appareil ne peut pas afficher cette page car la page n’est pas redirigée correctement. Veuillez réessayer ultérieurement."},{"$i":"not-cached","$v":"La page a expiré"},{"$i":"not-cached-error","$v":"Par mesure de sécurité, cette page ne peut pas être affichée par l’appareil car elle a expiré."},{"$i":"is-printing-error","$v":"Le document ne peut pas être modifié pendant l’impression ou la prévisualisation."},{"$i":"denied-port-access","$v":"Cette adresse est interdite"},{"$i":"denied-port-access-error","$v":"Cette adresse utilise un port réseau inhabituel pour la navigation web. Par mesure de sécurité, l’appareil a abandonné la requête."},{"$i":"proxy-resolve-failure","$v":"Erreur de serveur proxy"},{"$i":"proxy-resolve-failure-error","$v":"L’appareil est configuré pour utiliser un serveur proxy mais celui-ci est introuvable."},{"$i":"proxy-connect-failure","$v":"Erreur de serveur proxy"},{"$i":"proxy-connect-failure-error","$v":"L’appareil est configuré pour utiliser un serveur proxy mais celui-ci n’accepte pas les connexions."},{"$i":"content-encoding","$v":"Impossible d’afficher la page"},{"$i":"content-encoding-error","$v":"L’appareil ne peut pas afficher la page à cause d’une erreur d’encodage."},{"$i":"remote-xul","$v":"Page non prise en charge"},{"$i":"remote-xul-error","$v":"Cette page ne peut pas être affichée car elle utilise une technologie qui n’est pas prise en charge par l’appareil."},{"$i":"phishing-blocked","$v":"Avertissement"},{"$i":"phishing-blocked-error","$v":"Le site web a été signalé comme étant une contrefaçon conçue pour piéger les utilisateurs pour qu’ils partagent des informations personnelles ou financières."},{"$i":"malware-blocked","$v":"Site malveillant bloqué"},{"$i":"malware-blocked-error","$v":"Le site a été signalé comme étant malveillant et a été bloqué."},{"$i":"unsafe-content-type","$v":"Contenu non sûr"},{"$i":"unsafe-content-type-error","$v":"La page ne peut pas être affichée car l’ouvrir peut comporter un risque."},{"$i":"corrupted-content","$v":"Impossible d’afficher la page"},{"$i":"corrupted-content-error","$v":"La page ne peut pas être affichée car une erreur lors de la transmission des données a été détectée."},{"$i":"unable-to-connect","$v":"Connexion impossible"},{"$i":"cancel","$v":"Annuler"},{"$i":"close","$v":"Fermer"},{"$i":"try-again","$v":"Réessayer"},{"$i":"check-settings","$v":"Vérifier les paramètres"},{"$i":"tap-to-check-settings","$v":"Appuyez pour vérifier les paramètres"}]
+</script><script lang="gl" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Ningún acceso á Internet dispoñíbel."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," require unha conexión á Internet."]},{"$i":"server-not-found","$v":"Non se atopou o servidor"},{"$i":"server-not-found-error","$v":["Non é posíbel atopar o servidor en ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Non se atopou o ficheiro"},{"$i":"file-not-found-error","$v":"Non é posíbel que o dispositivo amose esta páxina porque non se atopou o ficheiro."},{"$i":"connection-failed","$v":"Imposíbel conectar"},{"$i":"connection-failed-error","$v":"Produciuse un erro na rede durante a conexión co sitio."},{"$i":"invalid-connection","$v":"Imposíbel conectar"},{"$i":"invalid-connection-error","$v":"Produciuse un erro na rede durante a conexión co sitio."},{"$i":"malformed-uri","$v":"URL incorrecto"},{"$i":"malformed-uri-error","$v":"O URL introducido é incorrecto e non é posíbel cargalo."},{"$i":"redirect-loop","$v":"Páxina non dispoñíbel"},{"$i":"redirect-loop-error","$v":"Non é posíbel que o dispositivo amose esta páxina porque non está a redirixir correctamente. Tente de novo máis tarde."},{"$i":"not-cached","$v":"Páxina caducada"},{"$i":"not-cached-error","$v":"Por razóns de seguranza non é posíbel amosar esta páxina porque caducou."},{"$i":"is-printing-error","$v":"Non é posíbel modificar o documento mentres se imprime ou se visualiza na Previsualización da impresión."},{"$i":"denied-port-access","$v":"Este enderezo está restrinxido"},{"$i":"denied-port-access-error","$v":"Este enderezo usa un porto de rede que normalmente se usa con fins diferentes á navegación web. Para a súa protección, o dispositivo cancelou a solicitude."},{"$i":"proxy-resolve-failure","$v":"Erro do servidor proxy"},{"$i":"proxy-resolve-failure-error","$v":"O dispositivo configurouse para usar un servidor proxy que non é posíbel atopar."},{"$i":"proxy-connect-failure","$v":"Erro do servidor proxy"},{"$i":"proxy-connect-failure-error","$v":"O dispositivo configurouse para usar un servidor proxy que está a rexeitar as conexións."},{"$i":"content-encoding","$v":"Páxina non dispoñíbel"},{"$i":"content-encoding-error","$v":"Non é posíbel que o dispositivo amose esta páxina porque se produciu un erro coa codificación."},{"$i":"remote-xul","$v":"Páxina non admitida"},{"$i":"remote-xul-error","$v":"Non é posíbel que se amose esta páxina porque usa unha tecnoloxía non compatíbel co dispositivo."},{"$i":"phishing-blocked","$v":"Aviso"},{"$i":"phishing-blocked-error","$v":"Identificouse o sitio web como unha falsificación deseñada para enganar aos usuarios e obter información persoal ou financeira."},{"$i":"malware-blocked","$v":"Bloqueouse o malware"},{"$i":"malware-blocked-error","$v":"Identificouse como un sitio atacante e bloqueouse."},{"$i":"unsafe-content-type","$v":"Contido inseguro"},{"$i":"unsafe-content-type-error","$v":"Non é posíbel amosar a páxina porque abrila pode non ser seguro."},{"$i":"corrupted-content","$v":"Páxina non dispoñíbel"},{"$i":"corrupted-content-error","$v":"Non é posíbel amosar a páxina porque se produciu un erro na transmisión dos datos."},{"$i":"unable-to-connect","$v":"Imposíbel conectar"},{"$i":"cancel","$v":"Cancelar"},{"$i":"close","$v":"Pechar"},{"$i":"try-again","$v":"Tentar de novo"},{"$i":"check-settings","$v":"Comprobar axustes"},{"$i":"tap-to-check-settings","$v":"Toque para comprobar os axustes"}]
+</script><script lang="hr" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"No access to the Internet right now."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," requires an Internet connection."]},{"$i":"server-not-found","$v":"Server not found"},{"$i":"server-not-found-error","$v":["Can’t find the server at ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"File not found"},{"$i":"file-not-found-error","$v":"The device can’t display this page because the file cannot be found."},{"$i":"connection-failed","$v":"Unable to connect"},{"$i":"connection-failed-error","$v":"A network error occurred while trying to reach the site."},{"$i":"invalid-connection","$v":"Unable to connect"},{"$i":"invalid-connection-error","$v":"A network error occurred while trying to reach the site."},{"$i":"malformed-uri","$v":"URL not valid"},{"$i":"malformed-uri-error","$v":"The URL entered is not valid and cannot be loaded."},{"$i":"redirect-loop","$v":"Can’t display page"},{"$i":"redirect-loop-error","$v":"The device can’t display this page because the page is not redirecting properly. Try this page again at a later time."},{"$i":"not-cached","$v":"Page expired"},{"$i":"not-cached-error","$v":"As a security precaution, this page cannot be displayed by the device because it has expired."},{"$i":"is-printing-error","$v":"The document cannot change while Printing or in Print Preview."},{"$i":"denied-port-access","$v":"This address is restricted"},{"$i":"denied-port-access-error","$v":"This address uses a network port which is normally used for purposes other than Web browsing. The device has cancelled the request for your protection."},{"$i":"proxy-resolve-failure","$v":"Proxy Server Error"},{"$i":"proxy-resolve-failure-error","$v":"The device is configured to use a proxy server that can’t be found."},{"$i":"proxy-connect-failure","$v":"Proxy Server Error"},{"$i":"proxy-connect-failure-error","$v":"The device is configured to use a proxy server that is refusing connections."},{"$i":"content-encoding","$v":"Can’t display page"},{"$i":"content-encoding-error","$v":"The device can’t display this page because a content encoding error occurred."},{"$i":"remote-xul","$v":"Page unsupported"},{"$i":"remote-xul-error","$v":"This page can’t be displayed because it uses a technology that is not supported on the device."},{"$i":"phishing-blocked","$v":"Warning"},{"$i":"phishing-blocked-error","$v":"The website has been reported as a web forgery designed to trick users into sharing personal or financial information."},{"$i":"malware-blocked","$v":"Malware attack blocked"},{"$i":"malware-blocked-error","$v":"The site at has been reported as an attack site and has been blocked."},{"$i":"unsafe-content-type","$v":"Unsafe content"},{"$i":"unsafe-content-type-error","$v":"The page cannot be shown because it may not be safe to open."},{"$i":"corrupted-content","$v":"Can’t display page"},{"$i":"corrupted-content-error","$v":"The page cannot be shown because an error in the data transmission was detected."},{"$i":"unable-to-connect","$v":"Unable to connect"},{"$i":"cancel","$v":"Cancel"},{"$i":"close","$v":"Close"},{"$i":"try-again","$v":"Try again"},{"$i":"check-settings","$v":"Check settings"},{"$i":"tap-to-check-settings","$v":"Tap to check settings"}]
+</script><script lang="hu" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Jelenleg nincs internetkapcsolat."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," internetkapcsolatot igényel."]},{"$i":"server-not-found","$v":"Kiszolgáló nem található"},{"$i":"server-not-found-error","$v":["Nem található a kiszolgáló itt: ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"A fájl nem található"},{"$i":"file-not-found-error","$v":"A készülék nem tudja megjeleníteni az oldalt, mert a fájl nem található."},{"$i":"connection-failed","$v":"Nem lehet kapcsolódni"},{"$i":"connection-failed-error","$v":"Hálózati hiba lépett fel az oldal elérése közben."},{"$i":"invalid-connection","$v":"Nem lehet kapcsolódni"},{"$i":"invalid-connection-error","$v":"Hálózati hiba lépett fel az oldal elérése közben."},{"$i":"malformed-uri","$v":"Érvénytelen URL"},{"$i":"malformed-uri-error","$v":"A megadott URL érvénytelen, ezért nem tölthet be."},{"$i":"redirect-loop","$v":"Az oldal nem jelenthet meg"},{"$i":"redirect-loop-error","$v":"A készülék nem tudja megjeleníteni az oldalt, mert az átirányítás nem megfelel. Próbálja meg késbb."},{"$i":"not-cached","$v":"Az oldal lejárt"},{"$i":"not-cached-error","$v":"Biztonsági elvigyázatosságból az oldal nem jeleníthet meg az eszközzel, mert lejárt."},{"$i":"is-printing-error","$v":"A dokumentum nem változtatható meg nyomtatás vagy nyomtatási nézet közben."},{"$i":"denied-port-access","$v":"Ez egy zárolt cím"},{"$i":"denied-port-access-error","$v":"Ez a cím egy olyan hálózati portot használ, amit normál esetben nem webböngészésre használnak. Az eszköz elutasította a kérést az Ön védelme érdekében."},{"$i":"proxy-resolve-failure","$v":"Proxy kiszolgáló hiba"},{"$i":"proxy-resolve-failure-error","$v":"Az eszköz proxy kiszolgáló használatára lett beállítva, ami nem található."},{"$i":"proxy-connect-failure","$v":"Proxy kiszolgáló hiba"},{"$i":"proxy-connect-failure-error","$v":"A készülék proxy kiszolgáló használatára lett beállítva, ami visszautasítja a kapcsolatokat."},{"$i":"content-encoding","$v":"Az oldal nem jelenthet meg"},{"$i":"content-encoding-error","$v":"A készülék nem tudja megjeleníteni az oldalt, mert a hiba lépett fel a tartalom kódolásában."},{"$i":"remote-xul","$v":"Az oldal nem támogatott"},{"$i":"remote-xul-error","$v":"Az oldal nem jeleníthet meg, mert az a készülék által nem támogatott technológiát használ."},{"$i":"phishing-blocked","$v":"Figyelmeztetés"},{"$i":"phishing-blocked-error","$v":"A weboldal hamisnak van bejelentve, amely megtévesztéssel személyes vagy pénzügyi adatok megosztására veszi rá a felhasználókat."},{"$i":"malware-blocked","$v":"Rosszindulatú támadás blokkolva"},{"$i":"malware-blocked-error","$v":"Ez az oldal támadóoldalként van bejelentve, ezért blokkolva lett."},{"$i":"unsafe-content-type","$v":"Veszélyes tartalom"},{"$i":"unsafe-content-type-error","$v":"Az oldal nem jeleníthet meg, mert valószínleg az nem biztonságos."},{"$i":"corrupted-content","$v":"Az oldal nem jelenthet meg"},{"$i":"corrupted-content-error","$v":"Az oldal nem jeleníthet meg, mert adatátvitel közben hiba lépett fel."},{"$i":"unable-to-connect","$v":"Nem lehet kapcsolódni"},{"$i":"cancel","$v":"Mégse"},{"$i":"close","$v":"Bezárás"},{"$i":"try-again","$v":"Próbálja újra"},{"$i":"check-settings","$v":"Beállítások ellenrzése"},{"$i":"tap-to-check-settings","$v":"Koppintson a beállítások ellenrzéséhez"}]
+</script><script lang="it" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Accesso a Internet non disponibile."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," richiede una connessione a Internet."]},{"$i":"server-not-found","$v":"Impossibile contattare il server"},{"$i":"server-not-found-error","$v":["Impossibile contattare il server ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"File non trovato"},{"$i":"file-not-found-error","$v":"Impossibile visualizzare questa pagina: file non trovato."},{"$i":"connection-failed","$v":"Connessione non riuscita"},{"$i":"connection-failed-error","$v":"Si è verificato un errore di rete durante la connessione al sito."},{"$i":"invalid-connection","$v":"Connessione non riuscita"},{"$i":"invalid-connection-error","$v":"Si è verificato un errore di rete durante la connessione al sito."},{"$i":"malformed-uri","$v":"Indirizzo non valido"},{"$i":"malformed-uri-error","$v":"L’indirizzo (URL) inserito non è valido e non può essere caricato."},{"$i":"redirect-loop","$v":"Pagina non disponibile"},{"$i":"redirect-loop-error","$v":"Impossibile visualizzare questa pagina a causa di un reindirizzamento errato. Riprovare più tardi."},{"$i":"not-cached","$v":"Pagina scaduta"},{"$i":"not-cached-error","$v":"Per motivi di sicurezza questa pagina non può essere visualizzata in quanto scaduta."},{"$i":"is-printing-error","$v":"Il documento non può essere modificato durante la stampa o l’anteprima."},{"$i":"denied-port-access","$v":"Indirizzo bloccato"},{"$i":"denied-port-access-error","$v":"Questo indirizzo utilizza una porta di rete utilizzata normalmente per scopi differenti dalla navigazione web. La richiesta è stata annullata per proteggere l’utente."},{"$i":"proxy-resolve-failure","$v":"Errore del server proxy"},{"$i":"proxy-resolve-failure-error","$v":"Il dispositivo è configurato per utilizzare un server proxy che non risulta raggiungibile."},{"$i":"proxy-connect-failure","$v":"Errore del server proxy"},{"$i":"proxy-connect-failure-error","$v":"Il dispositivo è configurato per utilizzare un server proxy che sta rifiutando le connessioni."},{"$i":"content-encoding","$v":"Pagina non disponibile"},{"$i":"content-encoding-error","$v":"Impossibile visualizzare questa pagina a causa di un errore con la codifica."},{"$i":"remote-xul","$v":"Pagina non supportata"},{"$i":"remote-xul-error","$v":"Impossibile visualizzare la pagina in quanto utilizza una tecnologia non supportata dal dispositivo."},{"$i":"phishing-blocked","$v":"Attenzione"},{"$i":"phishing-blocked-error","$v":"Questo sito è stato segnalato come sito contraffatto, realizzato per indurre gli utenti a rivelare informazioni personali o finanziarie."},{"$i":"malware-blocked","$v":"Sito malevolo"},{"$i":"malware-blocked-error","$v":"Questo sito è stato segnalato come sito web malevolo ed è stato bloccato."},{"$i":"unsafe-content-type","$v":"Contenuto non sicuro"},{"$i":"unsafe-content-type-error","$v":"Impossibile visualizzare la pagina in quanto non sicura."},{"$i":"corrupted-content","$v":"Pagina non disponibile"},{"$i":"corrupted-content-error","$v":"Impossibile visualizzare la pagina a causa di un errore rilevato durante la trasmissione dei dati."},{"$i":"unable-to-connect","$v":"Impossibile connettersi"},{"$i":"cancel","$v":"Annulla"},{"$i":"close","$v":"Chiudi"},{"$i":"try-again","$v":"Riprova"},{"$i":"check-settings","$v":"Verifica impostazioni"},{"$i":"tap-to-check-settings","$v":"Tocca per verificare le impostazioni"}]
+</script><script lang="ja" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":""},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," "]},{"$i":"server-not-found","$v":""},{"$i":"server-not-found-error","$v":[{"t":"idOrVar","v":"name"}," "]},{"$i":"file-not-found","$v":""},{"$i":"file-not-found-error","$v":""},{"$i":"connection-failed","$v":""},{"$i":"connection-failed-error","$v":""},{"$i":"invalid-connection","$v":""},{"$i":"invalid-connection-error","$v":""},{"$i":"malformed-uri","$v":"URL "},{"$i":"malformed-uri-error","$v":" URL "},{"$i":"redirect-loop","$v":""},{"$i":"redirect-loop-error","$v":""},{"$i":"not-cached","$v":""},{"$i":"not-cached-error","$v":""},{"$i":"is-printing-error","$v":""},{"$i":"denied-port-access","$v":""},{"$i":"denied-port-access-error","$v":" Web "},{"$i":"proxy-resolve-failure","$v":""},{"$i":"proxy-resolve-failure-error","$v":""},{"$i":"proxy-connect-failure","$v":""},{"$i":"proxy-connect-failure-error","$v":""},{"$i":"content-encoding","$v":""},{"$i":"content-encoding-error","$v":""},{"$i":"remote-xul","$v":""},{"$i":"remote-xul-error","$v":""},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":" Web "},{"$i":"malware-blocked","$v":""},{"$i":"malware-blocked-error","$v":""},{"$i":"unsafe-content-type","$v":""},{"$i":"unsafe-content-type-error","$v":""},{"$i":"corrupted-content","$v":""},{"$i":"corrupted-content-error","$v":""},{"$i":"unable-to-connect","$v":""},{"$i":"cancel","$v":""},{"$i":"close","$v":""},{"$i":"try-again","$v":""},{"$i":"check-settings","$v":""},{"$i":"tap-to-check-settings","$v":""}]
+</script><script lang="km" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"No access to the Internet right now."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," requires an Internet connection."]},{"$i":"server-not-found","$v":"Server not found"},{"$i":"server-not-found-error","$v":["Can’t find the server at ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"File not found"},{"$i":"file-not-found-error","$v":"The device can’t display this page because the file cannot be found."},{"$i":"connection-failed","$v":"Unable to connect"},{"$i":"connection-failed-error","$v":"A network error occurred while trying to reach the site."},{"$i":"invalid-connection","$v":"Unable to connect"},{"$i":"invalid-connection-error","$v":"A network error occurred while trying to reach the site."},{"$i":"malformed-uri","$v":"URL not valid"},{"$i":"malformed-uri-error","$v":"The URL entered is not valid and cannot be loaded."},{"$i":"redirect-loop","$v":"Can’t display page"},{"$i":"redirect-loop-error","$v":"The device can’t display this page because the page is not redirecting properly. Try this page again at a later time."},{"$i":"not-cached","$v":"Page expired"},{"$i":"not-cached-error","$v":"As a security precaution, this page cannot be displayed by the device because it has expired."},{"$i":"is-printing-error","$v":"The document cannot change while Printing or in Print Preview."},{"$i":"denied-port-access","$v":"This address is restricted"},{"$i":"denied-port-access-error","$v":"This address uses a network port which is normally used for purposes other than Web browsing. The device has cancelled the request for your protection."},{"$i":"proxy-resolve-failure","$v":"Proxy Server Error"},{"$i":"proxy-resolve-failure-error","$v":"The device is configured to use a proxy server that can’t be found."},{"$i":"proxy-connect-failure","$v":"Proxy Server Error"},{"$i":"proxy-connect-failure-error","$v":"The device is configured to use a proxy server that is refusing connections."},{"$i":"content-encoding","$v":"Can’t display page"},{"$i":"content-encoding-error","$v":"The device can’t display this page because a content encoding error occurred."},{"$i":"remote-xul","$v":"Page unsupported"},{"$i":"remote-xul-error","$v":"This page can’t be displayed because it uses a technology that is not supported on the device."},{"$i":"phishing-blocked","$v":"Warning"},{"$i":"phishing-blocked-error","$v":"The website has been reported as a web forgery designed to trick users into sharing personal or financial information."},{"$i":"malware-blocked","$v":"Malware attack blocked"},{"$i":"malware-blocked-error","$v":"The site at has been reported as an attack site and has been blocked."},{"$i":"unsafe-content-type","$v":"Unsafe content"},{"$i":"unsafe-content-type-error","$v":"The page cannot be shown because it may not be safe to open."},{"$i":"corrupted-content","$v":"Can’t display page"},{"$i":"corrupted-content-error","$v":"The page cannot be shown because an error in the data transmission was detected."},{"$i":"unable-to-connect","$v":"Unable to connect"},{"$i":"cancel","$v":"Cancel"},{"$i":"close","$v":"Close"},{"$i":"try-again","$v":"Try again"},{"$i":"check-settings","$v":"Check settings"},{"$i":"tap-to-check-settings","$v":"Tap to check settings"}]
+</script><script lang="ko" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"    ."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"},"     ."]},{"$i":"server-not-found","$v":" "},{"$i":"server-not-found-error","$v":[{"t":"idOrVar","v":"name"},"    ."]},{"$i":"file-not-found","$v":" "},{"$i":"file-not-found-error","$v":"     ."},{"$i":"connection-failed","$v":"  "},{"$i":"connection-failed-error","$v":"     ."},{"$i":"invalid-connection","$v":"  "},{"$i":"invalid-connection-error","$v":"     ."},{"$i":"malformed-uri","$v":" URL"},{"$i":"malformed-uri-error","$v":" URL    ."},{"$i":"redirect-loop","$v":"   "},{"$i":"redirect-loop-error","$v":"      .     ."},{"$i":"not-cached","$v":" "},{"$i":"not-cached-error","$v":"        ."},{"$i":"is-printing-error","$v":"       ."},{"$i":"denied-port-access","$v":" "},{"$i":"denied-port-access-error","$v":"         .    ."},{"$i":"proxy-resolve-failure","$v":"  "},{"$i":"proxy-resolve-failure-error","$v":"      ."},{"$i":"proxy-connect-failure","$v":"  "},{"$i":"proxy-connect-failure-error","$v":"     ."},{"$i":"content-encoding","$v":"   "},{"$i":"content-encoding-error","$v":"       ."},{"$i":"remote-xul","$v":"  "},{"$i":"remote-xul-error","$v":"        ."},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":"        ."},{"$i":"malware-blocked","$v":"  "},{"$i":"malware-blocked-error","$v":"       ."},{"$i":"unsafe-content-type","$v":" "},{"$i":"unsafe-content-type-error","$v":"       ."},{"$i":"corrupted-content","$v":"   "},{"$i":"corrupted-content-error","$v":"       ."},{"$i":"unable-to-connect","$v":" "},{"$i":"cancel","$v":""},{"$i":"close","$v":""},{"$i":"try-again","$v":" "},{"$i":"check-settings","$v":" "},{"$i":"tap-to-check-settings","$v":"  "}]
+</script><script lang="lt" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Šiuo metu internetas nepasiekiamas."},{"$i":"network-error-launching","$v":["Programai „",{"t":"idOrVar","v":"name"},"“ btinas interneto ryšys."]},{"$i":"server-not-found","$v":"Serveris nerastas"},{"$i":"server-not-found-error","$v":["Serverio ",{"t":"idOrVar","v":"name"}," rasti nepavyko."]},{"$i":"file-not-found","$v":"Failas nerastas"},{"$i":"file-not-found-error","$v":"Šio tinklalapio nepavyko atvaizduoti, nes failas nerastas."},{"$i":"connection-failed","$v":"Nepavyko prisijungti"},{"$i":"connection-failed-error","$v":"Bandant užmegzti ryš su svetaine, iškilo tinklo nesklandum."},{"$i":"invalid-connection","$v":"Nepavyko prisijungti"},{"$i":"invalid-connection-error","$v":"Bandant užmegzti ryš su svetaine, iškilo tinklo nesklandum."},{"$i":"malformed-uri","$v":"Adresas neteisingas"},{"$i":"malformed-uri-error","$v":"vestasis URL adresas yra neteisingas ir negali bti atvertas."},{"$i":"redirect-loop","$v":"Tinklalapio atvaizduoti nepavyko"},{"$i":"redirect-loop-error","$v":"Šio tinklalapio nepavyko atvaizduoti, nes jis netinkamai peradresuoja užklausas. Pabandykite prie jo jungtis vliau."},{"$i":"not-cached","$v":"Tinklalapis nebegalioja"},{"$i":"not-cached-error","$v":"Saugumo sumetimais šis tinklalapis nebebus atvaizduotas, nes jo galiojimas baigsi."},{"$i":"is-printing-error","$v":"Dokumentas negali bt keiiamas spausdinimo ar spaudinio peržiros metu."},{"$i":"denied-port-access","$v":"Šis adresas draudžiamas"},{"$i":"denied-port-access-error","$v":"Šiame adrese nurodytas tinklo prievadas, kuris paprastai naudojamas kitais tikslais, o ne naršymui. Saugumo sumetimais ši užklausa nevykdyta."},{"$i":"proxy-resolve-failure","$v":"galiotojo serverio klaida"},{"$i":"proxy-resolve-failure-error","$v":"renginys sukonfigruotas naudoti tarpin server, kurio rasti nepavyko."},{"$i":"proxy-connect-failure","$v":"galiotojo serverio klaida"},{"$i":"proxy-connect-failure-error","$v":"renginys sukonfigruotas naudoti tarpin server, kuris atmeta bandomus užmegzti ryšius."},{"$i":"content-encoding","$v":"Tinklalapio atvaizduoti nepavyko"},{"$i":"content-encoding-error","$v":"Šis tinklalapis neatvaizduotas dl glaudinimo klaidos."},{"$i":"remote-xul","$v":"Tinklalapis negalimas"},{"$i":"remote-xul-error","$v":"Šis tinklalapis neatvaizduotas, nes jame naudojama šiame renginyje nepalaikoma technologija."},{"$i":"phishing-blocked","$v":"spjimas"},{"$i":"phishing-blocked-error","$v":"Yra pranešta, jog ši svetain siekia apgauls bdu iš lankytoj išvilioti j asmeninius ar finansinius duomenis."},{"$i":"malware-blocked","$v":"Kenkjiškas tinklalapis užblokuotas"},{"$i":"malware-blocked-error","$v":"Yra pranešta, jog šis tinklalapis yra kenkjiškas, tad jis užblokuotas."},{"$i":"unsafe-content-type","$v":"Nesaugus turinys"},{"$i":"unsafe-content-type-error","$v":"Šis tinklalapis neatvaizduotas, nes jis gali bti nesaugus."},{"$i":"corrupted-content","$v":"Tinklalapio atvaizduoti nepavyko"},{"$i":"corrupted-content-error","$v":"Šis tinklalapis neatvaizduotas dl aptiktos duomen perdavimo klaidos."},{"$i":"unable-to-connect","$v":"Nepavyko prisijungti"},{"$i":"cancel","$v":"Atsisakyti"},{"$i":"close","$v":"Užverti"},{"$i":"try-again","$v":"Bandyti vl"},{"$i":"check-settings","$v":"Patikrinti nuostatas"},{"$i":"tap-to-check-settings","$v":"Bakstelkite nuostatoms patikrinti"}]
+</script><script lang="mk" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"No access to the Internet right now."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," requires an Internet connection."]},{"$i":"server-not-found","$v":"Server not found"},{"$i":"server-not-found-error","$v":["Can’t find the server at ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"File not found"},{"$i":"file-not-found-error","$v":"The device can’t display this page because the file cannot be found."},{"$i":"connection-failed","$v":"Unable to connect"},{"$i":"connection-failed-error","$v":"A network error occurred while trying to reach the site."},{"$i":"invalid-connection","$v":"Unable to connect"},{"$i":"invalid-connection-error","$v":"A network error occurred while trying to reach the site."},{"$i":"malformed-uri","$v":"URL not valid"},{"$i":"malformed-uri-error","$v":"The URL entered is not valid and cannot be loaded."},{"$i":"redirect-loop","$v":"Can’t display page"},{"$i":"redirect-loop-error","$v":"The device can’t display this page because the page is not redirecting properly. Try this page again at a later time."},{"$i":"not-cached","$v":"Page expired"},{"$i":"not-cached-error","$v":"As a security precaution, this page cannot be displayed by the device because it has expired."},{"$i":"is-printing-error","$v":"The document cannot change while Printing or in Print Preview."},{"$i":"denied-port-access","$v":"This address is restricted"},{"$i":"denied-port-access-error","$v":"This address uses a network port which is normally used for purposes other than Web browsing. The device has cancelled the request for your protection."},{"$i":"proxy-resolve-failure","$v":"Proxy Server Error"},{"$i":"proxy-resolve-failure-error","$v":"The device is configured to use a proxy server that can’t be found."},{"$i":"proxy-connect-failure","$v":"Proxy Server Error"},{"$i":"proxy-connect-failure-error","$v":"The device is configured to use a proxy server that is refusing connections."},{"$i":"content-encoding","$v":"Can’t display page"},{"$i":"content-encoding-error","$v":"The device can’t display this page because a content encoding error occurred."},{"$i":"remote-xul","$v":"Page unsupported"},{"$i":"remote-xul-error","$v":"This page can’t be displayed because it uses a technology that is not supported on the device."},{"$i":"phishing-blocked","$v":"Warning"},{"$i":"phishing-blocked-error","$v":"The website has been reported as a web forgery designed to trick users into sharing personal or financial information."},{"$i":"malware-blocked","$v":"Malware attack blocked"},{"$i":"malware-blocked-error","$v":"The site at has been reported as an attack site and has been blocked."},{"$i":"unsafe-content-type","$v":"Unsafe content"},{"$i":"unsafe-content-type-error","$v":"The page cannot be shown because it may not be safe to open."},{"$i":"corrupted-content","$v":"Can’t display page"},{"$i":"corrupted-content-error","$v":"The page cannot be shown because an error in the data transmission was detected."},{"$i":"unable-to-connect","$v":"Unable to connect"},{"$i":"cancel","$v":"Cancel"},{"$i":"close","$v":"Close"},{"$i":"try-again","$v":"Try again"},{"$i":"check-settings","$v":"Check settings"},{"$i":"tap-to-check-settings","$v":"Tap to check settings"}]
+</script><script lang="ms" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Tiada capaian ke Internet ketika ini."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," memerlukan sambungan Internet."]},{"$i":"server-not-found","$v":"Pelayan tidak ditemui"},{"$i":"server-not-found-error","$v":["Tidak dapat mencari pelayan di ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Fail tidak ditemui"},{"$i":"file-not-found-error","$v":"Peranti tidak dapat memaparkan laman ini kerana dail tidak dapat ditemui."},{"$i":"connection-failed","$v":"Tidak dapat menyambung"},{"$i":"connection-failed-error","$v":"Rakat rangkaian berlaku ketika cuba untuk mencapai laman."},{"$i":"invalid-connection","$v":"Tidak dapat menyambung"},{"$i":"invalid-connection-error","$v":"Ralat rangkaian berlaku ketika cuba mencapai laman."},{"$i":"malformed-uri","$v":"URL tidak sah"},{"$i":"malformed-uri-error","$v":"URL yang dimasukkan tidak sah dan todak dapat dimuatkan."},{"$i":"redirect-loop","$v":"Tidak dapat memaparkan laman"},{"$i":"redirect-loop-error","$v":"Peranti tidak dapat memaparkan laman ini kerana laman tidak dilencongkan dengan betul. Cuba lagi laman ini kemudian."},{"$i":"not-cached","$v":"Laman telah luput"},{"$i":"not-cached-error","$v":"Sebagai langkah berjaga-jaga, laman ini tidak dapat dipaparkan oleh peranti kerana ianya telah luput."},{"$i":"is-printing-error","$v":"Dokumen ini tidak dapat diubah ketika Mencetak atau dalam Pralihat Cetak."},{"$i":"denied-port-access","$v":"Alamat ini dihadkan"},{"$i":"denied-port-access-error","$v":"Alamat ini menggunakan port rangkaian yang kebiasaannya digunakan untuk kegunaan lain selain pelayaran Web. Peranti telah membatalkan permintaan untuk perlindungan anda."},{"$i":"proxy-resolve-failure","$v":"Ralat Pelayan Proksi"},{"$i":"proxy-resolve-failure-error","$v":"Peranti tertatarajah untuk menggunakan pelayan proksi yang tidak dapat ditemui."},{"$i":"proxy-connect-failure","$v":"Ralat Pelayan Proksi"},{"$i":"proxy-connect-failure-error","$v":"Peranti tertatarajah menggunakan pelayan proksi yang menolak sambungan."},{"$i":"content-encoding","$v":"Tidak dapat memaparkan laman"},{"$i":"content-encoding-error","$v":"Peranti tidak dapat memaparkan laman ini kerana ralat mengkod kandungan telah berlaku."},{"$i":"remote-xul","$v":"Laman tidak disokong"},{"$i":"remote-xul-error","$v":"Laman ini tidak dapat dipaparkan kerana ia menggunakan teknologi yang tidak lagi disokong pada peranti ini."},{"$i":"phishing-blocked","$v":"Amaran"},{"$i":"phishing-blocked-error","$v":"Laman web ini telah melaporkan web palsu yang direka bagi mengaburi pengguna untuk berkongsi maklumat peribadi dan kewangan."},{"$i":"malware-blocked","$v":"Serangan Malware disekat"},{"$i":"malware-blocked-error","$v":"Laman itu telah dilaporkan sebagai laman penyerang dan telah disekat."},{"$i":"unsafe-content-type","$v":"Kandungan tidak selamat"},{"$i":"unsafe-content-type-error","$v":"Laman tidak dapat ditunjukkan kerana ia mungkin tidak selamat untuk dibuka."},{"$i":"corrupted-content","$v":"Tidak dapat memapar laman"},{"$i":"corrupted-content-error","$v":"Laman tidak dapat ditunjukkan kerana terdapat ralat di dalam penghantaran data telah dikesan."},{"$i":"unable-to-connect","$v":"Tidak dapat menyambung"},{"$i":"cancel","$v":"Batal"},{"$i":"close","$v":"Tutup"},{"$i":"try-again","$v":"Cuba lagi"},{"$i":"check-settings","$v":"Semak tetapan"},{"$i":"tap-to-check-settings","$v":"Ketik untuk semak tetapan"}]
+</script><script lang="ne-NP" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"No access to the Internet right now."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," requires an Internet connection."]},{"$i":"server-not-found","$v":"  "},{"$i":"server-not-found-error","$v":[{"t":"idOrVar","v":"name"},"    "]},{"$i":"file-not-found","$v":"  "},{"$i":"file-not-found-error","$v":"The device can’t display this page because the file cannot be found."},{"$i":"connection-failed","$v":"  "},{"$i":"connection-failed-error","$v":"A network error occurred while trying to reach the site."},{"$i":"invalid-connection","$v":"  "},{"$i":"invalid-connection-error","$v":"A network error occurred while trying to reach the site."},{"$i":"malformed-uri","$v":"URL not valid"},{"$i":"malformed-uri-error","$v":"The URL entered is not valid and cannot be loaded."},{"$i":"redirect-loop","$v":"Can’t display page"},{"$i":"redirect-loop-error","$v":"The device can’t display this page because the page is not redirecting properly. Try this page again at a later time."},{"$i":"not-cached","$v":"Page expired"},{"$i":"not-cached-error","$v":"As a security precaution, this page cannot be displayed by the device because it has expired."},{"$i":"is-printing-error","$v":"The document cannot change while Printing or in Print Preview."},{"$i":"denied-port-access","$v":"This address is restricted"},{"$i":"denied-port-access-error","$v":"This address uses a network port which is normally used for purposes other than Web browsing. The device has cancelled the request for your protection."},{"$i":"proxy-resolve-failure","$v":"Proxy Server Error"},{"$i":"proxy-resolve-failure-error","$v":"The device is configured to use a proxy server that can’t be found."},{"$i":"proxy-connect-failure","$v":"Proxy Server Error"},{"$i":"proxy-connect-failure-error","$v":"The device is configured to use a proxy server that is refusing connections."},{"$i":"content-encoding","$v":"Can’t display page"},{"$i":"content-encoding-error","$v":"The device can’t display this page because a content encoding error occurred."},{"$i":"remote-xul","$v":"Page unsupported"},{"$i":"remote-xul-error","$v":"This page can’t be displayed because it uses a technology that is not supported on the device."},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":"The website has been reported as a web forgery designed to trick users into sharing personal or financial information."},{"$i":"malware-blocked","$v":"Malware attack blocked"},{"$i":"malware-blocked-error","$v":"The site at has been reported as an attack site and has been blocked."},{"$i":"unsafe-content-type","$v":"Unsafe content"},{"$i":"unsafe-content-type-error","$v":"The page cannot be shown because it may not be safe to open."},{"$i":"corrupted-content","$v":"Can’t display page"},{"$i":"corrupted-content-error","$v":"The page cannot be shown because an error in the data transmission was detected."},{"$i":"unable-to-connect","$v":"  "},{"$i":"cancel","$v":" "},{"$i":"close","$v":" "},{"$i":"try-again","$v":":  "},{"$i":"check-settings","$v":"Check settings"},{"$i":"tap-to-check-settings","$v":"Tap to check settings"}]
+</script><script lang="nl" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Er is momenteel geen internettoegang."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," vereist een internetverbinding."]},{"$i":"server-not-found","$v":"Server niet gevonden"},{"$i":"server-not-found-error","$v":["Kan de server op ",{"t":"idOrVar","v":"name"}," niet vinden."]},{"$i":"file-not-found","$v":"Bestand niet gevonden"},{"$i":"file-not-found-error","$v":"Het apparaat kan deze pagina niet weergeven, omdat het bestand niet kan worden gevonden."},{"$i":"connection-failed","$v":"Kan geen verbinding maken"},{"$i":"connection-failed-error","$v":"Er is een netwerkfout opgetreden tijdens het benaderen van de website."},{"$i":"invalid-connection","$v":"Kan geen verbinding maken"},{"$i":"invalid-connection-error","$v":"Er is een netwerkfout opgetreden tijdens het benaderen van de website."},{"$i":"malformed-uri","$v":"URL niet geldig"},{"$i":"malformed-uri-error","$v":"De ingevoerde URL is niet geldig en kan niet worden geladen."},{"$i":"redirect-loop","$v":"Kan pagina niet weergeven"},{"$i":"redirect-loop-error","$v":"Het apparaat kan deze pagina niet weergeven, omdat deze niet op een juiste manier doorverwijst. Probeer deze pagina later opnieuw te laden."},{"$i":"not-cached","$v":"Pagina verlopen"},{"$i":"not-cached-error","$v":"Als beveiligingsmaatregel kan deze pagina niet door het apparaat worden weergegeven, omdat deze is verlopen."},{"$i":"is-printing-error","$v":"Het document kan niet worden gewijzigd tijdens het afdrukken of weergeven als afdrukvoorbeeld."},{"$i":"denied-port-access","$v":"Dit adres heeft beperkte toegang"},{"$i":"denied-port-access-error","$v":"Dit adres gebruikt een netwerkpoort die normaal gesproken wordt gebruikt voor andere doeleinden dan webbrowsen. Het apparaat heeft het verzoek geannuleerd om u te beschermen."},{"$i":"proxy-resolve-failure","$v":"Proxyserverfout"},{"$i":"proxy-resolve-failure-error","$v":"Het apparaat is ingesteld om een proxyserver te gebruiken die niet kan worden gevonden."},{"$i":"proxy-connect-failure","$v":"Proxyserverfout"},{"$i":"proxy-connect-failure-error","$v":"Het apparaat is ingesteld om een proxyserver te gebruiken die verbindingen weigert."},{"$i":"content-encoding","$v":"Kan pagina niet weergeven"},{"$i":"content-encoding-error","$v":"Het apparaat kan deze pagina niet weergeven, omdat er een inhoudcoderingsfout is opgetreden."},{"$i":"remote-xul","$v":"Pagina niet ondersteund"},{"$i":"remote-xul-error","$v":"Deze pagina kan niet worden weergegeven, omdat deze een technologie gebruikt die niet op het apparaat wordt ondersteund."},{"$i":"phishing-blocked","$v":"Waarschuwing"},{"$i":"phishing-blocked-error","$v":"De website is gerapporteerd als een vervalsing, ontworpen om gebruikers te misleiden en persoonlijke of financiële gegevens te laten delen."},{"$i":"malware-blocked","$v":"Malware-aanval geblokkeerd"},{"$i":"malware-blocked-error","$v":"De website is gerapporteerd als een aanvalsite en is geblokkeerd."},{"$i":"unsafe-content-type","$v":"Onveilige inhoud"},{"$i":"unsafe-content-type-error","$v":"De pagina kan niet worden weergegeven, omdat deze mogelijk niet veilig is om te openen."},{"$i":"corrupted-content","$v":"Kan pagina niet weergeven"},{"$i":"corrupted-content-error","$v":"De pagina kan niet worden weergegeven, omdat er een fout in de gegevensoverdracht is gedetecteerd."},{"$i":"unable-to-connect","$v":"Kan geen verbinding maken"},{"$i":"cancel","$v":"Annuleren"},{"$i":"close","$v":"Sluiten"},{"$i":"try-again","$v":"Opnieuw"},{"$i":"check-settings","$v":"Instellingen controleren"},{"$i":"tap-to-check-settings","$v":"Tik om instellingen te controleren"}]
+</script><script lang="pa" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"No access to the Internet right now."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," requires an Internet connection."]},{"$i":"server-not-found","$v":"Server not found"},{"$i":"server-not-found-error","$v":["Can’t find the server at ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"File not found"},{"$i":"file-not-found-error","$v":"The device can’t display this page because the file cannot be found."},{"$i":"connection-failed","$v":"Unable to connect"},{"$i":"connection-failed-error","$v":"A network error occurred while trying to reach the site."},{"$i":"invalid-connection","$v":"Unable to connect"},{"$i":"invalid-connection-error","$v":"A network error occurred while trying to reach the site."},{"$i":"malformed-uri","$v":"URL not valid"},{"$i":"malformed-uri-error","$v":"The URL entered is not valid and cannot be loaded."},{"$i":"redirect-loop","$v":"Can’t display page"},{"$i":"redirect-loop-error","$v":"The device can’t display this page because the page is not redirecting properly. Try this page again at a later time."},{"$i":"not-cached","$v":"Page expired"},{"$i":"not-cached-error","$v":"As a security precaution, this page cannot be displayed by the device because it has expired."},{"$i":"is-printing-error","$v":"The document cannot change while Printing or in Print Preview."},{"$i":"denied-port-access","$v":"This address is restricted"},{"$i":"denied-port-access-error","$v":"This address uses a network port which is normally used for purposes other than Web browsing. The device has cancelled the request for your protection."},{"$i":"proxy-resolve-failure","$v":"Proxy Server Error"},{"$i":"proxy-resolve-failure-error","$v":"The device is configured to use a proxy server that can’t be found."},{"$i":"proxy-connect-failure","$v":"Proxy Server Error"},{"$i":"proxy-connect-failure-error","$v":"The device is configured to use a proxy server that is refusing connections."},{"$i":"content-encoding","$v":"Can’t display page"},{"$i":"content-encoding-error","$v":"The device can’t display this page because a content encoding error occurred."},{"$i":"remote-xul","$v":"Page unsupported"},{"$i":"remote-xul-error","$v":"This page can’t be displayed because it uses a technology that is not supported on the device."},{"$i":"phishing-blocked","$v":"Warning"},{"$i":"phishing-blocked-error","$v":"The website has been reported as a web forgery designed to trick users into sharing personal or financial information."},{"$i":"malware-blocked","$v":"Malware attack blocked"},{"$i":"malware-blocked-error","$v":"The site at has been reported as an attack site and has been blocked."},{"$i":"unsafe-content-type","$v":"Unsafe content"},{"$i":"unsafe-content-type-error","$v":"The page cannot be shown because it may not be safe to open."},{"$i":"corrupted-content","$v":"Can’t display page"},{"$i":"corrupted-content-error","$v":"The page cannot be shown because an error in the data transmission was detected."},{"$i":"unable-to-connect","$v":"     "},{"$i":"cancel","$v":" "},{"$i":"close","$v":" "},{"$i":"try-again","$v":"  "},{"$i":"check-settings","$v":"  "},{"$i":"tap-to-check-settings","$v":"    "}]
+</script><script lang="pl" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Obecnie brak dostpu do Internetu."},{"$i":"network-error-launching","$v":["„",{"t":"idOrVar","v":"name"},"” wymaga poczenia z sieci."]},{"$i":"server-not-found","$v":"Nie odnaleziono serwera"},{"$i":"server-not-found-error","$v":["Nie udao si odnale serwera „",{"t":"idOrVar","v":"name"},"”."]},{"$i":"file-not-found","$v":"Nie odnaleziono pliku"},{"$i":"file-not-found-error","$v":"Nie mona wywietli strony poniewa nie udao si odnale pliku."},{"$i":"connection-failed","$v":"Nie udao si nawiza poczenia"},{"$i":"connection-failed-error","$v":"Podczas wczytywania strony wystpi bd poczenia."},{"$i":"invalid-connection","$v":"Nie udao si nawiza poczenia"},{"$i":"invalid-connection-error","$v":"Podczas wczytywania strony wystpi bd poczenia."},{"$i":"malformed-uri","$v":"Nieprawidowt adres URL"},{"$i":"malformed-uri-error","$v":"Adres URL jest nieprawidowy i nie moe zosta wczytany."},{"$i":"redirect-loop","$v":"Nieprawidowe przekierowanie"},{"$i":"redirect-loop-error","$v":"Nie mona wywietli tej strony poniewa przekierowuje ona w sposób uniemoliwiajcy ukoczenie dania. Spróbuj ponownie póniej."},{"$i":"not-cached","$v":"Strona wygasa"},{"$i":"not-cached-error","$v":"Strona nie moe zosta wywietlona ze wzgldów bezpieczestwa poniewa wygasa."},{"$i":"is-printing-error","$v":"Strona nie moe zosta zmieniona podczas wydruku, lub kiedy wczony jest podgld wydruku."},{"$i":"denied-port-access","$v":"Ten adres jest zastrzeony"},{"$i":"denied-port-access-error","$v":"Adres zawiera numer portu normalnie wykorzystywanego do innych celów ni przegldanie sieci. Ze wzgldów bezpieczestwa danie zostao anulowane."},{"$i":"proxy-resolve-failure","$v":"Nie mona odnale serwera proxy"},{"$i":"proxy-resolve-failure-error","$v":"Nie mona odnale skonfigurowanego serwera proxy."},{"$i":"proxy-connect-failure","$v":"Serwer proxy odrzuca poczenia"},{"$i":"proxy-connect-failure-error","$v":"Skonfigurowany serwer proxy odrzuca poczenia."},{"$i":"content-encoding","$v":"Nie mona wywietli strony"},{"$i":"content-encoding-error","$v":"Strona nie moe zosta wyietlona poniewa wystpi bd kodowania znaków."},{"$i":"remote-xul","$v":"Nieobsugiwana strona"},{"$i":"remote-xul-error","$v":"Strona nie moe zosta wywietlona poniewa uywa nieobsugiwanej technologii."},{"$i":"phishing-blocked","$v":"Ostrzeenie"},{"$i":"phishing-blocked-error","$v":"Strona zostaa zgoszona jako oszustwo majce na celu wyudzenie osobistych lub finansowych informacji."},{"$i":"malware-blocked","$v":"Strona zablokowana"},{"$i":"malware-blocked-error","$v":"Strona zostaa zgoszona jako stanowica zagroenie i zostaa zablokowana."},{"$i":"unsafe-content-type","$v":"Niebezpieczna tre"},{"$i":"unsafe-content-type-error","$v":"Strona nie moe zosta wywietlona poniewa jej otwarcie moe nie by bezpieczne."},{"$i":"corrupted-content","$v":"Nie mona wywietli strony"},{"$i":"corrupted-content-error","$v":"Strona nie moe zosta wywietlona z powodu bdu w transmisji danych."},{"$i":"unable-to-connect","$v":"Nie udao si poczy"},{"$i":"cancel","$v":"Anuluj"},{"$i":"close","$v":"Zamknij"},{"$i":"try-again","$v":"Spróbuj ponownie"},{"$i":"check-settings","$v":"Sprawd ustawienia"},{"$i":"tap-to-check-settings","$v":"Stuknij, by sprawdzi ustawienia"}]
+</script><script lang="pt-BR" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Sem acesso a internet no momento."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," necessita de uma conexão com a Internet."]},{"$i":"server-not-found","$v":"Servidor não encontrado"},{"$i":"server-not-found-error","$v":["Servidor não encontrado em ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Arquivo não encontrado"},{"$i":"file-not-found-error","$v":"O dispositivo não pode exibir essa página porque o arquivo não foi encontrado."},{"$i":"connection-failed","$v":"Não foi possível conectar"},{"$i":"connection-failed-error","$v":"Ocorreu um erro na rede ao tentar abrir o site."},{"$i":"invalid-connection","$v":"Não foi possível conectar"},{"$i":"invalid-connection-error","$v":"Ocorreu um erro na rede ao tentar acessar o site."},{"$i":"malformed-uri","$v":"URL inválida"},{"$i":"malformed-uri-error","$v":"A URL inserida não é valida e não pôde ser carregada."},{"$i":"redirect-loop","$v":"Não foi possível exibir a página"},{"$i":"redirect-loop-error","$v":"O dispositivo não pode exibir essa página porque ela não está redirecionando corretamente. Tente novamente mais tarde."},{"$i":"not-cached","$v":"Página expirou"},{"$i":"not-cached-error","$v":"Como medida de segurança, essa página não pode ser exibida pelo dispositivo porque ela expirou."},{"$i":"is-printing-error","$v":"O documento não pode ser alterado enquanto está sendo Impresso ou durante a Visualização de Impressão."},{"$i":"denied-port-access","$v":"Esse endereço é restrito"},{"$i":"denied-port-access-error","$v":"Esse endereço utiliza uma porta que normalmente é utilizada com outros propósitos além da Navegação. O dispositivo cancelou o pedido para sua proteção."},{"$i":"proxy-resolve-failure","$v":"Erro do Servidor Proxy"},{"$i":"proxy-resolve-failure-error","$v":"O dispositivo está configurado para utilizar um servidor proxy que não pode ser encontrado."},{"$i":"proxy-connect-failure","$v":"Erro do Servidor Proxy"},{"$i":"proxy-connect-failure-error","$v":"O dispositivo está configurado para utilizar um servidor de proxy que está negando conexões."},{"$i":"content-encoding","$v":"Não foi possível exibir a página"},{"$i":"content-encoding-error","$v":"O dispositivo não pode exibir a página devido a um erro de encoding do conteúdo."},{"$i":"remote-xul","$v":"Página não suportada"},{"$i":"remote-xul-error","$v":"Essa página não pode ser exibida porque utiliza uma tecnologia não suportada por esse dispositivo."},{"$i":"phishing-blocked","$v":"Aviso"},{"$i":"phishing-blocked-error","$v":"Esse site foi reportado como um fraude para enganar usuários a compartilhar dados pessoais ou financeiros."},{"$i":"malware-blocked","$v":"Ataque de Malware bloqueado"},{"$i":"malware-blocked-error","$v":"O site foi reportado como um ataque e foi bloqueado."},{"$i":"unsafe-content-type","$v":"Conteúdo inseguro"},{"$i":"unsafe-content-type-error","$v":"A página não pôde ser exibida porque não é segura para ser aberta."},{"$i":"corrupted-content","$v":"Não foi possível exibir a página"},{"$i":"corrupted-content-error","$v":"A página não pôde ser exibida porque um erro na transmissão de dados foi detectado."},{"$i":"unable-to-connect","$v":"Não foi possível conectar"},{"$i":"cancel","$v":"Cancelar"},{"$i":"close","$v":"Fechar"},{"$i":"try-again","$v":"Tentar novamente"},{"$i":"check-settings","$v":"Verificar configurações"},{"$i":"tap-to-check-settings","$v":"Toque para verificar as configurações"}]
+</script><script lang="ro" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Fr acces la internet în prezent."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," necesit o conexiune la internet."]},{"$i":"server-not-found","$v":"Server negsit"},{"$i":"server-not-found-error","$v":["Nu se poate gsi serverul la ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Fiier negsit"},{"$i":"file-not-found-error","$v":"Dispozitivul nu poate afia aceast pagin deoarece fiierul nu poate fi gsit."},{"$i":"connection-failed","$v":"Nu se poate conecta"},{"$i":"connection-failed-error","$v":"A aprut o eroare de reea în timpul încercrii de conectare la sait."},{"$i":"invalid-connection","$v":"Nu se poate conecta"},{"$i":"invalid-connection-error","$v":"A aprut o eroare de reea în timpul încercrii de conectare la sait."},{"$i":"malformed-uri","$v":"URL invalid"},{"$i":"malformed-uri-error","$v":"URL-ul introdus nu e valid i nu poate fi încrcat."},{"$i":"redirect-loop","$v":"Nu se poate afia pagina"},{"$i":"redirect-loop-error","$v":"Dispozitivul nu poate afia aceast pagin deoarece pagina nu redirecioneaz corect. Încearc din nou pagina mai târziu."},{"$i":"not-cached","$v":"Pagin expirat"},{"$i":"not-cached-error","$v":"Ca o msur de siguran, aceast pagin nu poate fi afiat de dispozitiv deoarece a expirat."},{"$i":"is-printing-error","$v":"Documentul nu poate fi modificat în timp ce este tiprit sau previzualizat pentru a fi tiprit."},{"$i":"denied-port-access","$v":"Aceast adres e restricionat"},{"$i":"denied-port-access-error","$v":"Aceast adres folosete un port de reea care în mod normal este utilizat în alte scopuri decât pentru navigarea pe web. Pentru protecia ta, dispozitivul a oprit aceast cerere."},{"$i":"proxy-resolve-failure","$v":"Eroare la serverul proxy"},{"$i":"proxy-resolve-failure-error","$v":"Dispozitivul e configurat s foloseasc un server proxy care nu poate fi gsit."},{"$i":"proxy-connect-failure","$v":"Eroare la serverul proxy"},{"$i":"proxy-connect-failure-error","$v":"Dispozitivul este configurat s foloseasc un server proxy care refuz conexiuni."},{"$i":"content-encoding","$v":"Nu se poate afia pagina"},{"$i":"content-encoding-error","$v":"Dispozitivul nu poate afia aceast pagin deoarece s-a produs o eroare în codarea coninutului."},{"$i":"remote-xul","$v":"Pagin nesuportat"},{"$i":"remote-xul-error","$v":"Aceast pagin nu poate fi afiat deoarece folosete o tehnologie care nu este suportat de dispozitiv."},{"$i":"phishing-blocked","$v":"Avertisment"},{"$i":"phishing-blocked-error","$v":"Saitul a fost raportat ca fiind un sait fals menit s pcleasc utilizatorii s dea informaii personale sau financiare."},{"$i":"malware-blocked","$v":"Atac malware blocat"},{"$i":"malware-blocked-error","$v":"Saitul a fost raportat ca fiind un sait de atac i a fost blocat."},{"$i":"unsafe-content-type","$v":"Coninut nesigur"},{"$i":"unsafe-content-type-error","$v":"Pagina nu poate fi afiat deoarece v-ar putea compromite sigurana."},{"$i":"corrupted-content","$v":"Nu se poate afia pagina"},{"$i":"corrupted-content-error","$v":"Pagina nu poate fi afiat deoarece a fost detectat o eroare legat de transmiterea datelor."},{"$i":"unable-to-connect","$v":"Nu se poate conecta"},{"$i":"cancel","$v":"Renun"},{"$i":"close","$v":"Închide"},{"$i":"try-again","$v":"Reîncearc"},{"$i":"check-settings","$v":"Verific setrile"},{"$i":"tap-to-check-settings","$v":"Apas ca s verifici setrile"}]
+</script><script lang="ru" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"    ."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"},"    ."]},{"$i":"server-not-found","$v":"  "},{"$i":"server-not-found-error","$v":["    ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"  "},{"$i":"file-not-found-error","$v":"     ,       ."},{"$i":"connection-failed","$v":"   "},{"$i":"connection-failed-error","$v":"       ."},{"$i":"invalid-connection","$v":"   "},{"$i":"invalid-connection-error","$v":"       ."},{"$i":"malformed-uri","$v":"URL "},{"$i":"malformed-uri-error","$v":" URL      ."},{"$i":"redirect-loop","$v":"   "},{"$i":"redirect-loop-error","$v":"     ,      .      ."},{"$i":"not-cached","$v":" "},{"$i":"not-cached-error","$v":"   ,       ,    ."},{"$i":"is-printing-error","$v":"          ."},{"$i":"denied-port-access","$v":"    "},{"$i":"denied-port-access-error","$v":"   , ,  ,      -.        ."},{"$i":"proxy-resolve-failure","$v":" -"},{"$i":"proxy-resolve-failure-error","$v":"    -,     ."},{"$i":"proxy-connect-failure","$v":" -"},{"$i":"proxy-connect-failure-error","$v":"    -,    ."},{"$i":"content-encoding","$v":"   "},{"$i":"content-encoding-error","$v":"     ,     ."},{"$i":"remote-xul","$v":"   "},{"$i":"remote-xul-error","$v":"     ,       ."},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":" ,   -    ,           ."},{"$i":"malware-blocked","$v":"   "},{"$i":"malware-blocked-error","$v":" ,      ,    ."},{"$i":"unsafe-content-type","$v":" "},{"$i":"unsafe-content-type-error","$v":"    ,        ."},{"$i":"corrupted-content","$v":"   "},{"$i":"corrupted-content-error","$v":"    ,        ."},{"$i":"unable-to-connect","$v":"   "},{"$i":"cancel","$v":""},{"$i":"close","$v":""},{"$i":"try-again","$v":" "},{"$i":"check-settings","$v":" "},{"$i":"tap-to-check-settings","$v":",   "}]
+</script><script lang="sk" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Pripojenie k internetu nie je v tejto chvíli dostupné."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," vyžaduje pripojenie k internetu."]},{"$i":"server-not-found","$v":"Server nebol nájdený"},{"$i":"server-not-found-error","$v":["Nebolo možné nájs server ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Súbor nebol nájdený"},{"$i":"file-not-found-error","$v":"Zariadenie nedokáže zobrazi túto stránku, pretože súbor nebol nájdený."},{"$i":"connection-failed","$v":"Nie je možné sa pripoji"},{"$i":"connection-failed-error","$v":"Pri pokuse o zobrazenie stránky sa vyskytla chyba siete."},{"$i":"invalid-connection","$v":"Nie je možné sa pripoji"},{"$i":"invalid-connection-error","$v":"Pri pokuse o zobrazenie stránky sa vyskytla chyba siete."},{"$i":"malformed-uri","$v":"Adresa URL nie je platná"},{"$i":"malformed-uri-error","$v":"Zadaná adresa URL nie je platná a nemôže by naítaná."},{"$i":"redirect-loop","$v":"Nie je možné zobrazi stránku"},{"$i":"redirect-loop-error","$v":"Zariadenie nedokáže zobrazi túto stránku, pretože presmerovanie stránky nie je nastavené správne. Skúste to neskôr."},{"$i":"not-cached","$v":"Platnos stránky vypršala"},{"$i":"not-cached-error","$v":"Z bezpenostných dôvodov nie je možné túto stránku zobrazi, pretože jej platnos vypršala."},{"$i":"is-printing-error","$v":"Dokument nie je možné zmeni, ak sa práve tlaí alebo je v zobrazení Ukážka pred tlaou."},{"$i":"denied-port-access","$v":"Táto adresa je obmedzená"},{"$i":"denied-port-access-error","$v":"Táto adresa používa sieový port, ktorý sa normálne používa na iné úely ako prehliadanie webu. Zariadenie z dôvodu vašej ochrany zrušilo požiadavku."},{"$i":"proxy-resolve-failure","$v":"Chyba servera proxy"},{"$i":"proxy-resolve-failure-error","$v":"Zariadenie je nastavené na používanie servera proxy, ktorý nebol nájdený."},{"$i":"proxy-connect-failure","$v":"Chyba servera proxy"},{"$i":"proxy-connect-failure-error","$v":"Zariadenie je nastavené na používanie servera proxy, ktorý odmieta spojenia."},{"$i":"content-encoding","$v":"Stránku nie je možné zobrazi"},{"$i":"content-encoding-error","$v":"Zariadenie nedokáže zobrazi túto stránku, pretože sa vyskytla chyba s kódovaním obsahu."},{"$i":"remote-xul","$v":"Stránka nie je podporovaná"},{"$i":"remote-xul-error","$v":"Túto stránku nie je možné zobrazi, pretože používa technológiu, ktorá nie je týmto zariadením podporovaná."},{"$i":"phishing-blocked","$v":"Upozornenie"},{"$i":"phishing-blocked-error","$v":"Táto stránka bola oznaená ako podvodná a navrhnutá s cieom získa od používateov osobné údaje alebo informácie o bankových útoch."},{"$i":"malware-blocked","$v":"Útoná stránka zablokovaná"},{"$i":"malware-blocked-error","$v":"Táto stránka bola oznaená ako útoná a preto bola zablokovaná."},{"$i":"unsafe-content-type","$v":"Nebezpený obsah"},{"$i":"unsafe-content-type-error","$v":"Stránka nemôže by zobrazená, pretože to nemusí by bezpené."},{"$i":"corrupted-content","$v":"Stránku nie je možné zobrazi"},{"$i":"corrupted-content-error","$v":"Túto stránku nie je možné zobrazi, pretože pri prenose údajov sa vyskytla chyba."},{"$i":"unable-to-connect","$v":"Nepodarilo sa pripoji"},{"$i":"cancel","$v":"Zruši"},{"$i":"close","$v":"Zavrie"},{"$i":"try-again","$v":"Skúsi znova"},{"$i":"check-settings","$v":"Skontrolova nastavenia"},{"$i":"tap-to-check-settings","$v":"uknutím skontrolujete nastavenia"}]
+</script><script lang="sq" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Pa lidhje në Internet hëpërhë."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," lyp lidhje në Internet."]},{"$i":"server-not-found","$v":"S’u gjet shërbyes"},{"$i":"server-not-found-error","$v":["S’gjendet shërbyesi te ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"S’u gjet kartelë"},{"$i":"file-not-found-error","$v":"Pajisja nuk e shfaq dot këtë faqe, ngaqë kartela nuk gjendet dot."},{"$i":"connection-failed","$v":"Nuk arrin të lidhet"},{"$i":"connection-failed-error","$v":"Ndodhi një gabim rrjeti teksa provohej kapja e sajtit."},{"$i":"invalid-connection","$v":"Nuk arrin të lidhet"},{"$i":"invalid-connection-error","$v":"Ndodhi një gabim rrjeti teksa provohej kapja e sajtit."},{"$i":"malformed-uri","$v":"URL jo e vlefshme"},{"$i":"malformed-uri-error","$v":"URL-ja e dhënë nuk është e vlefshme dhe nuk mund të ngarkohet."},{"$i":"redirect-loop","$v":"S’shfaqet dot faqja"},{"$i":"redirect-loop-error","$v":"Pajisja s’e shfaq dot këtë faqe, ngaqë nuk po ridrejtohet si duhet. Riprovojeni këtë faqe më vonë."},{"$i":"not-cached","$v":"Faqja ka skaduar"},{"$i":"not-cached-error","$v":"Si masë paraprake sigurie, kjo faqe nuk mund të shfaqet nga pajisja, pasi ka skaduar."},{"$i":"is-printing-error","$v":"Dokumenti nuk mund të ndryshohet teksa Shtypet ose i Parashihet Shtypja."},{"$i":"denied-port-access","$v":"Kjo adresë është e ndaluar"},{"$i":"denied-port-access-error","$v":"Kjo adresë përdor një portë rrjeti e cila normalisht përdoret për qëllime të ndryshme nga shfletimi në Web. Për t’ju mbrojtur, pajisja e ka anuluar kërkesën."},{"$i":"proxy-resolve-failure","$v":"Gabim Shërbyesi Ndërmjetës"},{"$i":"proxy-resolve-failure-error","$v":"Pajisja është formësuar të përdorë një shërbyes ndërmjetës që nuk gjendet."},{"$i":"proxy-connect-failure","$v":"Gabim Shërbyesi Ndërmjetës"},{"$i":"proxy-connect-failure-error","$v":"Pajisja është formësuar të përdorë një shërbyes ndërmjetës që nuk po i pranon lidhjet."},{"$i":"content-encoding","$v":"S’shfaqet dot faqja"},{"$i":"content-encoding-error","$v":"Pajisja s’e shfaq dot këtë faqe, ngaqë ndodhi një gabim kodimi lënde."},{"$i":"remote-xul","$v":"Faqe e pambuluar"},{"$i":"remote-xul-error","$v":"Kjo faqe s’shfaqet dot, ngaqë përdor një teknologji që nuk mbulohet nga pajisja."},{"$i":"phishing-blocked","$v":"Kujdes"},{"$i":"phishing-blocked-error","$v":"Sajti është raportuar si sajesë web, e hartuar të mashtrojë përdoruesit, për t’i bërë ata të japin të dhëna vetjake ose financiare."},{"$i":"malware-blocked","$v":"U bllokua sulm nga malware"},{"$i":"malware-blocked-error","$v":"Sajti është raportuar si sajt sulmesh dhe është bllokuar."},{"$i":"unsafe-content-type","$v":"Lëndë e pasigurt"},{"$i":"unsafe-content-type-error","$v":"Faqja nuk mund të shfaqet, ngaqë hapja mund të jetë e rrezikshme."},{"$i":"corrupted-content","$v":"Faqja s’shfaqet dot"},{"$i":"corrupted-content-error","$v":"Faqja nuk shfaqet dot, ngaqë u zbulua një gabim në transmetimin e të dhënave."},{"$i":"unable-to-connect","$v":"Nuk arrin të lidhet"},{"$i":"cancel","$v":"Anuloje"},{"$i":"close","$v":"Mbylle"},{"$i":"try-again","$v":"Riprovoni"},{"$i":"check-settings","$v":"Kontrolloni rregullimet"},{"$i":"tap-to-check-settings","$v":"Prekeni që të kontrollohen rregullimet"}]
+</script><script lang="sr-Cyrl" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"   ."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"},"   ."]},{"$i":"server-not-found","$v":"  "},{"$i":"server-not-found-error","$v":["     ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"  "},{"$i":"file-not-found-error","$v":"           ."},{"$i":"connection-failed","$v":"   "},{"$i":"connection-failed-error","$v":"          ."},{"$i":"invalid-connection","$v":"   "},{"$i":"invalid-connection-error","$v":"          ."},{"$i":"malformed-uri","$v":"URL  "},{"$i":"malformed-uri-error","$v":" URL       ."},{"$i":"redirect-loop","$v":"   "},{"$i":"redirect-loop-error","$v":"           .   ."},{"$i":"not-cached","$v":"  "},{"$i":"not-cached-error","$v":"  ,         ."},{"$i":"is-printing-error","$v":"              ."},{"$i":"denied-port-access","$v":"   "},{"$i":"denied-port-access-error","$v":"             .        ."},{"$i":"proxy-resolve-failure","$v":"   "},{"$i":"proxy-resolve-failure-error","$v":"          ."},{"$i":"proxy-connect-failure","$v":"   "},{"$i":"proxy-connect-failure-error","$v":"            ."},{"$i":"content-encoding","$v":"   "},{"$i":"content-encoding-error","$v":"            ."},{"$i":"remote-xul","$v":"  "},{"$i":"remote-xul-error","$v":"             ."},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":"                  ."},{"$i":"malware-blocked","$v":"   "},{"$i":"malware-blocked-error","$v":"             ."},{"$i":"unsafe-content-type","$v":" "},{"$i":"unsafe-content-type-error","$v":"          ."},{"$i":"corrupted-content","$v":"   "},{"$i":"corrupted-content-error","$v":"            ."},{"$i":"unable-to-connect","$v":"   "},{"$i":"cancel","$v":""},{"$i":"close","$v":""},{"$i":"try-again","$v":""},{"$i":"check-settings","$v":" "},{"$i":"tap-to-check-settings","$v":" "}]
+</script><script lang="sr-Latn" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Trenutno nema pristup internetu."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," zahteva internet konekciju."]},{"$i":"server-not-found","$v":"Server nije pronaen"},{"$i":"server-not-found-error","$v":["Ne mogu pronaci server na ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Datoteka nije pronaena"},{"$i":"file-not-found-error","$v":"Ureaj ne može da prikaže ovu stranicu zato što datoteka nije pronaena."},{"$i":"connection-failed","$v":"Ne mogu se povezati"},{"$i":"connection-failed-error","$v":"Desila se greška na mreži pri pokušaju povezivanja na ovaj sajt."},{"$i":"invalid-connection","$v":"Ne mogu se povezati"},{"$i":"invalid-connection-error","$v":"Desila se greška na mreži pri pokušaju povezivanja na ovaj sajt."},{"$i":"malformed-uri","$v":"URL nije validan"},{"$i":"malformed-uri-error","$v":"Unesen URL nije validan i ne može se uitati."},{"$i":"redirect-loop","$v":"Ne mogu prikazati stranicu"},{"$i":"redirect-loop-error","$v":"Ureaj ne može prikazati stranicu zato što se stranica ne prosleuje pravilno. Pokušajte ponovo kasnije."},{"$i":"not-cached","$v":"Stranica je istekla"},{"$i":"not-cached-error","$v":"Kao mera bezbednosti, ova stranica ne može biti prikazana jer je istekla."},{"$i":"is-printing-error","$v":"Ovaj dokument se ne može promeniti pri štampanju ili pri prikazu u režimu za štampanje."},{"$i":"denied-port-access","$v":"Ova stranica je zabranjena"},{"$i":"denied-port-access-error","$v":"Ova stranica koristi port mreže koji je obino za svrhe koje nisu veb pregledanje. Ovaj ureaj je otkazao zahtev radi Vaše bezbednosti."},{"$i":"proxy-resolve-failure","$v":"Greška na proksi serveru"},{"$i":"proxy-resolve-failure-error","$v":"Ovaj ureaj je podešen da koristi proksi server koji nije pronaen."},{"$i":"proxy-connect-failure","$v":"Greška na proksi serveru"},{"$i":"proxy-connect-failure-error","$v":"Ovaj ureaj je podešen da koristi proksi server koji odbija da se poveže."},{"$i":"content-encoding","$v":"Ne mogu prikazati stranicu"},{"$i":"content-encoding-error","$v":"Ureaj ne može prikazati ovu stranicu jer se desila greška u kodovanju sadržaja."},{"$i":"remote-xul","$v":"Stranica nije podržana"},{"$i":"remote-xul-error","$v":"Ova stranica se ne može prikazati jer koristi tehnologiju koju ovaj ureaj ne podržava."},{"$i":"phishing-blocked","$v":"Upozorenje"},{"$i":"phishing-blocked-error","$v":"Veb sajt je prijavljen kao veb falsifikat koji je napravljen da Vam na prevaru uzme line i financijske informacije."},{"$i":"malware-blocked","$v":"Napad malvera je blokiran"},{"$i":"malware-blocked-error","$v":"Veb sajt je prijavljen kao sajt koji napada Vaš ureaj i on je blokiran."},{"$i":"unsafe-content-type","$v":"Nesiguran sadržaj"},{"$i":"unsafe-content-type-error","$v":"Ova stranica ne može biti prikazana jer njeno otvaranje nije sigurno."},{"$i":"corrupted-content","$v":"Ne mogu prikazati stranicu"},{"$i":"corrupted-content-error","$v":"Ova stranica ne može biti prikazana jer se desila greška prilikom prenosa podataka."},{"$i":"unable-to-connect","$v":"Nije se moguce povezati"},{"$i":"cancel","$v":"Otkaži"},{"$i":"close","$v":"Zatvori"},{"$i":"try-again","$v":"Pokušaj"},{"$i":"check-settings","$v":"Proveri postavke"},{"$i":"tap-to-check-settings","$v":"Proveri postavke"}]
+</script><script lang="sv-SE" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"Ingen åtkomst till internet för tillfället."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," kräver en internetanslutning."]},{"$i":"server-not-found","$v":"Servern hittades inte"},{"$i":"server-not-found-error","$v":["Kan inte hitta servern på ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"Filen hittades inte"},{"$i":"file-not-found-error","$v":"Enheten kan inte visa sidan eftersom filen inte kan hittas."},{"$i":"connection-failed","$v":"Kan inte ansluta"},{"$i":"connection-failed-error","$v":"Ett nätverksfel uppstod vid försök att nå sidan."},{"$i":"invalid-connection","$v":"Kan inte ansluta"},{"$i":"invalid-connection-error","$v":"Ett nätverksfel uppstod vid försök att nå sidan."},{"$i":"malformed-uri","$v":"Ogiltig URL"},{"$i":"malformed-uri-error","$v":"Adressen är ogiltig och kan inte laddas."},{"$i":"redirect-loop","$v":"Kan inte visa sidan"},{"$i":"redirect-loop-error","$v":"Enheten kan inte visa sidan eftersom sidan inte omdirigerar korrekt. Besök sidan igen vid ett senare tillfälle."},{"$i":"not-cached","$v":"Sidan har upphört"},{"$i":"not-cached-error","$v":"Som en säkerhetsåtgärd, denna sida kan inte visas av enheten eftersom sidan har upphört."},{"$i":"is-printing-error","$v":"Dokumentet kan inte ändras under utskrift eller förhandsgranskning."},{"$i":"denied-port-access","$v":"Adressen är begränsad"},{"$i":"denied-port-access-error","$v":"Adressen använder en nätverksport som normalt används för andra ändamål än surfning. Enheten har avbrutit begäran för att skydda dig."},{"$i":"proxy-resolve-failure","$v":"Proxy serverfel"},{"$i":"proxy-resolve-failure-error","$v":"Enheten är konfigurerad för att använda en proxyserver som inte kan hittas."},{"$i":"proxy-connect-failure","$v":"Proxy serverfel"},{"$i":"proxy-connect-failure-error","$v":"Enheten är konfigurerad för att använda en proxyserver som vägrar anslutningar."},{"$i":"content-encoding","$v":"Kan inte visa sidan"},{"$i":"content-encoding-error","$v":"Enheten kan inte visa sidan eftersom ett innehållskodningsfel uppstod."},{"$i":"remote-xul","$v":"Sidan stöds ej"},{"$i":"remote-xul-error","$v":"Sidan kan inte visas eftersom den använder en teknik som inte stöds av enheten."},{"$i":"phishing-blocked","$v":"Varning"},{"$i":"phishing-blocked-error","$v":"Webbplatsen har rapporterats som en förfalskning avsedd att lura användare att avslöja personlig eller ekonomisk information."},{"$i":"malware-blocked","$v":"Skadlig sida blockerad"},{"$i":"malware-blocked-error","$v":"Webbplatsen har rapporterats som skadlig och har blockerats."},{"$i":"unsafe-content-type","$v":"Osäkert innehåll"},{"$i":"unsafe-content-type-error","$v":"Sidan kan inte visas eftersom den kanske inte är säker att öppna."},{"$i":"corrupted-content","$v":"Kan inte visa sidan"},{"$i":"corrupted-content-error","$v":"Sidan kan inte visas på grund av ett fel upptäcktes i dataöverföringen."},{"$i":"unable-to-connect","$v":"Kan inte ansluta"},{"$i":"cancel","$v":"Avbryt"},{"$i":"close","$v":"Stäng"},{"$i":"try-again","$v":"Försök igen"},{"$i":"check-settings","$v":"Kontrollera inställningar"},{"$i":"tap-to-check-settings","$v":"Peka här för att kontrollera inställningar"}]
+</script><script lang="tr" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"u anda internet eriimi yok."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," internet eriimine ihtiyaç duyuyor."]},{"$i":"server-not-found","$v":"Sunucu bulunamad"},{"$i":"server-not-found-error","$v":[{"t":"idOrVar","v":"name"}," sunucusu bulunamad."]},{"$i":"file-not-found","$v":"Dosya bulunamad"},{"$i":"file-not-found-error","$v":"Dosya bulunamad için aygt bu sayfay görüntüleyemiyor."},{"$i":"connection-failed","$v":"Balanlamad"},{"$i":"connection-failed-error","$v":"Siteye erimeye çalrken bir a hatas olutu."},{"$i":"invalid-connection","$v":"Balanlamad"},{"$i":"invalid-connection-error","$v":"Siteye erimeye çalrken bir a hatas olutu."},{"$i":"malformed-uri","$v":"URL geçerli deil"},{"$i":"malformed-uri-error","$v":"Girilen URL geçersiz olduundan yüklenemiyor."},{"$i":"redirect-loop","$v":"Sayfa görüntülenemiyor"},{"$i":"redirect-loop-error","$v":"Sayfa düzgün yönlendirilmedii için cihaz bu sayfay görüntüleyemiyor. Daha sonra tekrar deneyin."},{"$i":"not-cached","$v":"Sayfa zaman amna urad"},{"$i":"not-cached-error","$v":"Bu sayfa zaman amna urad için güvenlik önlemi olarak bu cihazda görüntülenemez."},{"$i":"is-printing-error","$v":"Belge yazdrlrken veya yazdrma ön izlemesindeyken deitirilemez."},{"$i":"denied-port-access","$v":"Bu adres kstldr"},{"$i":"denied-port-access-error","$v":"Bu adres taramadan baka amaçlar için kullanlan bir a balant noktas kullanyor. Cihaznz, güvenliiniz için bu balanma isteini iptal etti."},{"$i":"proxy-resolve-failure","$v":"Vekil sunucu hatas"},{"$i":"proxy-resolve-failure-error","$v":"Cihaz, bulunamayan bir vekil sunucuya balanmak üzere ayarlanm."},{"$i":"proxy-connect-failure","$v":"Vekil sunucu hatas"},{"$i":"proxy-connect-failure-error","$v":"Cihaz, balanma isteklerini geri çeviren bir vekil sunucuya balanmak üzere ayarlanm."},{"$i":"content-encoding","$v":"Sayfa görüntülenemiyor"},{"$i":"content-encoding-error","$v":"çerik kodlama hatas olutuu için cihaz bu sayfay görüntüleyemiyor."},{"$i":"remote-xul","$v":"Sayfa desteklenmiyor"},{"$i":"remote-xul-error","$v":"Bu cihazda desteklenmeyen bir teknoloji kulland için bu sayfa görüntülenemiyor."},{"$i":"phishing-blocked","$v":"Uyar"},{"$i":"phishing-blocked-error","$v":"Bu web sitesinin ullanclar kandrarak onlar kiisel ve mali bilgilerini paylamaya yönelten bir sahtekârlk giriimi içerdii bildirilmitir."},{"$i":"malware-blocked","$v":"Zararl yazlm saldrs engellendi"},{"$i":"malware-blocked-error","$v":"Bu site bir saldr sitesi olarak rapor edilmi ve engellenmitir."},{"$i":"unsafe-content-type","$v":"Güvensiz içerik"},{"$i":"unsafe-content-type-error","$v":"Bu sayfann açlmas güvensiz olabilecei için sayfa görüntülenemiyor."},{"$i":"corrupted-content","$v":"Sayfa görüntülenemiyor"},{"$i":"corrupted-content-error","$v":"Veri aktarmnda bir hata tespit edildii için sayfa gösterilemiyor."},{"$i":"unable-to-connect","$v":"Balanlamad"},{"$i":"cancel","$v":"ptal"},{"$i":"close","$v":"Kapat"},{"$i":"try-again","$v":"Tekrar dene"},{"$i":"check-settings","$v":"Ayarlar kontrol et"},{"$i":"tap-to-check-settings","$v":"Ayarlar kontrol etmek için dokunun"}]
+</script><script lang="zh-CN" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":""},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," "]},{"$i":"server-not-found","$v":""},{"$i":"server-not-found-error","$v":[" ",{"t":"idOrVar","v":"name"},""]},{"$i":"file-not-found","$v":""},{"$i":"file-not-found-error","$v":""},{"$i":"connection-failed","$v":""},{"$i":"connection-failed-error","$v":""},{"$i":"invalid-connection","$v":""},{"$i":"invalid-connection-error","$v":""},{"$i":"malformed-uri","$v":""},{"$i":"malformed-uri-error","$v":""},{"$i":"redirect-loop","$v":""},{"$i":"redirect-loop-error","$v":""},{"$i":"not-cached","$v":""},{"$i":"not-cached-error","$v":""},{"$i":"is-printing-error","$v":""},{"$i":"denied-port-access","$v":""},{"$i":"denied-port-access-error","$v":""},{"$i":"proxy-resolve-failure","$v":""},{"$i":"proxy-resolve-failure-error","$v":""},{"$i":"proxy-connect-failure","$v":""},{"$i":"proxy-connect-failure-error","$v":""},{"$i":"content-encoding","$v":""},{"$i":"content-encoding-error","$v":""},{"$i":"remote-xul","$v":""},{"$i":"remote-xul-error","$v":""},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":""},{"$i":"malware-blocked","$v":""},{"$i":"malware-blocked-error","$v":""},{"$i":"unsafe-content-type","$v":""},{"$i":"unsafe-content-type-error","$v":""},{"$i":"corrupted-content","$v":""},{"$i":"corrupted-content-error","$v":""},{"$i":"unable-to-connect","$v":""},{"$i":"cancel","$v":""},{"$i":"close","$v":""},{"$i":"try-again","$v":""},{"$i":"check-settings","$v":""},{"$i":"tap-to-check-settings","$v":""}]
+</script><script lang="zh-TW" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":""},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," "]},{"$i":"server-not-found","$v":""},{"$i":"server-not-found-error","$v":[" ",{"t":"idOrVar","v":"name"},""]},{"$i":"file-not-found","$v":""},{"$i":"file-not-found-error","$v":""},{"$i":"connection-failed","$v":""},{"$i":"connection-failed-error","$v":""},{"$i":"invalid-connection","$v":""},{"$i":"invalid-connection-error","$v":""},{"$i":"malformed-uri","$v":""},{"$i":"malformed-uri-error","$v":""},{"$i":"redirect-loop","$v":""},{"$i":"redirect-loop-error","$v":""},{"$i":"not-cached","$v":""},{"$i":"not-cached-error","$v":""},{"$i":"is-printing-error","$v":""},{"$i":"denied-port-access","$v":""},{"$i":"denied-port-access-error","$v":""},{"$i":"proxy-resolve-failure","$v":""},{"$i":"proxy-resolve-failure-error","$v":""},{"$i":"proxy-connect-failure","$v":""},{"$i":"proxy-connect-failure-error","$v":""},{"$i":"content-encoding","$v":""},{"$i":"content-encoding-error","$v":""},{"$i":"remote-xul","$v":""},{"$i":"remote-xul-error","$v":""},{"$i":"phishing-blocked","$v":""},{"$i":"phishing-blocked-error","$v":""},{"$i":"malware-blocked","$v":""},{"$i":"malware-blocked-error","$v":""},{"$i":"unsafe-content-type","$v":""},{"$i":"unsafe-content-type-error","$v":""},{"$i":"corrupted-content","$v":""},{"$i":"corrupted-content-error","$v":""},{"$i":"unable-to-connect","$v":""},{"$i":"cancel","$v":""},{"$i":"close","$v":""},{"$i":"try-again","$v":""},{"$i":"check-settings","$v":""},{"$i":"tap-to-check-settings","$v":""}]
+</script><script lang="en-US" type="application/l10n">
+  [{"$i":"network-error-in-app","$v":"No access to the Internet right now."},{"$i":"network-error-launching","$v":[{"t":"idOrVar","v":"name"}," requires an Internet connection."]},{"$i":"server-not-found","$v":"Server not found"},{"$i":"server-not-found-error","$v":["Can’t find the server at ",{"t":"idOrVar","v":"name"},"."]},{"$i":"file-not-found","$v":"File not found"},{"$i":"file-not-found-error","$v":"The device can’t display this page because the file cannot be found."},{"$i":"connection-failed","$v":"Unable to connect"},{"$i":"connection-failed-error","$v":"A network error occurred while trying to reach the site."},{"$i":"invalid-connection","$v":"Unable to connect"},{"$i":"invalid-connection-error","$v":"A network error occurred while trying to reach the site."},{"$i":"malformed-uri","$v":"URL not valid"},{"$i":"malformed-uri-error","$v":"The URL entered is not valid and cannot be loaded."},{"$i":"redirect-loop","$v":"Can’t display page"},{"$i":"redirect-loop-error","$v":"The device can’t display this page because the page is not redirecting properly. Try this page again at a later time."},{"$i":"not-cached","$v":"Page expired"},{"$i":"not-cached-error","$v":"As a security precaution, this page cannot be displayed by the device because it has expired."},{"$i":"is-printing-error","$v":"The document cannot change while Printing or in Print Preview."},{"$i":"denied-port-access","$v":"This address is restricted"},{"$i":"denied-port-access-error","$v":"This address uses a network port which is normally used for purposes other than Web browsing. The device has cancelled the request for your protection."},{"$i":"proxy-resolve-failure","$v":"Proxy Server Error"},{"$i":"proxy-resolve-failure-error","$v":"The device is configured to use a proxy server that can’t be found."},{"$i":"proxy-connect-failure","$v":"Proxy Server Error"},{"$i":"proxy-connect-failure-error","$v":"The device is configured to use a proxy server that is refusing connections."},{"$i":"content-encoding","$v":"Can’t display page"},{"$i":"content-encoding-error","$v":"The device can’t display this page because a content encoding error occurred."},{"$i":"remote-xul","$v":"Page unsupported"},{"$i":"remote-xul-error","$v":"This page can’t be displayed because it uses a technology that is not supported on the device."},{"$i":"phishing-blocked","$v":"Warning"},{"$i":"phishing-blocked-error","$v":"The website has been reported as a web forgery designed to trick users into sharing personal or financial information."},{"$i":"malware-blocked","$v":"Malware attack blocked"},{"$i":"malware-blocked-error","$v":"The site at has been reported as an attack site and has been blocked."},{"$i":"unsafe-content-type","$v":"Unsafe content"},{"$i":"unsafe-content-type-error","$v":"The page cannot be shown because it may not be safe to open."},{"$i":"corrupted-content","$v":"Can’t display page"},{"$i":"corrupted-content-error","$v":"The page cannot be shown because an error in the data transmission was detected."},{"$i":"unable-to-connect","$v":"Unable to connect"},{"$i":"cancel","$v":"Cancel"},{"$i":"close","$v":"Close"},{"$i":"try-again","$v":"Try again"},{"$i":"check-settings","$v":"Check settings"},{"$i":"tap-to-check-settings","$v":"Tap to check settings"}]
+</script></head>
+  <body id="net-error" class="fileNotFound no-frame dialog alert">
+    <section id="net-error-confirm-dialog">
+    <form data-type="confirm" role="dialog">
+      <section>
+        <h1 class="title" id="error-title" data-l10n-id="file-not-found">File not found</h1>
+        <p>
+          <progress id="retry-icon" class="still"></progress>
+          <span class="message" id="error-message" data-l10n-id="file-not-found-error">The device can’t display this page because the file cannot be found.</span>
+        </p>
+      </section>
+      <menu id="actions">
+        <button data-l10n-id="close" class="close" type="button" id="close-btn">Close</button>
+        <button data-l10n-id="try-again" class="reload recommend" type="button" id="retry-btn">Try again</button>
+      </menu>
+    </form>
+  </section>
+    <section id="net-error-action-menu"><!--
+    <form role="dialog" data-type="action">
+      <section>
+        <h1 id="error-title" class="title"></h1>
+        <span id="failed-logo"></span>
+      </section>
+      <menu id="actions">
+        <button id="settings-btn" type="button" class="icon icon-settings" data-l10n-id="check-settings"></button>
+        <button id="cancel-btn" type="button" class="cancel" data-l10n-id="cancel"></button>
+      </menu>
+    </form>
+  --></section>
+    
+    
+  
+<script>window.SYSTEM_MANIFEST="app://system.gaiamobile.org/manifest.webapp";</script><script>
+(function(window,undefined){'use strict';function L10nError(message,id,loc){this.name='L10nError';this.message=message;this.id=id;this.loc=loc;}
+L10nError.prototype=Object.create(Error.prototype);L10nError.prototype.constructor=L10nError;var io={_load:function(type,url,callback,sync){var xhr=new XMLHttpRequest();var needParse;if(xhr.overrideMimeType){xhr.overrideMimeType(type);}
+xhr.open('GET',url,!sync);if(type==='application/json'){if(sync){needParse=true;}else{xhr.responseType='json';}}
+xhr.addEventListener('load',function io_onload(e){if(e.target.status===200||e.target.status===0){var res=e.target.response||e.target.responseText;callback(null,needParse?JSON.parse(res):res);}else{callback(new L10nError('Not found: '+url));}});xhr.addEventListener('error',callback);xhr.addEventListener('timeout',callback);try{xhr.send(null);}catch(e){callback(new L10nError('Not found: '+url));}},load:function(url,callback,sync){return io._load('text/plain',url,callback,sync);},loadJSON:function(url,callback,sync){return io._load('application/json',url,callback,sync);}};function EventEmitter(){}
+EventEmitter.prototype.emit=function ee_emit(){if(!this._listeners){return;}
+var args=Array.prototype.slice.call(arguments);var type=args.shift();if(!this._listeners[type]){return;}
+var typeListeners=this._listeners[type].slice();for(var i=0;i&lt;typeListeners.length;i++){typeListeners[i].apply(this,args);}};EventEmitter.prototype.addEventListener=function ee_add(type,listener){if(!this._listeners){this._listeners={};}
+if(!(type in this._listeners)){this._listeners[type]=[];}
+this._listeners[type].push(listener);};EventEmitter.prototype.removeEventListener=function ee_rm(type,listener){if(!this._listeners){return;}
+var typeListeners=this._listeners[type];var pos=typeListeners.indexOf(listener);if(pos===-1){return;}
+typeListeners.splice(pos,1);};function getPluralRule(lang){var locales2rules={'af':3,'ak':4,'am':4,'ar':1,'asa':3,'az':0,'be':11,'bem':3,'bez':3,'bg':3,'bh':4,'bm':0,'bn':3,'bo':0,'br':20,'brx':3,'bs':11,'ca':3,'cgg':3,'chr':3,'cs':12,'cy':17,'da':3,'de':3,'dv':3,'dz':0,'ee':3,'el':3,'en':3,'eo':3,'es':3,'et':3,'eu':3,'fa':0,'ff':5,'fi':3,'fil':4,'fo':3,'fr':5,'fur':3,'fy':3,'ga':8,'gd':24,'gl':3,'gsw':3,'gu':3,'guw':4,'gv':23,'ha':3,'haw':3,'he':2,'hi':4,'hr':11,'hu':0,'id':0,'ig':0,'ii':0,'is':3,'it':3,'iu':7,'ja':0,'jmc':3,'jv':0,'ka':0,'kab':5,'kaj':3,'kcg':3,'kde':0,'kea':0,'kk':3,'kl':3,'km':0,'kn':0,'ko':0,'ksb':3,'ksh':21,'ku':3,'kw':7,'lag':18,'lb':3,'lg':3,'ln':4,'lo':0,'lt':10,'lv':6,'mas':3,'mg':4,'mk':16,'ml':3,'mn':3,'mo':9,'mr':3,'ms':0,'mt':15,'my':0,'nah':3,'naq':7,'nb':3,'nd':3,'ne':3,'nl':3,'nn':3,'no':3,'nr':3,'nso':4,'ny':3,'nyn':3,'om':3,'or':3,'pa':3,'pap':3,'pl':13,'ps':3,'pt':3,'rm':3,'ro':9,'rof':3,'ru':11,'rwk':3,'sah':0,'saq':3,'se':7,'seh':3,'ses':0,'sg':0,'sh':11,'shi':19,'sk':12,'sl':14,'sma':7,'smi':7,'smj':7,'smn':7,'sms':7,'sn':3,'so':3,'sq':3,'sr':11,'ss':3,'ssy':3,'st':3,'sv':3,'sw':3,'syr':3,'ta':3,'te':3,'teo':3,'th':0,'ti':4,'tig':3,'tk':3,'tl':4,'tn':3,'to':0,'tr':0,'ts':3,'tzm':22,'uk':11,'ur':3,'ve':3,'vi':0,'vun':3,'wa':4,'wae':3,'wo':0,'xh':3,'xog':3,'yo':0,'zh':0,'zu':3};function isIn(n,list){return list.indexOf(n)!==-1;}
+function isBetween(n,start,end){return typeof n===typeof start&amp;&amp;start&lt;=n&amp;&amp;n&lt;=end;}
+var pluralRules={'0':function(){return'other';},'1':function(n){if((isBetween((n%100),3,10))){return'few';}
+if(n===0){return'zero';}
+if((isBetween((n%100),11,99))){return'many';}
+if(n===2){return'two';}
+if(n===1){return'one';}
+return'other';},'2':function(n){if(n!==0&amp;&amp;(n%10)===0){return'many';}
+if(n===2){return'two';}
+if(n===1){return'one';}
+return'other';},'3':function(n){if(n===1){return'one';}
+return'other';},'4':function(n){if((isBetween(n,0,1))){return'one';}
+return'other';},'5':function(n){if((isBetween(n,0,2))&amp;&amp;n!==2){return'one';}
+return'other';},'6':function(n){if(n===0){return'zero';}
+if((n%10)===1&amp;&amp;(n%100)!==11){return'one';}
+return'other';},'7':function(n){if(n===2){return'two';}
+if(n===1){return'one';}
+return'other';},'8':function(n){if((isBetween(n,3,6))){return'few';}
+if((isBetween(n,7,10))){return'many';}
+if(n===2){return'two';}
+if(n===1){return'one';}
+return'other';},'9':function(n){if(n===0||n!==1&amp;&amp;(isBetween((n%100),1,19))){return'few';}
+if(n===1){return'one';}
+return'other';},'10':function(n){if((isBetween((n%10),2,9))&amp;&amp;!(isBetween((n%100),11,19))){return'few';}
+if((n%10)===1&amp;&amp;!(isBetween((n%100),11,19))){return'one';}
+return'other';},'11':function(n){if((isBetween((n%10),2,4))&amp;&amp;!(isBetween((n%100),12,14))){return'few';}
+if((n%10)===0||(isBetween((n%10),5,9))||(isBetween((n%100),11,14))){return'many';}
+if((n%10)===1&amp;&amp;(n%100)!==11){return'one';}
+return'other';},'12':function(n){if((isBetween(n,2,4))){return'few';}
+if(n===1){return'one';}
+return'other';},'13':function(n){if((isBetween((n%10),2,4))&amp;&amp;!(isBetween((n%100),12,14))){return'few';}
+if(n!==1&amp;&amp;(isBetween((n%10),0,1))||(isBetween((n%10),5,9))||(isBetween((n%100),12,14))){return'many';}
+if(n===1){return'one';}
+return'other';},'14':function(n){if((isBetween((n%100),3,4))){return'few';}
+if((n%100)===2){return'two';}
+if((n%100)===1){return'one';}
+return'other';},'15':function(n){if(n===0||(isBetween((n%100),2,10))){return'few';}
+if((isBetween((n%100),11,19))){return'many';}
+if(n===1){return'one';}
+return'other';},'16':function(n){if((n%10)===1&amp;&amp;n!==11){return'one';}
+return'other';},'17':function(n){if(n===3){return'few';}
+if(n===0){return'zero';}
+if(n===6){return'many';}
+if(n===2){return'two';}
+if(n===1){return'one';}
+return'other';},'18':function(n){if(n===0){return'zero';}
+if((isBetween(n,0,2))&amp;&amp;n!==0&amp;&amp;n!==2){return'one';}
+return'other';},'19':function(n){if((isBetween(n,2,10))){return'few';}
+if((isBetween(n,0,1))){return'one';}
+return'other';},'20':function(n){if((isBetween((n%10),3,4)||((n%10)===9))&amp;&amp;!(isBetween((n%100),10,19)||isBetween((n%100),70,79)||isBetween((n%100),90,99))){return'few';}
+if((n%1000000)===0&amp;&amp;n!==0){return'many';}
+if((n%10)===2&amp;&amp;!isIn((n%100),[12,72,92])){return'two';}
+if((n%10)===1&amp;&amp;!isIn((n%100),[11,71,91])){return'one';}
+return'other';},'21':function(n){if(n===0){return'zero';}
+if(n===1){return'one';}
+return'other';},'22':function(n){if((isBetween(n,0,1))||(isBetween(n,11,99))){return'one';}
+return'other';},'23':function(n){if((isBetween((n%10),1,2))||(n%20)===0){return'one';}
+return'other';},'24':function(n){if((isBetween(n,3,10)||isBetween(n,13,19))){return'few';}
+if(isIn(n,[2,12])){return'two';}
+if(isIn(n,[1,11])){return'one';}
+return'other';}};var index=locales2rules[lang.replace(/-.*$/,'')];if(!(index in pluralRules)){return function(){return'other';};}
+return pluralRules[index];}
+var MAX_PLACEABLES=100;var PropertiesParser={patterns:null,entryIds:null,init:function(){this.patterns={comment:/^\s*#|^\s*$/,entity:/^([^=\s]+)\s*=\s*(.*)$/,multiline:/[^\\]\\$/,index:/\{\[\s*(\w+)(?:\(([^\)]*)\))?\s*\]\}/i,unicode:/\\u([0-9a-fA-F]{1,4})/g,entries:/[^\r\n]+/g,controlChars:/\\([\\\n\r\t\b\f\{\}\"\'])/g,placeables:/\{\{\s*([^\s]*?)\s*\}\}/,};},parse:function(ctx,source){if(!this.patterns){this.init();}
+var ast=[];this.entryIds=Object.create(null);var entries=source.match(this.patterns.entries);if(!entries){return ast;}
+for(var i=0;i&lt;entries.length;i++){var line=entries[i];if(this.patterns.comment.test(line)){continue;}
+while(this.patterns.multiline.test(line)&amp;&amp;i&lt;entries.length){line=line.slice(0,-1)+entries[++i].trim();}
+var entityMatch=line.match(this.patterns.entity);if(entityMatch){try{this.parseEntity(entityMatch[1],entityMatch[2],ast);}catch(e){if(ctx){ctx._emitter.emit('parseerror',e);}else{throw e;}}}}
+return ast;},parseEntity:function(id,value,ast){var name,key;var pos=id.indexOf('[');if(pos!==-1){name=id.substr(0,pos);key=id.substring(pos+1,id.length-1);}else{name=id;key=null;}
+var nameElements=name.split('.');if(nameElements.length&gt;2){throw new L10nError('Error in ID: "'+name+'".'+' Nested attributes are not supported.');}
+var attr;if(nameElements.length&gt;1){name=nameElements[0];attr=nameElements[1];if(attr[0]==='$'){throw new L10nError('Attribute can\'t start with "$"',id);}}else{attr=null;}
+this.setEntityValue(name,attr,key,this.unescapeString(value),ast);},setEntityValue:function(id,attr,key,value,ast){var pos,v;if(value.indexOf('{{')!==-1){value=this.parseString(value);}
+if(attr){pos=this.entryIds[id];if(pos===undefined){v={$i:id};if(key){v[attr]={};v[attr][key]=value;}else{v[attr]=value;}
+ast.push(v);this.entryIds[id]=ast.length-1;return;}
+if(key){if(typeof(ast[pos][attr])==='string'){ast[pos][attr]={$x:this.parseIndex(ast[pos][attr]),$v:{}};}
+ast[pos][attr].$v[key]=value;return;}
+ast[pos][attr]=value;return;}
+if(key){pos=this.entryIds[id];if(pos===undefined){v={};v[key]=value;ast.push({$i:id,$v:v});this.entryIds[id]=ast.length-1;return;}
+if(typeof(ast[pos].$v)==='string'){ast[pos].$x=this.parseIndex(ast[pos].$v);ast[pos].$v={};}
+ast[pos].$v[key]=value;return;}
+ast.push({$i:id,$v:value});this.entryIds[id]=ast.length-1;},parseString:function(str){var chunks=str.split(this.patterns.placeables);var complexStr=[];var len=chunks.length;var placeablesCount=(len-1)/2;if(placeablesCount&gt;=MAX_PLACEABLES){throw new L10nError('Too many placeables ('+placeablesCount+', max allowed is '+MAX_PLACEABLES+')');}
+for(var i=0;i&lt;chunks.length;i++){if(chunks[i].length===0){continue;}
+if(i%2===1){complexStr.push({t:'idOrVar',v:chunks[i]});}else{complexStr.push(chunks[i]);}}
+return complexStr;},unescapeString:function(str){if(str.lastIndexOf('\\')!==-1){str=str.replace(this.patterns.controlChars,'$1');}
+return str.replace(this.patterns.unicode,function(match,token){return unescape('%u'+'0000'.slice(token.length)+token);});},parseIndex:function(str){var match=str.match(this.patterns.index);if(!match){throw new L10nError('Malformed index');}
+if(match[2]){return[{t:'idOrVar',v:match[1]},match[2]];}else{return[{t:'idOrVar',v:match[1]}];}}};var KNOWN_MACROS=['plural'];var MAX_PLACEABLE_LENGTH=2500;var rePlaceables=/\{\{\s*(.+?)\s*\}\}/g;function createEntry(node,env){var keys=Object.keys(node);if(typeof node.$v==='string'&amp;&amp;keys.length===2){return node.$v;}
+var attrs;for(var i=0,key;key=keys[i];i++){if(key[0]==='$'){continue;}
+if(!attrs){attrs=Object.create(null);}
+attrs[key]=createAttribute(node[key],env,node.$i+'.'+key);}
+return{id:node.$i,value:node.$v===undefined?null:node.$v,index:node.$x||null,attrs:attrs||null,env:env,dirty:false};}
+function createAttribute(node,env,id){if(typeof node==='string'){return node;}
+var value;if(Array.isArray(node)){value=node;}
+return{id:id,value:value||node.$v||null,index:node.$x||null,env:env,dirty:false};}
+function format(args,entity){if(typeof entity==='string'){return entity;}
+if(entity.dirty){throw new L10nError('Cyclic reference detected: '+entity.id);}
+entity.dirty=true;var val;try{val=resolveValue(args,entity.env,entity.value,entity.index);}finally{entity.dirty=false;}
+return val;}
+function resolveIdentifier(args,env,id){if(KNOWN_MACROS.indexOf(id)&gt;-1){return env['__'+id];}
+if(args&amp;&amp;args.hasOwnProperty(id)){if(typeof args[id]==='string'||(typeof args[id]==='number'&amp;&amp;!isNaN(args[id]))){return args[id];}else{throw new L10nError('Arg must be a string or a number: '+id);}}
+if(id in env&amp;&amp;id!=='__proto__'){return format(args,env[id]);}
+throw new L10nError('Unknown reference: '+id);}
+function subPlaceable(args,env,id){var value;try{value=resolveIdentifier(args,env,id);}catch(err){return'{{ '+id+' }}';}
+if(typeof value==='number'){return value;}
+if(typeof value==='string'){if(value.length&gt;=MAX_PLACEABLE_LENGTH){throw new L10nError('Too many characters in placeable ('+
+value.length+', max allowed is '+
+MAX_PLACEABLE_LENGTH+')');}
+return value;}
+return'{{ '+id+' }}';}
+function interpolate(args,env,arr){return arr.reduce(function(prev,cur){if(typeof cur==='string'){return prev+cur;}else if(cur.t==='idOrVar'){return prev+subPlaceable(args,env,cur.v);}},'');}
+function resolveSelector(args,env,expr,index){var selectorName=index[0].v;var selector=resolveIdentifier(args,env,selectorName);if(typeof selector!=='function'){return selector;}
+var argValue=index[1]?resolveIdentifier(args,env,index[1]):undefined;if(selector===env.__plural){if(argValue===0&amp;&amp;'zero'in expr){return'zero';}
+if(argValue===1&amp;&amp;'one'in expr){return'one';}
+if(argValue===2&amp;&amp;'two'in expr){return'two';}}
+return selector(argValue);}
+function resolveValue(args,env,expr,index){if(typeof expr==='string'||typeof expr==='boolean'||typeof expr==='number'||!expr){return expr;}
+if(Array.isArray(expr)){return interpolate(args,env,expr);}
+if(index){var selector=resolveSelector(args,env,expr,index);if(expr.hasOwnProperty(selector)){return resolveValue(args,env,expr[selector]);}}
+if('other'in expr){return resolveValue(args,env,expr.other);}
+throw new L10nError('Unresolvable value');}
+var Resolver={createEntry:createEntry,format:format,rePlaceables:rePlaceables};function walkContent(node,fn){if(typeof node==='string'){return fn(node);}
+if(node.t==='idOrVar'){return node;}
+var rv=Array.isArray(node)?[]:{};var keys=Object.keys(node);for(var i=0,key;key=keys[i];i++){if(key==='$i'||key==='$x'){rv[key]=node[key];}else{rv[key]=walkContent(node[key],fn);}}
+return rv;}
+var reAlphas=/[a-zA-Z]/g;var reVowels=/[aeiouAEIOU]/g;var ACCENTED_MAP='\u0226\u0181\u0187\u1E12\u1E16\u0191\u0193\u0126\u012A'+'\u0134\u0136\u013F\u1E3E\u0220\u01FE\u01A4\u024A\u0158'+'\u015E\u0166\u016C\u1E7C\u1E86\u1E8A\u1E8E\u1E90'+'[\\]^_`'+'\u0227\u0180\u0188\u1E13\u1E17\u0192\u0260\u0127\u012B'+'\u0135\u0137\u0140\u1E3F\u019E\u01FF\u01A5\u024B\u0159'+'\u015F\u0167\u016D\u1E7D\u1E87\u1E8B\u1E8F\u1E91';var FLIPPED_MAP='\u2200\u0510\u2183p\u018E\u025F\u05E4HI\u017F'+'\u04FC\u02E5WNO\u0500\xD2\u1D1AS\u22A5\u2229\u0245'+'\uFF2DX\u028EZ'+'[\\]\u1D65_,'+'\u0250q\u0254p\u01DD\u025F\u0183\u0265\u0131\u027E'+'\u029E\u0285\u026Fuodb\u0279s\u0287n\u028C\u028Dx\u028Ez';function makeLonger(val){return val.replace(reVowels,function(match){return match+match.toLowerCase();});}
+function makeAccented(map,val){return val.replace(reAlphas,function(match){return map.charAt(match.charCodeAt(0)-65);});}
+var reWords=/[^\W0-9_]+/g;function makeRTL(val){return val.replace(reWords,function(match){return'\u202e'+match+'\u202c';});}
+var reExcluded=/(%[EO]?\w|\{\s*.+?\s*\})/;function mapContent(fn,val){if(!val){return val;}
+var parts=val.split(reExcluded);var modified=parts.map(function(part){if(reExcluded.test(part)){return part;}
+return fn(part);});return modified.join('');}
+function Pseudo(id,name,charMap,modFn){this.id=id;this.translate=mapContent.bind(null,function(val){return makeAccented(charMap,modFn(val));});this.name=this.translate(name);}
+var PSEUDO_STRATEGIES={'qps-ploc':new Pseudo('qps-ploc','Accented English',ACCENTED_MAP,makeLonger),'qps-plocm':new Pseudo('qps-plocm','Mirrored English',FLIPPED_MAP,makeRTL)};function Locale(id,ctx){this.id=id;this.ctx=ctx;this.isReady=false;this.isPseudo=PSEUDO_STRATEGIES.hasOwnProperty(id);this.entries=Object.create(null);this.entries.__plural=getPluralRule(this.isPseudo?this.ctx.defaultLocale:id);}
+var bindingsIO={extra:function(id,ver,path,type,callback,errback,sync){if(type==='properties'){type='text';}
+navigator.mozApps.getLocalizationResource(id,ver,path,type).then(callback.bind(null,null),errback);},app:function(id,ver,path,type,callback,errback,sync){switch(type){case'properties':io.load(path,callback,sync);break;case'json':io.loadJSON(path,callback,sync);break;}},};Locale.prototype.build=function L_build(callback){var sync=!callback;var ctx=this.ctx;var self=this;var l10nLoads=ctx.resLinks.length;function onL10nLoaded(err){if(err){ctx._emitter.emit('fetcherror',err);}
+if(--l10nLoads&lt;=0){self.isReady=true;if(callback){callback();}}}
+if(l10nLoads===0){onL10nLoaded();return;}
+function onJSONLoaded(err,json){if(!err&amp;&amp;json){self.addAST(json);}
+onL10nLoaded(err);}
+function onPropLoaded(err,source){if(!err&amp;&amp;source){var ast=PropertiesParser.parse(ctx,source);self.addAST(ast);}
+onL10nLoaded(err);}
+var idToFetch=this.isPseudo?ctx.defaultLocale:this.id;var source=navigator.mozL10n._config.localeSources[this.id]||'app';var appVersion=navigator.mozL10n._config.appVersion;for(var i=0;i&lt;ctx.resLinks.length;i++){var resLink=decodeURI(ctx.resLinks[i]);var path=resLink.replace('{locale}',idToFetch);var type=path.substr(path.lastIndexOf('.')+1);var cb;switch(type){case'json':cb=onJSONLoaded;break;case'properties':cb=onPropLoaded;break;}
+bindingsIO[source](this.id,appVersion,path,type,cb,onL10nLoaded,sync);}};function createPseudoEntry(node,entries){return Resolver.createEntry(walkContent(node,PSEUDO_STRATEGIES[this.id].translate),entries);}
+Locale.prototype.addAST=function(ast){var createEntry=this.isPseudo?createPseudoEntry.bind(this):Resolver.createEntry;for(var i=0;i&lt;ast.length;i++){this.entries[ast[i].$i]=createEntry(ast[i],this.entries);}};function Context(id){this.id=id;this.isReady=false;this.isLoading=false;this.defaultLocale='en-US';this.availableLocales=[];this.supportedLocales=[];this.resLinks=[];this.locales={};this._emitter=new EventEmitter();this._ready=new Promise(this.once.bind(this));}
+function reportMissing(id,err){this._emitter.emit('notfounderror',err);return id;}
+function getWithFallback(id){var cur=0;var loc;var locale;while(loc=this.supportedLocales[cur]){locale=this.getLocale(loc);if(!locale.isReady){locale.build(null);}
+var entry=locale.entries[id];if(entry===undefined){cur++;reportMissing.call(this,id,new L10nError('"'+id+'"'+' not found in '+loc+' in '+this.id,id,loc));continue;}
+return entry;}
+throw new L10nError('"'+id+'"'+' missing from all supported locales in '+this.id,id);}
+function formatValue(args,entity){if(typeof entity==='string'){return entity;}
+try{return Resolver.format(args,entity);}catch(err){this._emitter.emit('resolveerror',err);return entity.id;}}
+function formatEntity(args,entity){if(!entity.attrs){return{value:formatValue.call(this,args,entity),attrs:null};}
+var formatted={value:formatValue.call(this,args,entity),attrs:Object.create(null)};for(var key in entity.attrs){formatted.attrs[key]=formatValue.call(this,args,entity.attrs[key]);}
+return formatted;}
+function formatAsync(fn,id,args){return this._ready.then(getWithFallback.bind(this,id)).then(fn.bind(this,args),reportMissing.bind(this,id));}
+Context.prototype.formatValue=function(id,args){return formatAsync.call(this,formatValue,id,args);};Context.prototype.formatEntity=function(id,args){return formatAsync.call(this,formatEntity,id,args);};function legacyGet(fn,id,args){if(!this.isReady){throw new L10nError('Context not ready');}
+var entry;try{entry=getWithFallback.call(this,id);}catch(err){if(err.loc){throw err;}
+reportMissing.call(this,id,err);return'';}
+return fn.call(this,args,entry);}
+Context.prototype.get=function(id,args){return legacyGet.call(this,formatValue,id,args);};Context.prototype.getEntity=function(id,args){return legacyGet.call(this,formatEntity,id,args);};Context.prototype.getLocale=function getLocale(code){var locales=this.locales;if(locales[code]){return locales[code];}
+return locales[code]=new Locale(code,this);};function negotiate(available,requested,defaultLocale){if(available.indexOf(requested[0])===-1||requested[0]===defaultLocale){return[defaultLocale];}else{return[requested[0],defaultLocale];}}
+function freeze(supported){var locale=this.getLocale(supported[0]);if(locale.isReady){setReady.call(this,supported);}else{locale.build(setReady.bind(this,supported));}}
+function setReady(supported){this.supportedLocales=supported;this.isReady=true;this._emitter.emit('ready');}
+Context.prototype.registerLocales=function(defLocale,available){if(defLocale){this.defaultLocale=defLocale;}
+this.availableLocales=[this.defaultLocale];if(available){for(var i=0,loc;loc=available[i];i++){if(this.availableLocales.indexOf(loc)===-1){this.availableLocales.push(loc);}}}};Context.prototype.requestLocales=function requestLocales(){if(this.isLoading&amp;&amp;!this.isReady){throw new L10nError('Context not ready');}
+this.isLoading=true;var requested=Array.prototype.slice.call(arguments);if(requested.length===0){throw new L10nError('No locales requested');}
+var reqPseudo=requested.filter(function(loc){return loc in PSEUDO_STRATEGIES;});var supported=negotiate(this.availableLocales.concat(reqPseudo),requested,this.defaultLocale);freeze.call(this,supported);};Context.prototype.addEventListener=function(type,listener){this._emitter.addEventListener(type,listener);};Context.prototype.removeEventListener=function(type,listener){this._emitter.removeEventListener(type,listener);};Context.prototype.ready=function(callback){if(this.isReady){setTimeout(callback);}
+this.addEventListener('ready',callback);};Context.prototype.once=function(callback){if(this.isReady){setTimeout(callback);return;}
+var callAndRemove=(function(){this.removeEventListener('ready',callAndRemove);callback();}).bind(this);this.addEventListener('ready',callAndRemove);};var DEBUG=false;var isPretranslated=false;var rtlList=['ar','he','fa','ps','qps-plocm','ur'];var nodeObserver=null;var pendingElements=null;var moConfig={attributes:true,characterData:false,childList:true,subtree:true,attributeFilter:['data-l10n-id','data-l10n-args']};navigator.mozL10n={ctx:new Context(window.document?document.URL:null),get:function get(id,ctxdata){return navigator.mozL10n.ctx.get(id,ctxdata);},formatValue:function(id,ctxdata){return navigator.mozL10n.ctx.formatValue(id,ctxdata);},formatEntity:function(id,ctxdata){return navigator.mozL10n.ctx.formatEntity(id,ctxdata);},translateFragment:function(fragment){return translateFragment.call(navigator.mozL10n,fragment);},setAttributes:setL10nAttributes,getAttributes:getL10nAttributes,ready:function ready(callback){return navigator.mozL10n.ctx.ready(callback);},once:function once(callback){return navigator.mozL10n.ctx.once(callback);},get readyState(){return navigator.mozL10n.ctx.isReady?'complete':'loading';},language:{set code(lang){navigator.mozL10n.ctx.requestLocales(lang);},get code(){return navigator.mozL10n.ctx.supportedLocales[0];},get direction(){return getDirection(navigator.mozL10n.ctx.supportedLocales[0]);}},qps:PSEUDO_STRATEGIES,_config:{appVersion:null,localeSources:Object.create(null),},_getInternalAPI:function(){return{Error:L10nError,Context:Context,Locale:Locale,Resolver:Resolver,getPluralRule:getPluralRule,rePlaceables:rePlaceables,translateDocument:translateDocument,onMetaInjected:onMetaInjected,PropertiesParser:PropertiesParser,walkContent:walkContent,buildLocaleList:buildLocaleList};}};navigator.mozL10n.ctx.ready(onReady.bind(navigator.mozL10n));navigator.mozL10n.ctx.addEventListener('notfounderror',function reportMissingEntity(e){if(DEBUG||e.loc==='en-US'){console.warn(e.toString());}});if(DEBUG){navigator.mozL10n.ctx.addEventListener('fetcherror',console.error.bind(console));navigator.mozL10n.ctx.addEventListener('parseerror',console.error.bind(console));navigator.mozL10n.ctx.addEventListener('resolveerror',console.error.bind(console));}
+function getDirection(lang){return(rtlList.indexOf(lang)&gt;=0)?'rtl':'ltr';}
+var readyStates={'loading':0,'interactive':1,'complete':2};function waitFor(state,callback){state=readyStates[state];if(readyStates[document.readyState]&gt;=state){callback();return;}
+document.addEventListener('readystatechange',function l10n_onrsc(){if(readyStates[document.readyState]&gt;=state){document.removeEventListener('readystatechange',l10n_onrsc);callback();}});}
+if(window.document){isPretranslated=!PSEUDO_STRATEGIES.hasOwnProperty(navigator.language)&amp;&amp;(document.documentElement.lang===navigator.language);var pretranslate=document.documentElement.dataset.noCompleteBug?true:!isPretranslated;waitFor('interactive',init.bind(navigator.mozL10n,pretranslate));}
+function initObserver(){nodeObserver=new MutationObserver(onMutations.bind(navigator.mozL10n));nodeObserver.observe(document,moConfig);}
+function init(pretranslate){if(pretranslate){initResources.call(navigator.mozL10n);}else{initObserver();window.setTimeout(initResources.bind(navigator.mozL10n));}}
+function initResources(){var meta={};var nodes=document.head.querySelectorAll('link[rel="localization"],'+'meta[name="availableLanguages"],'+'meta[name="defaultLanguage"],'+'meta[name="appVersion"],'+'script[type="application/l10n"]');for(var i=0,node;node=nodes[i];i++){var type=node.getAttribute('rel')||node.nodeName.toLowerCase();switch(type){case'localization':this.ctx.resLinks.push(node.getAttribute('href'));break;case'meta':onMetaInjected.call(this,node,meta);break;case'script':onScriptInjected.call(this,node);break;}}
+var additionalLanguagesPromise;if(navigator.mozApps&amp;&amp;navigator.mozApps.getAdditionalLanguages){additionalLanguagesPromise=navigator.mozApps.getAdditionalLanguages().catch(function(e){console.error('Error while loading getAdditionalLanguages',e);});document.addEventListener('additionallanguageschange',function(evt){registerLocales.call(this,meta,evt.detail);}.bind(this));}else{additionalLanguagesPromise=Promise.resolve();}
+additionalLanguagesPromise.then(function(extraLangs){registerLocales.call(this,meta,extraLangs);initLocale.call(this);}.bind(this));}
+function registerLocales(meta,extraLangs){var locales=buildLocaleList.call(this,meta,extraLangs);navigator.mozL10n._config.localeSources=locales[1];this.ctx.registerLocales(locales[0],Object.keys(locales[1]));}
+function getMatchingLangpack(appVersion,langpacks){for(var i=0,langpack;(langpack=langpacks[i]);i++){if(langpack.target===appVersion){return langpack;}}
+return null;}
+function buildLocaleList(meta,extraLangs){var loc,lp;var localeSources=Object.create(null);var defaultLocale=meta.defaultLocale||this.ctx.defaultLocale;if(meta.availableLanguages){for(loc in meta.availableLanguages){localeSources[loc]='app';}}
+if(extraLangs){for(loc in extraLangs){lp=getMatchingLangpack(this._config.appVersion,extraLangs[loc]);if(!lp){continue;}
+if(!(loc in localeSources)||!meta.availableLanguages[loc]||parseInt(lp.revision)&gt;meta.availableLanguages[loc]){localeSources[loc]='extra';}}}
+if(!(defaultLocale in localeSources)){localeSources[defaultLocale]='app';}
+return[defaultLocale,localeSources];}
+function splitAvailableLanguagesString(str){var langs={};str.split(',').forEach(function(lang){lang=lang.trim().split(':');langs[lang[0]]=parseInt(lang[1]);});return langs;}
+function onMetaInjected(node,meta){switch(node.getAttribute('name')){case'availableLanguages':meta.availableLanguages=splitAvailableLanguagesString(node.getAttribute('content'));break;case'defaultLanguage':meta.defaultLanguage=node.getAttribute('content');break;case'appVersion':navigator.mozL10n._config.appVersion=node.getAttribute('content');break;}}
+function onScriptInjected(node){var lang=node.getAttribute('lang');var locale=this.ctx.getLocale(lang);locale.addAST(JSON.parse(node.textContent));}
+function initLocale(){this.ctx.requestLocales.apply(this.ctx,navigator.languages||[navigator.language]);window.addEventListener('languagechange',function l10n_langchange(){this.ctx.requestLocales.apply(this.ctx,navigator.languages||[navigator.language]);}.bind(this));}
+function localizeMutations(mutations){var mutation;var targets=new Set();for(var i=0;i&lt;mutations.length;i++){mutation=mutations[i];if(mutation.type==='childList'){var addedNode;for(var j=0;j&lt;mutation.addedNodes.length;j++){addedNode=mutation.addedNodes[j];if(addedNode.nodeType!==Node.ELEMENT_NODE){continue;}
+targets.add(addedNode);}}
+if(mutation.type==='attributes'){targets.add(mutation.target);}}
+targets.forEach(function(target){if(target.childElementCount){translateFragment.call(this,target);}else if(target.hasAttribute('data-l10n-id')){translateElement.call(this,target);}},this);}
+function onMutations(mutations,self){self.disconnect();localizeMutations.call(this,mutations);self.observe(document,moConfig);}
+function onReady(){if(!isPretranslated){translateDocument.call(this);}
+isPretranslated=false;if(pendingElements){for(var i=0,element;element=pendingElements[i];i++){translateElement.call(this,element);}
+pendingElements=null;}
+if(!nodeObserver){initObserver();}
+fireLocalizedEvent.call(this);}
+function fireLocalizedEvent(){var event=new CustomEvent('localized',{'bubbles':false,'cancelable':false,'detail':{'language':this.ctx.supportedLocales[0]}});window.dispatchEvent(event);}
+function translateDocument(){document.documentElement.lang=this.language.code;document.documentElement.dir=this.language.direction;translateFragment.call(this,document.documentElement);}
+function translateFragment(element){if(element.hasAttribute('data-l10n-id')){translateElement.call(this,element);}
+var nodes=getTranslatableChildren(element);for(var i=0;i&lt;nodes.length;i++){translateElement.call(this,nodes[i]);}}
+function setL10nAttributes(element,id,args){element.setAttribute('data-l10n-id',id);if(args){element.setAttribute('data-l10n-args',JSON.stringify(args));}}
+function getL10nAttributes(element){return{id:element.getAttribute('data-l10n-id'),args:JSON.parse(element.getAttribute('data-l10n-args'))};}
+function getTranslatableChildren(element){return element?element.querySelectorAll('*[data-l10n-id]'):[];}
+var allowedHtmlAttrs={'ariaLabel':'aria-label','ariaValueText':'aria-valuetext','ariaMozHint':'aria-moz-hint','label':'label','placeholder':'placeholder','title':'title'};function translateElement(element){if(!this.ctx.isReady){if(!pendingElements){pendingElements=[];}
+pendingElements.push(element);return;}
+var l10n=getL10nAttributes(element);if(!l10n.id){return false;}
+var entity=this.ctx.getEntity(l10n.id,l10n.args);if(!entity){return false;}
+if(typeof entity.value==='string'){setTextContent.call(this,l10n.id,element,entity.value);}
+for(var key in entity.attrs){var attr=entity.attrs[key];if(allowedHtmlAttrs.hasOwnProperty(key)){element.setAttribute(allowedHtmlAttrs[key],attr);}else if(key==='innerHTML'){element.innerHTML=attr;}}
+return true;}
+function setTextContent(id,element,text){if(element.firstElementChild){throw new L10nError('setTextContent is deprecated (https://bugzil.la/1053629). '+'Setting text content of elements with child elements is no longer '+'supported by l10n.js. Offending data-l10n-id: "'+id+'" on element '+element.outerHTML+' in '+this.ctx.id);}
+element.textContent=text;}})(this);</script><script>'use strict';var LazyLoader=(function(){function LazyLoader(){this._loaded={};this._isLoading={};}
+LazyLoader.prototype={_js:function(file,callback){var script=document.createElement('script');script.src=file;script.async=false;script.addEventListener('load',callback);document.head.appendChild(script);this._isLoading[file]=script;},_css:function(file,callback){var style=document.createElement('link');style.type='text/css';style.rel='stylesheet';style.href=file;document.head.appendChild(style);callback();},_html:function(domNode,callback){if(domNode.getAttribute('is')){this.load(['/shared/js/html_imports.js'],function(){HtmlImports.populate(callback);}.bind(this));return;}
+for(var i=0;i&lt;domNode.childNodes.length;i++){if(domNode.childNodes[i].nodeType==document.COMMENT_NODE){domNode.innerHTML=domNode.childNodes[i].nodeValue;break;}}
+window.dispatchEvent(new CustomEvent('lazyload',{detail:domNode}));callback();},getJSON:function(file,mozSystem){return new Promise(function(resolve,reject){var xhr;if(mozSystem){xhr=new XMLHttpRequest({mozSystem:true});}else{xhr=new XMLHttpRequest();}
+xhr.open('GET',file,true);xhr.responseType='json';xhr.onerror=function(error){reject(error);};xhr.onload=function(){if(xhr.response!==null){resolve(xhr.response);}else{reject(new Error('No valid JSON object was found ('+
+xhr.status+' '+xhr.statusText+')'));}};xhr.send();});},load:function(files,callback){var deferred={};deferred.promise=new Promise(resolve=&gt;{deferred.resolve=resolve;});if(!Array.isArray(files)){files=[files];}
+var loadsRemaining=files.length,self=this;function perFileCallback(file){if(self._isLoading[file]){delete self._isLoading[file];}
+self._loaded[file]=true;if(--loadsRemaining===0){deferred.resolve();if(callback){callback();}}}
+for(var i=0;i&lt;files.length;i++){var file=files[i];if(this._loaded[file.id||file]){perFileCallback(file);}else if(this._isLoading[file]){this._isLoading[file].addEventListener('load',perFileCallback.bind(null,file));}else{var method,idx;if(typeof file==='string'){method=file.match(/\.([^.]+)$/)[1];idx=file;}else{method='html';idx=file.id;}
+this['_'+method](file,perFileCallback.bind(null,idx));}}
+return deferred.promise;}};return new LazyLoader();}());</script><script>
+(function(exports){'use strict';var _app;function getAppObject(cb){if(_app){cb(_app);return;}
+var request=navigator.mozApps.getSelf();request.onsuccess=function(){cb(request.result);};request.onerror=function(){console.warn('about:netError error fetching app: '+request.error.name);cb();};}
+function getFrameType(error){return isFramed(error)?'framed':'no-frame';}
+function isFramed(error){var manifestURL=error.m;var frameType=error.f;switch(frameType){case'regular':return true;case'app':return false;case'browser':return manifestURL!==window.SYSTEM_MANIFEST;default:throw new Error('about:netError: invalid frame type - '+frameType);}}
+function getAppName(cb){getAppObject(function(app){if(app&amp;&amp;app.manifest.name){cb(app.manifest.name);}else{cb(location.protocol+'//'+location.host);}});}
+var localizeElement=navigator.mozL10n.setAttributes;var _error;function getErrorFromURI(){if(_error){return _error;}
+_error={};var uri=document.documentURI;if(!uri.startsWith('about:neterror?')){return _error;}
+var url=new URL(uri.replace('about:','http://'));['e','u','m','c','d','f'].forEach(function(v){_error[v]=url.searchParams.get(v);});switch(_error.e){case'connectionFailure':case'netInterrupt':case'netTimeout':case'netReset':_error.e='connectionFailed';break;case'unknownSocketType':case'unknownProtocolFound':case'cspFrameAncestorBlocked':_error.e='invalidConnection';break;}
+return _error;}
+function reloadIfOnline(){if(navigator.onLine&amp;&amp;!document.hidden&amp;&amp;!document.body.classList.contains('hidden')){document.body.classList.add('hidden');NetError.reload(true);window.addEventListener('offline',function onOffline(){window.removeEventListener('offline',onOffline);document.body.classList.remove('hidden');});}}
+function showSettingsView(){var activity=new window.MozActivity({name:'configure',data:{target:'device',section:'root',filterBy:'connectivity'}});activity.onerror=function(){console.warn('Configure activity error:',activity.error.name);};}
+function hasHistory(){return window.history.length&gt;1;}
+function cancel(){hasHistory()?goBack():closeWindow();}
+function goBack(){window.history.back();}
+function closeWindow(){window.close();}
+function addConnectionHandlers(){document.addEventListener('visibilitychange',reloadIfOnline);window.addEventListener('online',reloadIfOnline);}
+var ErrorView=function(error,title,message){this.error=error;this.titleText=title||'unable-to-connect';this.messageText=message||this.error.d;this.node=document.getElementById('net-error-confirm-dialog');};ErrorView.prototype={applyStyle:function ew_applyStyle(){document.body.classList.add(this.error.e);},addHandlers:function ew_addHandlers(){},populateMessages:function ew_populateMessages(){localizeElement(this.title,this.titleText);localizeElement(this.message,this.messageText);},init:function ew_init(){window.LazyLoader.load(this.node,(function loaded(){this.title=document.getElementById('error-title');this.message=document.getElementById('error-message');this.applyStyle();this.populateMessages();this.addHandlers();}).bind(this));}};var FramedErrorView=function(error,title,message){ErrorView.call(this,error,title,message);};FramedErrorView.prototype=Object.create(ErrorView.prototype);FramedErrorView.prototype.applyStyle=function few_applyStyle(){ErrorView.prototype.applyStyle.call(this);document.body.classList.add('framed');};FramedErrorView.prototype.addHandlers=function few_addHandlers(){document.body.onclick=function bodyClick(){document.getElementById('retry-icon').classList.remove('still');NetError.reload(true);};};var AppErrorView=function(error,title,message){ErrorView.call(this,error,title,message);};AppErrorView.prototype=Object.create(ErrorView.prototype);AppErrorView.prototype.applyStyle=function few_applyStyle(){ErrorView.prototype.applyStyle.call(this);document.body.classList.add('no-frame');};AppErrorView.prototype.addHandlers=function aew_addHandlers(){document.getElementById('retry-btn').onclick=function retryClick(){NetError.reload(true);};document.getElementById('close-btn').onclick=closeWindow;};var DnsErrorAppErrorView=function(error,title,message){AppErrorView.call(this,error,title,message);};DnsErrorAppErrorView.prototype=Object.create(AppErrorView.prototype);DnsErrorAppErrorView.prototype.populateMessages=function noew_populateMessages(){localizeElement(this.title,this.titleText);localizeElement(this.message,this.messageText,{name:this.error.u});};var DnsErrorFramedErrorView=function(error,title,message){FramedErrorView.call(this,error,title,message);};DnsErrorFramedErrorView.prototype=Object.create(FramedErrorView.prototype);DnsErrorFramedErrorView.prototype.populateMessages=function noew_populateMessages(){localizeElement(this.title,this.titleText);localizeElement(this.message,this.messageText,{name:this.error.u});};var NetOfflineAppErrorView=function(error){AppErrorView.call(this,error);this.node=document.getElementById('net-error-action-menu');};NetOfflineAppErrorView.prototype=Object.create(AppErrorView.prototype);NetOfflineAppErrorView.prototype.populateMessages=function noew_populateMessages(){if(hasHistory()){localizeElement(this.title,'network-error-in-app');}else{getAppName((function localizeTitle(appName){localizeElement(this.title,'network-error-launching',{name:appName});}).bind(this));}};NetOfflineAppErrorView.prototype.addHandlers=function noew_addHandlers(){addConnectionHandlers();document.getElementById('settings-btn').onclick=showSettingsView;document.getElementById('cancel-btn').onclick=cancel;};var NetOfflineFramedErrorView=function(error){FramedErrorView.call(this,error);};NetOfflineFramedErrorView.prototype=Object.create(FramedErrorView.prototype);NetOfflineFramedErrorView.prototype.populateMessages=function noew_populateMessages(){localizeElement(this.title,'unable-to-connect');localizeElement(this.message,'tap-to-check-settings');};NetOfflineFramedErrorView.prototype.addHandlers=function noew_addHandlers(){addConnectionHandlers();document.body.onclick=showSettingsView;};var ConfirmAppErrorView=function(error,title,message){AppErrorView.call(this,error,title,message);};ConfirmAppErrorView.prototype=Object.create(AppErrorView.prototype);ConfirmAppErrorView.prototype.applyStyle=function caew_applyStyle(){AppErrorView.prototype.applyStyle.call(this);document.body.classList.add('dialog');};var AlertAppErrorView=function(error,title,message){AppErrorView.call(this,error,title,message);};AlertAppErrorView.prototype=Object.create(AppErrorView.prototype);AlertAppErrorView.prototype.applyStyle=function aaew_applyStyle(){AppErrorView.prototype.applyStyle.call(this);document.body.classList.add('dialog','alert');};var views={netOffline:{'framed':NetOfflineFramedErrorView,'no-frame':NetOfflineAppErrorView},dnsNotFound:{'framed':DnsErrorFramedErrorView,'no-frame':DnsErrorAppErrorView,'title':'server-not-found','message':'server-not-found-error'},connectionFailed:{'framed':FramedErrorView,'no-frame':ConfirmAppErrorView,'title':'connection-failed','message':'connection-failed-error'},notCached:{'framed':FramedErrorView,'no-frame':ConfirmAppErrorView,'title':'not-cached','message':'not-cached-error'},fileNotFound:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'file-not-found','message':'file-not-found-error'},invalidConnection:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'invalid-connection','message':'invalid-connection-error'},malformedURI:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'malformed-uri','message':'malformed-uri-error'},redirectLoop:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'redirect-loop','message':'redirect-loop-error'},isprinting:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'message':'is-printing-error'},deniedPortAccess:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'denied-port-access','message':'denied-port-access-error'},proxyResolveFailure:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'proxy-resolve-failure','message':'proxy-resolve-failure-error'},proxyConnectFailure:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'proxy-connect-failure','message':'proxy-connect-failure-error'},contentEncodingError:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'content-encoding','message':'content-encoding-error'},remoteXUL:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'remote-xul','message':'remote-xul-error'},unsafeContentType:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'unsafe-content-type','message':'unsafe-content-type-error'},corruptedContentError:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'corrupted-content','message':'corrupted-content-error'},phishingBlocked:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'phishing-blocked','message':'phishing-blocked-error'},malwareBlocked:{'framed':FramedErrorView,'no-frame':AlertAppErrorView,'title':'malware-blocked','message':'malware-blocked-error'},byDefault:{'framed':FramedErrorView,'no-frame':AppErrorView}};var ErrorViewFactory={create:function nef_create(){var error=getErrorFromURI();var view=views[error.e]||views.byDefault;return new view[getFrameType(error)](error,view.title,view.message);}};function initPage(){_error=_app=null;console.error('net-error');ErrorViewFactory.create().init();}
+navigator.mozL10n.ready(initPage);var NetError={init:initPage,reload:function reload(forcedReload){var isReloading=false;window.addEventListener('beforeunload',function onBeforeunload(){isReloading=true;});window.location.reload(forcedReload);if(!isReloading){history.back();}}};exports.NetError=NetError;}(this));</script>
+
+</body></html>

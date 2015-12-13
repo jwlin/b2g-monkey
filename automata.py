@@ -145,6 +145,7 @@ class Automata:
                             clickable_list.append(clickable)
                         form_element['clickable'] = clickable_list
                     form_list.append(form_element)
+        form_list = sorted(form_list, key=lambda k: int(k['state']))
         return form_list
 
     def save(self, config):

@@ -13,7 +13,7 @@ from configuration import B2gConfiguration
 from executor import B2gExecutor
 from crawler import B2gCrawler
 from visualizer import Visualizer
-
+from invariant import StringInvariant
 
 formatter = logging.Formatter("%(asctime)s [%(name)s] [%(levelname)s] %(message)s")
 logger = logging.getLogger()
@@ -28,8 +28,20 @@ def main():
 
     # Init config. For loading config file instead of creating a new one:
     # config = B2gConfiguration(app_name=None, app_id=None, fname='test_data/config.json')
-    config = B2gConfiguration('Contacts', 'contacts')  # APP_NAME, APP_ID
-    #config = B2gConfiguration('Notes', '5f6c37ff-a957-471c-9fc8-a3b66c3814ca')
+
+    # Apps on webide
+    #config = B2gConfiguration('Contacts', 'contacts')  # APP_NAME, APP_ID
+    #config = B2gConfiguration('App example', 'f440f25a-9594-4339-bb8a-c07a45293c3c')  # webide
+    #config = B2gConfiguration('Weather Me', 'jlongster.github.io/weatherme')
+
+    # Apps on device. Move the app in footer section first. Only tested on Infocus New Tab F1
+    config = B2gConfiguration('Contacts', 'communications.gaiamobile.org')
+    #config = B2gConfiguration('App example', '8bee1dbc-4c1f-4e75-a9d9-f0da4f5e81f2')
+    #config = B2gConfiguration('Crashed App', 'bcd9e6dc-a35c-49c1-abe0-2570eab9d2f0')
+    #config = B2gConfiguration('Weather Me', 'jlongster.github.io/weatherme')
+
+    # Apps on b2d desktop client
+    #config = B2gConfiguration('Contacts', 'contacts')  # APP_NAME, APP_ID
     #config = B2gConfiguration('App example', '2a3304ed-29c0-400a-a61a-48a3e835caaf')
     #config = B2gConfiguration('Crashed App', '48d3bd2a-c3b2-42af-a5bc-6ece5da9fa0e')
 
@@ -48,28 +60,29 @@ def main():
     # example code of adding clickable tags. Refer to dom_analyzer.py
     # DomAnalyzer.add_clickable_tags(Tag('button', {'type': 'reset'}))
     '''
+    config.add_invariant(StringInvariant("display this page because the file cannot be found."))
 
-    # (Optional) Write log to file.
+    # (Optional) Write log to file
     file_handler = logging.FileHandler(os.path.join(config.get_path('root'), 'log.txt'))
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.DEBUG)
     logger.addHandler(file_handler)
 
-    executor = B2gExecutor(config.get_app_name(), config.get_app_id())
+    # Remember to activate b2g simulator before creating executor
+    # For using connected, real device, pass device=True into the constructor
+    #executor = B2gExecutor(config.get_app_name(), config.get_app_id())
+    executor = B2gExecutor(config.get_app_name(), config.get_app_id(), device=True)
     crawler = B2gCrawler(config, executor)
 
     logger.info('Start crawling, depth %d', config.get_max_depth())
 
     # Generate automata and the statistics by crawling. For loading automata from file:
-    # automata = Automata(fname='test_data/automata-example.json')
+    # automata = Automata(fname='test_data/automata-example.json', load_dom=False or True)
     automata, invariant_violation, num_clickables = crawler.run()
 
     # save the automata and config to file
     automata.save(config)
     config.save('config.json')
-
-    # generate html report
-    Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
 
     # text report
     logger.info('Crawling finished.')
@@ -96,6 +109,11 @@ def main():
         logger.info('state: %s, violated invariant: %s, execution sequence:', inv['state'], inv['name'])
         for clickable in inv['sequence']:
             logger.info('id: %s (xpath: %s)', clickable.get_id(), clickable.get_xpath())
+
+    # generate html report
+    Visualizer.generate_automata('web', config.get_path('root'), config.get_automata_fname())
+    Visualizer.generate_report('web', config.get_path('root'), config.get_automata_fname(), config.get_max_depth(),
+                               num_clickables, form_list, invariant_violation, (time.time()-t_start)/60.0)
 
     t_end = time.time()
     logger.info('time elapsed: %f minutes', ((t_end-t_start)/60.0))

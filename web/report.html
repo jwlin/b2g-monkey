@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>Crawling Result</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<style>
+	  .row > div > img { max-width: 100%; height: auto; display: block; }
+	</style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>Crawling Result</h1>
+      </div>
+      <div id="summary">
+        <h3>Summary (<a href="state.html" target="_blank">State diagram</a>)</h3>
+        <div class="row">
+          <div class="col-md-4">Depth of crawling</div>
+          <div class="col-md-8"><span id="depth">2</span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">Time elapsed</div>
+          <div class="col-md-8"><span id="time">0.97</span> minutes</div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">Candidate clickables found</div>
+          <div class="col-md-8"><span id="total">20</span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="col-md-3">Triggering</div>
+          <div class="col-md-8"><span id="true">8</span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="col-md-3">Non-triggering</div>
+          <div class="col-md-8"><span id="false">12</span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="col-md-3">Unexamined</div>
+          <div class="col-md-8"><span id="unexamined">0</span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">Found forms</div>
+          <div class="col-md-8"><span id="form-summary">1</span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">Violated invariants</div>
+          <div class="col-md-8"><span id="invariant-summary">2</span></div>
+        </div>
+      </div>
+	  
+      <div id="form">
+        <h3>Forms (<span id="form-header"></span>)</h3>
+        <div class="row">
+          <div class="col-md-4"><img src="http://placekitten.com/160/255"></div>
+          <div class="col-md-8">
+            state: 3, form-id: b2g-monkey-5 (xpath: //html/body/form[1]) <br />
+            input_value: <br />
+            type: text, id: id_username (xpath: //html/body/form[1]/p[1]/input[1]), value: pjshzzza <br />
+            type: password, id: id_password (xpath: //html/body/form[1]/p[2]/input[1]), value: !qaz2wsX <br />
+            path-to-form: <br />
+            id: b2g-monkey-3 (xpath: //html/body/p[3]/a[1]) <br />
+            clickables in the form: <br />
+            id: b2g-monkey-6 (xpath: //html/body/form[1]/p[3]/a[1]) <br />
+            id: b2g-monkey-7 (xpath: //html/body/form[1]/p[3]/button[1]) <br />
+          </div>
+        </div>
+      </div>
+
+      <div id="invariant">
+        <h3>Invariants (<span id="invariant-header"></span>)</h3>
+        <div class="row">
+          <div class="col-md-4"><img src="http://placekitten.com/160/255"></div>
+          <div class="col-md-8">
+            state: 2, violated invariant: {"name": "file-not-found"} <br />
+            execution sequence: <br />
+            id: b2g-monkey-2 (xpath: //html/body/p[2]/a[1]) <br />
+          </div>
+        </div>
+      </div>
+
+    <hr>
+    <p class="footer">(c) b2g-monkey</p>
+    </div> <!-- /container -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script>
+      $('#form-header').text($('#form-summary').text())
+      $('#invariant-header').text($('#invariant-summary').text())
+    </script>
+      
+  </body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE doctype html>
+
+<head>
+<meta charset="utf-8">
+<meta content="IE=edge" http-equiv="X-UA-Compatible">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<title>State Diagram</title>
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="js/d3.v3.min.js"></script>
+<script src="js/graphlib-dot.min.js"></script>
+<script src="js/dagre-d3.min.js"></script>
+<style>
+svg {
+  border: 1px solid #999;
+  overflow: hidden;
+  position: relative; height:100%; width:100%;
+}
+
+.label {
+	color: black;
+}
+
+.node {
+  white-space: nowrap;
+}
+
+.node rect,
+.node circle,
+.node ellipse {
+  stroke: #333;
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+
+.cluster rect {
+  stroke: #333;
+  fill: #000;
+  fill-opacity: 0.1;
+  stroke-width: 1.5px;
+}
+
+.edgePath path.path {
+  stroke: #333;
+  stroke-width: 1.5px;
+  fill: none;
+}
+</style>
+</link></link></meta></meta></meta></head>
+<body onload="tryDraw();">
+<div id="images" style="display:none"><img src="screenshot/state/0.png">
+<img src="screenshot/clickable/0-b2g-monkey-1.png" alt="b2g-monkey-1">
+<img src="screenshot/clickable/0-b2g-monkey-2.png" alt="b2g-monkey-2">
+<img src="screenshot/clickable/0-b2g-monkey-3.png" alt="b2g-monkey-3">
+<img src="screenshot/state/1.png">
+<img src="screenshot/clickable/1-b2g-monkey-4.png" alt="b2g-monkey-4">
+<img src="screenshot/state/2.png">
+<img src="screenshot/state/3.png">
+<img src="screenshot/clickable/3-b2g-monkey-6.png" alt="b2g-monkey-6">
+<img src="screenshot/clickable/3-b2g-monkey-7.png" alt="b2g-monkey-7">
+</div>
+<!-- /* Note: HTML labels do not work in IE, which lacks support for <foreignObject> tags. */-->
+<textarea id="inputGraph" rows="1" style="display: none">
+            digraph {
+            node [rx=5 ry=5 labelStyle="font: 300 14px 'Helvetica Neue', Helvetica"];
+            edge [labelStyle="font: 300 14px 'Helvetica Neue', Helvetica"];
+            0 [labelType="html" label="0<img src='screenshot/state/0.png'>"];
+1 [labelType="html" label="1<img src='screenshot/state/1.png'>"];
+2 [labelType="html" label="2<img src='screenshot/state/2.png'>"];
+3 [labelType="html" label="3<img src='screenshot/state/3.png'>"];
+0->1[labelType="html" label="<img src='screenshot/clickable/0-b2g-monkey-1.png' alt='b2g-monkey-1'>"];
+1->0[labelType="html" label="<img src='screenshot/clickable/1-b2g-monkey-4.png' alt='b2g-monkey-4'>"];
+0->2[labelType="html" label="<img src='screenshot/clickable/0-b2g-monkey-2.png' alt='b2g-monkey-2'>"];
+0->3[labelType="html" label="<img src='screenshot/clickable/0-b2g-monkey-3.png' alt='b2g-monkey-3'>"];
+3->0[labelType="html" label="<img src='screenshot/clickable/3-b2g-monkey-6.png' alt='b2g-monkey-6'>"];
+3->0[labelType="html" label="<img src='screenshot/clickable/3-b2g-monkey-7.png' alt='b2g-monkey-7'>"];
+}</textarea>
+<h1>State Diagram (Scrolling on the canvas to zoom in / zoom out)</h1>
+<svg height="600" width="800">
+<g></g>
+</svg>
+<p>Graph drawn with <a href="https://github.com/cpettitt/dagre-d3" target="_blank">dagre-d3</a></p>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="js/ie10-viewport-bug-workaround.js"></script>
+<script>
+var inputGraph = document.querySelector("#inputGraph");
+
+// Set up zoom support
+var svg = d3.select("svg"),
+    inner = d3.select("svg g"),
+    zoom = d3.behavior.zoom().on("zoom", function() {
+    inner.attr("transform", "translate(" + d3.event.translate + ")" +
+                                "scale(" + d3.event.scale + ")");
+    });
+svg.call(zoom);
+
+// Create and configure the renderer
+var render = dagreD3.render();
+
+function tryDraw() {
+  var g;
+  inputGraph.setAttribute("class", "");
+  //oldInputGraphValue = inputGraph.value;
+  try {
+    g = graphlibDot.read(inputGraph.value);
+  } catch (e) {
+    inputGraph.setAttribute("class", "error");
+    throw e;
+  }
+  // Set margins, if not present
+  if (!g.graph().hasOwnProperty("marginx") &&
+      !g.graph().hasOwnProperty("marginy")) {
+    g.graph().marginx = 20;
+    g.graph().marginy = 20;
+  }
+  g.graph().transition = function(selection) {
+    return selection.transition().duration(500);
+  };
+  // Render the graph into svg g
+  d3.select("svg g").call(render, g);
+}
+</script>
+</body>
