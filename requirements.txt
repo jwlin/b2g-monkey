@@ -1,3 +1,6 @@
 beautifulsoup4==4.4.1
-gaiatest==0.33
 marionette-client==0.17
+# 20151214: can not be successfully installed due to the old version of treeherder in its requirements.txt
+# user pip install -e gaiatest-0.33 instead
+#gaiatest==0.33
+

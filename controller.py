@@ -30,12 +30,12 @@ def main():
     # config = B2gConfiguration(app_name=None, app_id=None, fname='test_data/config.json')
 
     # Apps on webide
-    #config = B2gConfiguration('Contacts', 'contacts')  # APP_NAME, APP_ID
+    config = B2gConfiguration('Contacts', 'contacts')  # APP_NAME, APP_ID
     #config = B2gConfiguration('App example', 'f440f25a-9594-4339-bb8a-c07a45293c3c')  # webide
     #config = B2gConfiguration('Weather Me', 'jlongster.github.io/weatherme')
 
     # Apps on device. Move the app in footer section first. Only tested on Infocus New Tab F1
-    config = B2gConfiguration('Contacts', 'communications.gaiamobile.org')
+    #config = B2gConfiguration('Contacts', 'communications.gaiamobile.org')
     #config = B2gConfiguration('App example', '8bee1dbc-4c1f-4e75-a9d9-f0da4f5e81f2')
     #config = B2gConfiguration('Crashed App', 'bcd9e6dc-a35c-49c1-abe0-2570eab9d2f0')
     #config = B2gConfiguration('Weather Me', 'jlongster.github.io/weatherme')
@@ -70,8 +70,8 @@ def main():
 
     # Remember to activate b2g simulator before creating executor
     # For using connected, real device, pass device=True into the constructor
-    #executor = B2gExecutor(config.get_app_name(), config.get_app_id())
-    executor = B2gExecutor(config.get_app_name(), config.get_app_id(), device=True)
+    executor = B2gExecutor(config.get_app_name(), config.get_app_id())
+    #executor = B2gExecutor(config.get_app_name(), config.get_app_id(), device=True)
     crawler = B2gCrawler(config, executor)
 
     logger.info('Start crawling, depth %d', config.get_max_depth())
