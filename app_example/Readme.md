@@ -1,4 +1,4 @@
-# Install the example apps in /test-apps
+# Install the example apps
 
 ## Install the apps in b2g desktop client
 
