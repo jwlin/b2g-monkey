@@ -1,4 +1,6 @@
-#Ver. 0.1.0 [![Build Status](https://travis-ci.org/jwlin/b2g-monkey.svg?branch=master)](https://travis-ci.org/jwlin/b2g-monkey)
+#Ver. 0.1.0 
+
+[![Build Status](https://travis-ci.org/jwlin/b2g-monkey.svg?branch=master)](https://travis-ci.org/jwlin/b2g-monkey)
 
 b2g-monkey is a python-based crawler for Firefox OS (codename: Boot to Gecko, or b2g) apps.  It automatically explores the app under test by clicking candidate clickables with corresponding text input on encountered screens. You can use it to:
 
@@ -117,3 +119,11 @@ You have to manually add or delete normalizers in the list. There are four norma
 ```
 executor = B2gExecutor(config.get_app_name(), config.get_app_id(), device=True)
 ```
+
+# Screenshots
+
+![Demo](https://raw.githubusercontent.com/jwlin/b2g-monkey/pic/pic/demo.gif)
+
+![Report](https://raw.githubusercontent.com/jwlin/b2g-monkey/pic/pic/report.png)
+
+![State](https://raw.githubusercontent.com/jwlin/b2g-monkey/pic/pic/state.png)
