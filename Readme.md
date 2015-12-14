@@ -1,4 +1,4 @@
-#Ver. 0.1.0
+#Ver. 0.1.0 [![Build Status](https://travis-ci.org/jwlin/b2g-monkey.svg?branch=master)](https://travis-ci.org/jwlin/b2g-monkey)
 
 b2g-monkey is a python-based crawler for Firefox OS (codename: Boot to Gecko, or b2g) apps.  It automatically explores the app under test by clicking candidate clickables with corresponding text input on encountered screens. You can use it to:
 
@@ -10,10 +10,11 @@ b2g-monkey is a python-based crawler for Firefox OS (codename: Boot to Gecko, or
 
 (Tested on Windows 10, Firefox 42.0 (w/ Simulator 2.2), b2g-43.0a1.en-US.win32 and Python 2.7.9)
 
-Clone the project. Than install the prerequisite:
+Clone the project. Than install the prerequisite (Admin privilege may be needed):
 
 ```
-pip install -r path/to/b2g-monkey/requirement.txt (Admin privilege may be needed)
+pip install -e path/to/b2g-monkey/gaiatest-0.33 
+pip install -r path/to/b2g-monkey/requirement.txt
 ```
 
 There are two ways to activate b2g simulator:
