@@ -46,7 +46,7 @@ class mysqlConnect:
 
 
 	def get_databank_by_column(self, table, column, mode=0):
-		sql = "SELECT %s FROM %s WHERE MODE = %d" % ( colmun, table , mode)
+		sql = "SELECT %s FROM %s WHERE MODE = %d" % ( column, table , mode)
 		logging.info(str(self))
 		logging.info(sql)
 

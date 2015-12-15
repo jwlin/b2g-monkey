@@ -8,6 +8,7 @@ Module docstring
 import os, sys, json, posixpath, time, datetime, json, codecs, logging
 from os.path import relpath
 from abc import ABCMeta
+from enum import Enum
 
 from dom_analyzer import DomAnalyzer, Tag
 from clickable import Clickable, InputField, SelectField, Checkbox, CheckboxField, Radio, RadioField
@@ -81,7 +82,8 @@ class SeleniumConfiguration(Configuration):
             'tag_with_attribute_normalizers': []
         }
         self._before_trace_fname = ''
-        self._mutant_scripts = ''
+        self._mutant_scripts = []
+        self._max_mutation = 0
 
     def set_folderpath(self, folderpath):
         self._folderpath = folderpath
@@ -107,8 +109,6 @@ class SeleniumConfiguration(Configuration):
     def get_path(self, my_type):
         return self._file_path[my_type]
 
-    #=============================================================================================
-    #Diff: browser use url & browserID not app
     def set_browserID(self, app_name):
         self._browserID = browserID
 
@@ -212,6 +212,18 @@ class SeleniumConfiguration(Configuration):
     def get_mutant_trace(self):
         return self._mutant_scripts
 
+    def set_max_mutation(self, mutation):
+        self._max_mutation = mutation
+
+    def get_max_mutation(self):
+        return self._max_mutation
+
+    def set_mutation_method(self, method):
+        self._mutation_method = method
+
+    def get_mutation_method(self):
+        return self._mutation_method
+
     def load_json(self, json_file):
         try:
             with open(json_file) as data_file:      
@@ -223,6 +235,7 @@ class SeleniumConfiguration(Configuration):
     def build_trace(self, data):
         try:
             edges = []
+            print len(data['edges'])
             for edge in data['edges']:
                 state_from = edge['from']
                 state_to = edge['to']
@@ -233,19 +246,20 @@ class SeleniumConfiguration(Configuration):
                     inputs.append( InputField( i['id'], i['name'], i['xpath'], i['type'], i['value'] ) )
                 selects = []
                 for s in edge['selects']:
-                    selects.append( SelectField( s['id'], s['name'], s['xpath'], s['value'] ) )
+                    selects.append( SelectField( s['id'], s['name'], s['xpath'], s['value'], s['selected'] ) )
                 checkboxes = []
                 for c_field in edge['checkboxes']:
                     c_list = []
                     for c in c_field['checkbox_list']:
-                        c_list.append( Checkbox( c['id'], c['name'], c['xpath'] ) )
-                    checkboxes.append( CheckboxField(c_list, c_field['checkbox_name'], c_field['checkbox_value_list']) )
+                        c_list.append( Checkbox( c['id'], c['name'], c['xpath'], c['value'] ) )
+                    print checkboxes
+                    checkboxes.append( CheckboxField(c_list, c_field['checkbox_name'], c_field['checkbox_selected_list']) )
                 radios = []
                 for r_field in edge['radios']:
                     r_list = []
                     for r in r_field['radio_list']:
-                        r_list.append( Radio( r['id'], r['name'], r['xpath'] ) )
-                    radios.append( RadioField(r_list, r_field['radio_name'], r_field['radio_value']) )
+                        r_list.append( Radio( r['id'], r['name'], r['xpath'], r['value'] ) )
+                    radios.append( RadioField(r_list, r_field['radio_name'], r_field['radio_selected']) )
                 iframe_list = edge['iframe_list']
                 edges.append( Edge( state_from, state_to, clickable, inputs, selects, checkboxes, radios, iframe_list ) )
             return edges
@@ -286,7 +300,22 @@ class SeleniumConfiguration(Configuration):
         config_data['traces_fname'] = self._traces_fname
         config_data['analyzer'] = self._analyzer
         config_data['before_trace_fname'] = self._before_trace_fname
+        config_data['max_mutation'] = self._max_mutation
         #=============================================================================================
         with codecs.open(os.path.join(self.get_abs_path('root'), fname), 'w', encoding='utf-8') as f:
             json.dump(config_data, f, indent=2, sort_keys=True, ensure_ascii=False)
 #==============================================================================================================================
+
+#==============================================================================================================================
+# class for Enum clearly
+#==============================================================================================================================
+class Browser(Enum):
+    FireFox = 1
+    Chrome = 2
+    PhantomJS = 3
+
+class MutationMethod(Enum):
+    Simple = 1
+    AllInputsOneState = 2
+    OneInputsOneState = 3
+    EachInputsOneState = 4

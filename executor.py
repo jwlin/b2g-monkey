@@ -9,6 +9,7 @@ import sys, os, time, logging
 
 from abc import ABCMeta, abstractmethod
 from dom_analyzer import DomAnalyzer
+from configuration import Browser
 
 #==============================================================================================================================
 # Selenium Web Driver
@@ -113,7 +114,8 @@ class SeleniumExecutor():
                     selected_element.click()
                     self.check_after_click()
             except Exception as e:
-                logging.error(' Unknown Exception: %s in checkbox: id(%s) xpath(%s) \t\t__from executor.py fire_event()',str(e), checkbox_field.get_id(), checkbox_field.get_xpath())
+                logging.error(' Unknown Exception: %s in checkbox: name(%s) \t\t__from executor.py fire_event()'\
+                    %( str(e), checkbox_field.get_checkbox_name() ) )
                 
     def fill_radios(self, radios):
         for radio_field in radios:
@@ -127,7 +129,8 @@ class SeleniumExecutor():
                     element.click()
                 self.check_after_click()
             except Exception as e:
-                logging.error(' Unknown Exception: %s in radio: id(%s) xpath(%s) \t\t__from executor.py fire_event()',str(e), radio_field.get_id(), radio_field.get_xpath())
+                logging.error(' Unknown Exception: %s in radio: name(%s) \t\t__from executor.py fire_event()'\
+                    % ( str(e), radio_field.get_radio_name() ) )
                 
     def get_element_by_tag(self, element):
         if element.get_id() and not element.get_id().startswith(DomAnalyzer.serial_prefix):
@@ -182,11 +185,11 @@ class SeleniumExecutor():
                 self.driver = webdriver.PhantomJS(executable_path='C:/PhantomJS/bin/phantomjs/phantomjs.exe')
         '''
         try:
-            if self.browserID == 1:
+            if self.browserID == Browser.FireFox:
                 self.driver = webdriver.Firefox();
-            elif self.browserID == 2:
+            elif self.browserID == Browser.Chrome:
                 self.driver = webdriver.Chrome(executable_path='/usr/local/share/chromedriver')
-            elif self.browserID == 3:
+            elif self.browserID == Browser.PhantomJS:
                 self.driver = webdriver.PhantomJS()
             else: #default in firefox
                 self.driver = webdriver.Firefox(); 

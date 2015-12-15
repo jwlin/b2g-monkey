@@ -6,7 +6,7 @@ Module docstring
 """
 
 import os, sys, json, posixpath, time, codecs, datetime, logging, traceback
-from configuration import SeleniumConfiguration
+from configuration import SeleniumConfiguration, Browser, MutationMethod
 from automata import Automata, State
 from clickable import Clickable, InputField, SelectField
 from executor import SeleniumExecutor
@@ -27,7 +27,7 @@ def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
     _web_inputs = connect.get_all_inputs_by_id(web_submit_id)
 
     logging.info(" setting config...")
-    config = SeleniumConfiguration(3, _url, folderpath, dirname)
+    config = SeleniumConfiguration(Browser.PhantomJS, _url, folderpath, dirname)
     config.set_max_depth(_deep)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
@@ -47,6 +47,7 @@ def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
     
     logging.info(" end! save automata...")
     automata.save_automata(config)
+    automata.save_traces(config)
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
 
@@ -57,7 +58,7 @@ def debugTestMain():
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     logging.info(" setting config...")
-    config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
+    config = SeleniumConfiguration(Browser.FireFox, "http://140.112.42.143/nothing/main.html")
     config.set_max_depth(3)
     config.set_max_states(100)
     config.set_automata_fname('automata.json')
@@ -98,12 +99,13 @@ def debugTestMain():
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
 
-def SeleniumMutationTrace(folderpath, config_fname, traces_fname, trace_id):
+def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace_id):
     logging.info(" loading config...")
     config = load_config(config_fname)
     config.set_folderpath(folderpath)
     config.set_dirname(dirname)
     config.set_mutant_trace(traces_fname, trace_id)
+    config.set_mutation_method(MutationMethod.Simple)
 
     logging.info(" setting executor...")
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
@@ -150,7 +152,9 @@ def load_config(fname):
     t_start = time.time()
     with codecs.open(fname, encoding='utf-8') as f:
         data = json.load(f)
-        config = SeleniumConfiguration(data['browser_id'], data['url'], data['dirname'], data['folderpath'])
+        browser = Browser.PhantomJS if data['browser_id'] == '3' \
+            else Browser.Chrome if data['browser_id'] == '2' else Browser.FireFox
+        config = SeleniumConfiguration(Browser.FireFox, data['url'], data['dirname'], data['folderpath'])
         config.set_max_depth(int(data['max_depth']))
         config.set_max_states(int(data['max_states']))
         config.set_sleep_time(int(data['sleep_time']))
@@ -231,7 +235,7 @@ if __name__ == '__main__':
                     main_log.write( '\n[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
         #mutant mode
         elif sys.argv[1] == '2':
-            try:
+            #try:
                 if os.path.exists( os.path.join(sys.argv[2], sys.argv[3]) ):
                     raise ValueError('dirname already exist')
                 if not os.path.isfile(sys.argv[4]) or not os.path.exists(sys.argv[4]):
@@ -239,17 +243,17 @@ if __name__ == '__main__':
                 if not os.path.isfile(sys.argv[5]) or not os.path.exists(sys.argv[5]):
                     raise ValueError('not found traces file')
                 make_dir(sys.argv[2], sys.argv[3])
-                try:
-                    SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
-                    end_log( os.path.join(sys.argv[3], sys.argv[4], 'end.json'), True, 'done')
-                except Exception as e:
-                    end_log( os.path.join(sys.argv[3], sys.argv[4], 'end.json'),False, str(e)+traceback.format_exc())
-            except Exception as e:
-                with open("mutant_log.txt","a") as main_log:
-                    main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
+                #try:
+                SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+                end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'), True, 'done')
+                #except Exception as e:
+                #    end_log( os.path.join(sys.argv[3], sys.argv[4], 'end.json'),False, str(e)+traceback.format_exc())
+            #except Exception as e:
+            #    with open("mutant_log.txt","a") as main_log:
+            #        main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
         else:
             make_dir()
             debugTestMain()
     else:
-        print "[WARNIING] needed argv: <Mode=1> <WebSubmitID> <Dirname> <FolderPath> default crawling "
-        print "                        <Mode=2> <FolderPath> <ConfigFile> <TracesFile> <TraceID> mutant crawling "
+        print "[WARNIING] needed argv: <Mode=1> <WebSubmitID> <FolderPath> <Dirname> default crawling "
+        print "                        <Mode=2> <FolderPath> <Dirname> <ConfigFile> <TracesFile> <TraceID> mutant crawling "

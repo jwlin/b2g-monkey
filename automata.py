@@ -35,15 +35,16 @@ class Automata:
 
     def set_initial_state(self, state):
         if not state.get_id():
-            state.set_id( str(len( self.get_states() )) )  
+            state.set_id( str(len( self._states )) )  
         self._initial_state = state
         self._current_state = state
-        self._hash.put(state)
-        self._states.append(state)
+        is_new, state_id  = self._hash.put(state)
+        if is_new:
+            self._states.append(state)
 
     def add_state_edge(self, state, edge):
         if not state.get_id():
-            state.set_id( str(len( self.get_states() )) )            
+            state.set_id( str(len( self._states )) )            
         is_new, state_id = self._hash.put(state)
         #change state if not new
         if is_new:
@@ -52,6 +53,7 @@ class Automata:
             state = self.get_state_by_id(state_id)
         #add edge
         edge.set_state_to(state.get_id())
+        edge.set_id( str(len( self._edges )) )
         self.add_edge(edge)
         return state, is_new
 
@@ -121,7 +123,7 @@ class Automata:
         explored_history = self.make_explored_history()
         traces = []
         for s in self._states:
-            if s.get_depth() == configuration.get_max_depth():
+            if not s.get_clickables():
                 state_trace = [s]
                 edge_trace = []
                 while s.get_id() in explored_history.keys():
@@ -499,6 +501,7 @@ class StateDom:
 class Edge:
     def __init__(self, state_from, state_to, clickable, \
                  inputs, selects, checkboxes, radios, iframe_key, cost = 1):
+        self._id = None
         self._state_from = state_from
         self._state_to = state_to
         self._clickable = clickable
@@ -506,7 +509,8 @@ class Edge:
         self._selects = selects
         self._checkboxes = checkboxes
         self._radios = radios
-        self._iframe_list = iframe_key.split(';') if iframe_key else None
+        self._iframe_list = None if not iframe_key \
+            else iframe_key if type(iframe_key) == type([]) else iframe_key.split(';')
 
     def set_id(self, edge_id):
         self._id = edge_id
@@ -594,6 +598,7 @@ class Edge:
         edge_data = {
             'from': self._state_from,
             'to': self._state_to,
+            'id': self._id,
             'clickable': {
                 'id': self._clickable.get_id(),
                 'name': self._clickable.get_name(),

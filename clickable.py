@@ -3,9 +3,7 @@
 """
 Definition of HTML elements: clickables, form and input field
 """
-"""
-2015/11/03 => remove form class
-"""
+import dom_analyzer
 
 class Clickable:
     def __init__(self, clickable_id=None, clickable_name=None, xpath=None, tag=None):
@@ -55,6 +53,15 @@ class InputField:
     def get_type(self):
         return self._type
 
+    def get_data_set(self, databank):
+        if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
+            data_set = databank.get_data(self._type, self._id)
+        elif not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
+            data_set = databank.get_data(self._type, self._name)
+        else:
+            data_set = databank.get_data(self._type, None)
+        return data_set        
+
     def __str__(self):
         return 'input id: %s (xpath: %s), type: %s, value: %s' % (self._id, self._xpath, self._type, self._value)
 
@@ -68,6 +75,7 @@ class SelectField:
         self._value = value
         self._selected = selected
 
+    #this value is list type
     def get_value(self):
         return self._value
 
@@ -85,6 +93,15 @@ class SelectField:
 
     def get_selected(self):
         return self._selected
+
+    def get_data_set(self, databank):
+        if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
+            data_set = databank.get_data('select', self._id)
+        elif not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
+            data_set = databank.get_data('select', self._name)
+        else:
+            data_set = databank.get_data('select', None)
+        return data_set
 
     def __str__(self):
         return 'select id: %s (xpath: %s), value: %s' % (self._id, self._xpath, self._value)
@@ -135,6 +152,15 @@ class CheckboxField:
     def get_checkbox_name(self):
         return self._checkbox_name
 
+    def get_data_set(self, databank):
+        if not self._checkbox_name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
+            data_set = databank.get_data('checkbox', self._checkbox_name)
+        elif not self._checkbox_list[0].get_id().startswith(dom_analyzer.DomAnalyzer.serial_prefix):
+            data_set = databank.get_data('checkbox', self._checkbox_list[0].get_id())
+        else:
+            data_set = databank.get_data('checkbox', None)
+        return data_set
+
 class Radio:
     def __init__(self, radio_id=None, radio_name=None, xpath=None, value=None):
         self._id = radio_id
@@ -180,4 +206,13 @@ class RadioField:
 
     def get_radio_name(self):
         return self._radio_name
+
+    def get_data_set(self, databank):
+        if not self._radio_name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
+            data_set = databank.get_data('radio', self._radio_name)
+        elif not self._radio_list[0].get_id().startswith(dom_analyzer.DomAnalyzer.serial_prefix):
+            data_set = databank.get_data('radio', self._radio_list[0].get_id())
+        else:
+            data_set = databank.get_data('radio', None)
+        return data_set
 #=============================================================================================

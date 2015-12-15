@@ -5,11 +5,13 @@
 Module docstring
 """
 
-import os, sys, json, posixpath, time, datetime, codecs, logging
+import os, sys, json, posixpath, time, datetime, codecs, logging, random, copy
 from abc import ABCMeta, abstractmethod
 from automata import Automata, State, StateDom, Edge
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
+from configuration import MutationMethod
+from mutation import Mutation
 from bs4 import BeautifulSoup
 #=============================================================================================
 #Diff: check url domain
@@ -45,17 +47,28 @@ class SeleniumCrawler(Crawler):
         return self.automata
 
     def run_mutant(self):
-        self.executor.start()
-        self.executor.goto_url()    
-        initial_state = self.get_initail_state()
-        self.run_mutant_script(initial_state)    
-        return self.automata
+        self.mutation_history_traces = []
+        self.mutation = Mutation(self.configuration.get_mutant_trace(), self.databank)
+        self.mutation_traces = self.make_mutation_traces()
+        num=0
+        for trace in self.mutation_traces:
+            logging.info(" start run number %s mutant trace", num)
+            self.executor.start()
+            self.executor.goto_url()    
+            initial_state = self.get_initail_state()
+            self.run_mutant_script(initial_state, trace)
+            self.close()
+            num+=1
+        self.save_mutation_history_traces()
 
+    #=============================================================================================
+    # DEFAULT CRAWL
+    #=============================================================================================
     def crawl(self, depth, prev_state=None):
         if depth > self.configuration.get_max_depth():
             return
         current_state = self.automata.get_current_state()
-        logging.info('now depth(%s) - max_depth(%s); current state: %s', depth, self.configuration.get_max_depth(), current_state.get_id() )
+        logging.info(' now depth(%s) - max_depth(%s); current state: %s', depth, self.configuration.get_max_depth(), current_state.get_id() )
         for clickables, iframe_key in DomAnalyzer.get_clickables(current_state, prev_state if prev_state else None):
             inputs = current_state.get_inputs(iframe_key)
             selects = current_state.get_selects(iframe_key)
@@ -64,7 +77,7 @@ class SeleniumCrawler(Crawler):
 
             for clickable in clickables:
                 new_edge = Edge(current_state.get_id(), None, clickable, inputs, selects, checkboxes, radios, iframe_key)
-                new_edge.make_value(self.databank)
+                self.make_value(new_edge)
                 logging.info('state %s fire element in iframe(%s)',current_state.get_id(), iframe_key)
                 self.click_event_by_edge(new_edge)
 
@@ -99,6 +112,9 @@ class SeleniumCrawler(Crawler):
                 logging.info('==========< BACKTRACK END   >==========')
         logging.info(' depth %s -> state %s crawl end', depth, current_state.get_id())
 
+    #=============================================================================================
+    # BACKTRACK
+    #=============================================================================================
     def backtrack(self, state):
         #if url are same, guess they are just javascipt edges
         if self.executor.get_url() == state.get_url():
@@ -162,31 +178,62 @@ class SeleniumCrawler(Crawler):
         dom_list, url, is_same = self.is_same_state_dom(state)
         return is_same
 
-    def click_event_by_edge(self, edge):
-        self.executor.switch_iframe_and_get_source( edge.get_iframe_list() )
-        self.executor.fill_selects( edge.get_selects() )
-        self.executor.fill_inputs_text( edge.get_inputs() )
-        self.executor.fill_checkboxes( edge.get_checkboxes() )
-        self.executor.fill_radios( edge.get_radios() )
-        self.executor.fire_event( edge.get_clickable() )
-        time.sleep(self.configuration.get_sleep_time())
+#=========================================================================================
+# TODO FOR MUTATION
+#=========================================================================================
+    def make_mutation_traces(self):
+        print "start make mutation"
+        self.mutation.make_data_set()
+        self.mutation.set_method(self.configuration.get_mutation_method())
+        self.mutation.make_mutation_traces()
+        return self.mutation.get_mutation_traces()
 
-    def save_dom(self, state):
-        try:
-            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '.txt'), 'w' ) as f:
-                f.write(state.get_all_dom())
-            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_nor.txt'), 'w' ) as f:
-                f.write(state.get_all_normalize_dom())
-            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_inputs.txt'), 'w', encoding='utf-8' ) as f:
-                json.dump(state.get_all_inputs_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
-            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_selects.txt'), 'w', encoding='utf-8' ) as f:
-                json.dump(state.get_all_selects_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
-            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_clicks.txt'), 'w', encoding='utf-8') as f:
-                json.dump(state.get_all_candidate_clickables_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
-        except Exception as e:  
-            logging.error(' save dom : %s \t\t__from crawler.py save_dom()', str(e))
+    def run_mutant_script(self, prev_state, mutation_trace):
+        depth = 0
+        trace = []
+        for edge in self.configuration.get_mutant_trace():
+            self.make_mutant_value(edge, mutation_trace[depth])
+            self.click_event_by_edge(edge)
+            self.event_history.append(edge)
 
-    #=============================================================================================
+            dom_list, url, is_same = self.is_same_state_dom(prev_state)
+            if not is_same: 
+                logging.info(' change dom to: %s', url)
+            # check if this is a new state
+            temp_state = State(dom_list, url)
+            new_state, is_newly_added = self.automata.add_state_edge(temp_state, edge)
+            # save this click edge
+            prev_state.add_clickable(edge.get_clickable(), edge.get_iframe_list())
+            if is_newly_added:
+                logging.info(' add new state %s of: %s', new_state.get_id(), url)
+                self.save_state(new_state, depth)
+                self.automata.change_state(new_state)
+
+            trace.append( Edge( copy.copy(prev_state.get_id()), copy.copy(new_state.get_id()), 
+                copy.copy(edge.get_clickable()), copy.copy(edge.get_inputs()), copy.copy(edge.get_selects()), 
+                copy.copy(edge.get_checkboxes()), copy.copy(edge.get_radios()), copy.copy(edge.get_iframe_list()) ) )
+            prev_state = new_state
+            depth += 1
+        self.mutation_history_traces.append(trace)
+
+    def save_mutation_history_traces(self):        
+        traces_data = {
+            'traces': []
+        }
+        for edge_trace in self.mutation_history_traces:
+            trace_data = {
+                'edges':[]
+            }
+            for edge in edge_trace:                
+                trace_data['edges'].append(edge.get_edge_json())
+            traces_data['traces'].append(trace_data)
+
+        with codecs.open(os.path.join(self.configuration.get_abs_path('root'), 'mutation_traces.json'), 'w', encoding='utf-8' ) as f:
+            json.dump(traces_data, f, indent=2, sort_keys=True, ensure_ascii=False)
+
+#=========================================================================================
+# BASIC CRAWL
+#=========================================================================================
     def get_initail_state(self):
         logging.info('get initial state')
         dom_list, url = self.get_dom_list()
@@ -217,31 +264,65 @@ class SeleniumCrawler(Crawler):
             prev_state = new_state
 
 #=========================================================================================
-# TODO FOR MUTATION
+# EVENT
 #=========================================================================================
-    def run_mutant_script(self, prev_state):
-        for edge in self.configuration.get_mutant_trace():
-            self.click_event_by_edge(edge)
-            self.event_history.append(edge)
+    def click_event_by_edge(self, edge):
+        self.executor.switch_iframe_and_get_source( edge.get_iframe_list() )
+        self.executor.fill_selects( edge.get_selects() )
+        self.executor.fill_inputs_text( edge.get_inputs() )
+        self.executor.fill_checkboxes( edge.get_checkboxes() )
+        self.executor.fill_radios( edge.get_radios() )
+        self.executor.fire_event( edge.get_clickable() )
+        time.sleep(self.configuration.get_sleep_time())
 
-            dom_list, url, is_same = self.is_same_state_dom(prev_state)
-            if is_same:
-                continue
-            logging.info(' change dom to: %s', url)
-            # check if this is a new state
-            temp_state = State(dom_list, url)
-            new_state, is_newly_added = self.automata.add_state_edge(temp_state, edge)
-            # save this click edge
-            prev_state.add_clickable(edge.get_clickable(), edge.get_iframe_list())
-            if is_newly_added:
-                logging.info(' add new state %s of: %s', new_state.get_id(), url)
-                self.save_state(new_state, 0)
-                self.automata.change_state(new_state)
-            prev_state = new_state
-#=========================================================================================
-#=========================================================================================
+    def close(self):
+        self.executor.close()
 
-    #Diff: check url domain
+    def make_value(self, edge):
+        for input_field in edge.get_inputs():
+            data_set = input_field.get_data_set(self.databank)
+            #check data set
+            value = random.choice(data_set) if data_set \
+                else ''.join( [random.choice(string.lowercase) for i in xrange(8)] )
+            input_field.set_value(value)
+
+        for select_field in edge.get_selects():
+            data_set = select_field.get_data_set(self.databank)
+            #check data set
+            selected = random.choice(data_set) if data_set \
+                else min(max(3, option_num/2), option_num)
+            select_field.set_selected(selected)
+
+        for checkbox_field in edge.get_checkboxes():
+            data_set = checkbox_field.get_data_set(self.databank)
+            #check data set
+            selected_list = random.choice(data_set).split('/') if data_set \
+                else random.sample( xrange(len(checkbox_field.get_checkbox_list())), random.randint(0, len(checkbox_field.get_checkbox_list())) )
+            checkbox_field.set_selected_list(selected_list)
+
+        for radio_field in edge.get_radios():
+            data_set = radio_field.get_data_set(self.databank)
+            #check data set
+            selected = random.choice(data_set) if data_set \
+                else andom.randint(0, len(radio_field.get_radio_list()))
+            radio_field.set_selected(selected)
+
+    def make_mutant_value(self, edge, edge_value):
+        for input_field in edge.get_inputs():
+            input_field.set_value(edge_value.get_inputs()[input_field.get_id()])
+
+        for select_field in edge.get_selects():
+            select_field.set_selected(edge_value.get_selects()[select_field.get_id()])
+
+        for checkbox_field in edge.get_checkboxes():
+            checkbox_field.set_selected_list(edge_value.get_checkboxes()[checkbox_field.get_checkbox_name()])
+
+        for radio_field in edge.get_radios():
+            radio_field.set_selected(edge_value.get_radios()[radio_field.get_radio_name()])
+
+#=========================================================================================
+# DECISION
+#=========================================================================================
     def is_same_domain(self, url):
         base_url = urlparse( self.configuration.get_url() )
         new_url = urlparse( url )
@@ -254,8 +335,36 @@ class SeleniumCrawler(Crawler):
                     return True
             return False
 
-    def close(self):
-        self.executor.close()
+    def is_same_state_dom(self, cs):
+        dom_list, url = self.get_dom_list()
+        cs_dom_list = cs.get_dom_list()
+        if url != cs.get_url():
+            return dom_list, url, False
+        elif len( cs_dom_list ) != len( dom_list ):
+            return dom_list, url, False
+        else:
+            for dom, cs_dom in itertools.izip(dom_list, cs_dom_list):
+                if not dom.is_same(cs_dom):
+                    return dom_list, url, False                    
+        return dom_list, url, True
+
+#=========================================================================================
+# STATE
+#=========================================================================================
+    def save_dom(self, state):
+        try:
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '.txt'), 'w' ) as f:
+                f.write(state.get_all_dom())
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_nor.txt'), 'w' ) as f:
+                f.write(state.get_all_normalize_dom())
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_inputs.txt'), 'w', encoding='utf-8' ) as f:
+                json.dump(state.get_all_inputs_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_selects.txt'), 'w', encoding='utf-8' ) as f:
+                json.dump(state.get_all_selects_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
+            with codecs.open(os.path.join(self.configuration.get_abs_path('dom'), state.get_id() + '_clicks.txt'), 'w', encoding='utf-8') as f:
+                json.dump(state.get_all_candidate_clickables_json(), f, indent=2, sort_keys=True, ensure_ascii=False)
+        except Exception as e:  
+            logging.error(' save dom : %s \t\t__from crawler.py save_dom()', str(e))
 
     #Diff: save state's information(inputs, selects, screenshot, [normalize]dom/iframe)
     def save_state(self, state, depth):
@@ -284,19 +393,6 @@ class SeleniumCrawler(Crawler):
         path = os.path.join(self.configuration.get_abs_path('state'), state.get_id() + '.png')
         self.executor.get_screenshot(path)
         self.save_dom(state)
-
-    def is_same_state_dom(self, cs):
-        dom_list, url = self.get_dom_list()
-        cs_dom_list = cs.get_dom_list()
-        if url != cs.get_url():
-            return dom_list, url, False
-        elif len( cs_dom_list ) != len( dom_list ):
-            return dom_list, url, False
-        else:
-            for dom, cs_dom in itertools.izip(dom_list, cs_dom_list):
-                if not dom.is_same(cs_dom):
-                    return dom_list, url, False                    
-        return dom_list, url, True
 
     def get_dom_list(self):
         #save dom of iframe in list of StateDom [iframe_path_list, dom, url/src, normalize dom]
@@ -331,5 +427,3 @@ class SeleniumCrawler(Crawler):
                 except Exception as e:
                     logging.error(' get_dom_of_iframe: %s \t\t__from crawler.py get_dom_list() ', str(e))
         dom_list.append( StateDom(iframe_xpath_list, str(soup), src) )
-    #=============================================================================================
-#==============================================================================================================================
