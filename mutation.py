@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import os, sys, json, posixpath, time, datetime, codecs, logging, random
+import os, sys, json, posixpath, time, datetime, codecs, logging, random, logging
 from automata import Automata, State, StateDom, Edge
 from dom_analyzer import DomAnalyzer
 from configuration import MutationMethod
@@ -47,25 +47,25 @@ class Mutation:
         for edge in self.trace:
             mutation_edge = MutationEdge(edge, self.databank)
             self.data_set_trace.append( mutation_edge )
-            print edge.get_state_from(),'->',edge.get_state_to()
 
     def set_method(self, method):
         self.method = method
 
     def make_mutation_traces(self):
         if self.method == MutationMethod.Simple:
-            print "start make simple"
             self.make_simple_method()
         elif self.method == MutationMethod.AllInputsOneState:
-            self.make_AllInputsOneState_method()
+            pass
+        elif self.method == MutationMethod.OneInputsAllState:
+            self.make_OneInputsAllState_method()
         elif self.method == MutationMethod.OneInputsOneState:
             pass
         elif self.method == MutationMethod.EachInputsOneState:
             pass
 
     def get_mutation_traces(self):
-        #print '\n\n\n',self.get_data_set_trace_json()
-        #print '\n\n\n\n',self.get_mutation_traces_json()
+        logging.info( '\n%s\n'%( self.get_data_set_trace_json() ) )
+        logging.info( '\n%s\n'%( self.get_mutation_traces_json() ) )
         return self.mutation_traces
 
     def make_simple_method(self):
@@ -73,7 +73,6 @@ class Mutation:
         for edge in self.data_set_trace:
             max_len = max( edge.find_max_len(), max_len )
         # bigO=max_len
-        print 'max_len', max_len
         for i in xrange(max_len):
             trace = []
             for edge in self.data_set_trace:
@@ -105,27 +104,59 @@ class Mutation:
                 trace.append(e)
             self.mutation_traces.append(trace)
 
-    def make_AllInputsOneState_method(self):
-        #bigO=len(trace)*max_len(edge)
+    def make_OneInputsAllState_method(self):
+        edge_table_list = []
         for edge in self.data_set_trace:
-            for i in xrange(edge.find_max_len()):
-                trace=[]
-                for _edge in self.data_set_trace:
-                    if edge != _edge:
-                        e = ValueEdge()
-                        for k,v in edge.get_inputs().items():
-                            e.get_inputs()[k] = v[0]
-                        trace.append(e)
-                    else:
-                        e = ValueEdge()
-                        for k,v in edge.get_inputs().items():
-                            if not v or len(v) == 0:
-                                e.get_inputs()[k] = ''
-                            else:
-                                i_in_list = i if i < len(v) else i%len(v)
-                                e.get_inputs()[k] = v[i_in_list]
-                                trace.appenf(e)
-                self.mutation_traces.append(trace)
+            #make edge's mutation list
+            edge_table = []
+            e = ValueEdge()
+            e.set_edge_default_value(edge)
+            edge_table.append(e)
+            for k, v in edge.get_inputs().items():
+                for data in v[1]:
+                    if data == v[0]:
+                        continue
+                    e = ValueEdge()
+                    e.set_edge_default_value(edge)
+                    e.get_inputs()[k] = data
+                    edge_table.append(e)
+            for k, v in edge.get_selects().items():
+                for data in v[1]:
+                    if data == v[0]:
+                        continue
+                    e = ValueEdge()
+                    e.set_edge_default_value(edge)
+                    e.get_selects()[k] = data
+                    edge_table.append(e)
+            for k, v in edge.get_checkboxes().items():
+                for data in v[1]:
+                    if data == v[0]:
+                        continue
+                    e = ValueEdge()
+                    e.set_edge_default_value(edge)
+                    e.get_checkboxes()[k] = data
+                    edge_table.append(e)
+            for k, v in edge.get_radios().items():
+                for data in v[1]:
+                    if data == v[0]:
+                        continue
+                    e = ValueEdge()
+                    e.set_edge_default_value(edge)
+                    e.get_radios()[k] = data
+                    edge_table.append(e)
+            edge_table_list.append(edge_table)
+        #find max_len of edge_table
+        max_len = max( *[ len(edge_table) for edge_table in edge_table_list ] )
+        #bigO=max_len(edge)=len(inputs*selects*checkboxes*radios)
+        for i in xrange(max_len):
+            trace = []
+            for edge_table in edge_table_list:
+                if not edge_table:
+                    continue
+                i_in_list = i if i < len(edge_table) else i % len(edge_table)
+                trace.append( edge_table[i_in_list] )
+            self.mutation_traces.append(trace)
+
 
     def get_data_set_trace_json(self):
         note = []
@@ -228,4 +259,14 @@ class ValueEdge:
     def get_radios(self):
         return self._radios
 
+    def set_edge_default_value(self, mutation_edge):
+        for k,v in mutation_edge.get_inputs().items():
+            self._inputs[k] = v[0]
+        for k,v in mutation_edge.get_selects().items():
+            self._selects[k] = v[0]
+        for k,v in mutation_edge.get_checkboxes().items():
+            self._checkboxes[k] = v[0]
+        for k,v in mutation_edge.get_radios().items():
+            self._radios[k] = v[0]
+        
 

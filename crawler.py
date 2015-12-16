@@ -50,15 +50,14 @@ class SeleniumCrawler(Crawler):
         self.mutation_history_traces = []
         self.mutation = Mutation(self.configuration.get_mutant_trace(), self.databank)
         self.mutation_traces = self.make_mutation_traces()
-        num=0
-        for trace in self.mutation_traces:
-            logging.info(" start run number %s mutant trace", num)
+        logging.info(' total %d mutation traces ', len(self.mutation_traces))
+        for n in xrange(len(self.mutation_traces)):
+            logging.info(" start run number %d mutant trace", n)
             self.executor.start()
             self.executor.goto_url()    
             initial_state = self.get_initail_state()
-            self.run_mutant_script(initial_state, trace)
+            self.run_mutant_script(initial_state, self.mutation_traces[n])
             self.close()
-            num+=1
         self.save_mutation_history_traces()
 
     #=============================================================================================
@@ -182,7 +181,6 @@ class SeleniumCrawler(Crawler):
 # TODO FOR MUTATION
 #=========================================================================================
     def make_mutation_traces(self):
-        print "start make mutation"
         self.mutation.make_data_set()
         self.mutation.set_method(self.configuration.get_mutation_method())
         self.mutation.make_mutation_traces()

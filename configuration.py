@@ -219,7 +219,16 @@ class SeleniumConfiguration(Configuration):
         return self._max_mutation
 
     def set_mutation_method(self, method):
-        self._mutation_method = method
+        if type(method) == type(MutationMethod):
+            self._mutation_method = method
+        elif method == '1':
+            self._mutation_method = MutationMethod.Simple
+        elif method == '2':
+            self._mutation_method = MutationMethod.AllInputsOneState
+        elif method == '3':
+            self._mutation_method = MutationMethod.OneInputsAllState
+        elif method == '4':
+            self._mutation_method = MutationMethod.OneInputsOneState
 
     def get_mutation_method(self):
         return self._mutation_method
@@ -235,7 +244,6 @@ class SeleniumConfiguration(Configuration):
     def build_trace(self, data):
         try:
             edges = []
-            print len(data['edges'])
             for edge in data['edges']:
                 state_from = edge['from']
                 state_to = edge['to']
@@ -252,7 +260,6 @@ class SeleniumConfiguration(Configuration):
                     c_list = []
                     for c in c_field['checkbox_list']:
                         c_list.append( Checkbox( c['id'], c['name'], c['xpath'], c['value'] ) )
-                    print checkboxes
                     checkboxes.append( CheckboxField(c_list, c_field['checkbox_name'], c_field['checkbox_selected_list']) )
                 radios = []
                 for r_field in edge['radios']:
@@ -317,5 +324,6 @@ class Browser(Enum):
 class MutationMethod(Enum):
     Simple = 1
     AllInputsOneState = 2
-    OneInputsOneState = 3
-    EachInputsOneState = 4
+    OneInputsAllState = 3
+    OneInputsOneState = 4
+    EachInputsOneState = 5
