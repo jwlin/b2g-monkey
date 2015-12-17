@@ -50,6 +50,7 @@ class SeleniumCrawler(Crawler):
         self.mutation_history_traces = []
         self.mutation = Mutation(self.configuration.get_mutant_trace(), self.databank)
         self.mutation_traces = self.make_mutation_traces()
+        self.mutation_traces = random.sample(self.mutation_traces, min(8, len(self.mutation_traces)))
         logging.info(' total %d mutation traces ', len(self.mutation_traces))
         for n in xrange(len(self.mutation_traces)):
             logging.info(" start run number %d mutant trace", n)
@@ -204,7 +205,7 @@ class SeleniumCrawler(Crawler):
             prev_state.add_clickable(edge.get_clickable(), edge.get_iframe_list())
             if is_newly_added:
                 logging.info(' add new state %s of: %s', new_state.get_id(), url)
-                self.save_state(new_state, depth)
+                self.save_state(new_state, depth+1)
                 self.automata.change_state(new_state)
 
             trace.append( Edge( copy.copy(prev_state.get_id()), copy.copy(new_state.get_id()), 

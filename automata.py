@@ -36,11 +36,11 @@ class Automata:
     def set_initial_state(self, state):
         if not state.get_id():
             state.set_id( str(len( self._states )) )  
-        self._initial_state = state
-        self._current_state = state
         is_new, state_id  = self._hash.put(state)
         if is_new:
             self._states.append(state)
+            self._initial_state = state
+            self._current_state = state
 
     def add_state_edge(self, state, edge):
         if not state.get_id():

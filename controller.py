@@ -117,7 +117,6 @@ def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace
 
     logging.info(" crawler start run...")
     crawler.run_mutant()
-    crawler.close()
 
     logging.info(" end! save automata...")
     automata.save_traces(config)
@@ -152,9 +151,9 @@ def load_config(fname):
     t_start = time.time()
     with codecs.open(fname, encoding='utf-8') as f:
         data = json.load(f)
-        browser = Browser.PhantomJS if data['browser_id'] == '3' \
-            else Browser.Chrome if data['browser_id'] == '2' else Browser.FireFox
-        config = SeleniumConfiguration(Browser.FireFox, data['url'], data['dirname'], data['folderpath'])
+        browser = Browser.PhantomJS if data['browser_id'] == 3 \
+            else Browser.Chrome if data['browser_id'] == 2 else Browser.FireFox
+        config = SeleniumConfiguration(browser, data['url'], data['dirname'], data['folderpath'])
         config.set_max_depth(int(data['max_depth']))
         config.set_max_states(int(data['max_states']))
         config.set_sleep_time(int(data['sleep_time']))
@@ -235,7 +234,7 @@ if __name__ == '__main__':
                     main_log.write( '\n[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
         #mutant mode
         elif sys.argv[1] == '2':
-            try:
+            #try:
                 if os.path.exists( os.path.join(sys.argv[2], sys.argv[3]) ):
                     raise ValueError('dirname already exist')
                 if not os.path.isfile(sys.argv[4]) or not os.path.exists(sys.argv[4]):
@@ -243,14 +242,14 @@ if __name__ == '__main__':
                 if not os.path.isfile(sys.argv[5]) or not os.path.exists(sys.argv[5]):
                     raise ValueError('not found traces file')
                 make_dir(sys.argv[2], sys.argv[3])
-                try:
-                    SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])
-                    end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'), True, 'done')
-                except Exception as e:
-                    end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'),False, str(e)+traceback.format_exc())
-            except Exception as e:
-                with open("mutant_log.txt","a") as main_log:
-                    main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
+            #    try:
+                SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])
+                end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'), True, 'done')
+            #    except Exception as e:
+            #        end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'),False, str(e)+traceback.format_exc())
+            #except Exception as e:
+            #   with open("mutant_log.txt","a") as main_log:
+            #        main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
         else:
             make_dir()
             debugTestMain()
