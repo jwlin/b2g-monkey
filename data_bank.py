@@ -139,6 +139,9 @@ class InlineDataBank(DataBank):
             if data_id in cls.data[input_type].keys():
                 cls.data[input_type][data_id].discard(value)
 
+#=============================================================================================================
+# Get data set from mysqldb
+#=============================================================================================================
 class MysqlDataBank(DataBank):
     _connect = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
 
@@ -147,20 +150,26 @@ class MysqlDataBank(DataBank):
         pass
 
     @classmethod
-    def get_data(cls, data_type, data_id):
+    def get_data(cls, data_type, data_id, mutation):
         data_name = ''
         columns = cls._connect.get_all_column_names('databank_'+data_type)
         data_name = cls.find_similar_equal_name(columns, data_id )
         if data_name:
             datas = cls._connect.get_databank_by_column('databank_'+data_type, data_name)
+            if mutation:
+                datas += cls._connect.get_databank_by_column('databank_'+data_type, data_name, 1)
             return datas
         data_name = cls.find_similar_contain_name(columns, data_id )
         if data_name:
             datas = cls._connect.get_databank_by_column('databank_'+data_type, data_name)
+            if mutation:
+                datas += cls._connect.get_databank_by_column('databank_'+data_type, data_name, 1)
             return datas
         data_name = cls.find_similar_belong_name(columns, data_id )
         if data_name:
             datas = cls._connect.get_databank_by_column('databank_'+data_type, data_name)
+            if mutation:
+                datas += cls._connect.get_databank_by_column('databank_'+data_type, data_name, 1)
             return datas
         return None
 

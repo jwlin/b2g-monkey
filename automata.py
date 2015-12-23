@@ -38,16 +38,18 @@ class Automata:
 
     def set_initial_state(self, state):
         if not state.get_id():
-            state.set_id( str(len( self._states )) )  
+            state.set_id( str(len( self._states )) )
         is_new, state_id  = self._hash.put(state)
         if is_new:
             self._states.append(state)
             self._initial_state = state
             self._current_state = state
             self._graph.add_node(state)
-        return is_new, state_id
+        else:
+            state = self.get_state_by_id(state_id)
+        return is_new, state
 
-    def add_state_edge(self, state, edge):
+    def add_state(self, state):
         if not state.get_id():
             state.set_id( str(len( self._states )) )            
         is_new, state_id = self._hash.put(state)
@@ -57,16 +59,14 @@ class Automata:
             self._graph.add_node(state)
         else:
             state = self.get_state_by_id(state_id)
-        #add edge
-        edge.set_state_to(state.get_id())
-        edge.set_id( str(len( self._edges )) )
-        self.add_edge(edge)
         return state, is_new
 
     def change_state(self, state):
         self._current_state = state
 
-    def add_edge(self, edge):
+    def add_edge(self, edge, state_to):
+        edge.set_state_to( state_to )
+        edge.set_id( str(len( self._edges )) )
         self._edges.append(edge)
         self._graph.add_edge( self.get_state_by_id(edge.get_state_from()),
                               self.get_state_by_id(edge.get_state_to()) )
@@ -115,11 +115,10 @@ class Automata:
         for state_trace, edge_trace in traces:
             trace_data = {
                 'states':[],
-                'edges':[],
+                'edges':[]
             }
-            for s in state_trace:
-                trace_data['states'].append(state.get_state_json(configuration))
-                trace_data['states'].append(state_data)
+            for state in state_trace:
+                trace_data['states'].append(state.get_simple_state_json(configuration))
             for edge in edge_trace:                
                 trace_data['edges'].append(edge.get_edge_json())
             traces_data['traces'].append(trace_data)

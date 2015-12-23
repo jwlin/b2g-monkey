@@ -52,7 +52,7 @@ class SeleniumCrawler(Crawler):
         self.mutation = Mutation(self.configuration.get_mutant_trace(), self.databank)
         self.mutation_traces = self.make_mutation_traces()
         # use a int to select sample of mutation traces
-        self.mutation_traces = random.sample(self.mutation_traces, min(8, len(self.mutation_traces)))
+        self.mutation_traces = random.sample(self.mutation_traces, min(2, len(self.mutation_traces)))
         logging.info(' total %d mutation traces ', len(self.mutation_traces))
         for n in xrange(len(self.mutation_traces)):
             logging.info(" start run number %d mutant trace", n)
@@ -90,7 +90,8 @@ class SeleniumCrawler(Crawler):
                     logging.info(' change dom to: %s', self.executor.get_url())
                     # check if this is a new state
                     temp_state = State(dom_list, url)
-                    new_state, is_newly_added = self.automata.add_state_edge(temp_state, new_edge)
+                    new_state, is_newly_added = self.automata.add_state(temp_state)
+                    self.automata.add_edge(new_edge, new_state.get_id())
                     # save this click edge
                     current_state.add_clickable(clickable, iframe_key)
                     '''TODO: value of inputs should connect with edges '''
@@ -192,31 +193,30 @@ class SeleniumCrawler(Crawler):
     def run_mutant_script(self, prev_state, mutation_trace):
         depth = 0
         edge_trace = []
-        state_trace = []
+        state_trace = [prev_state]
         cluster_value = ''
         for edge in self.configuration.get_mutant_trace():
-            self.make_mutant_value(edge, mutation_trace[depth])
-            self.click_event_by_edge(edge)
-            self.event_history.append(edge)
+            new_edge = edge.get_copy()
+            new_edge.set_state_from( prev_state.get_id() )
+            self.make_mutant_value(new_edge, mutation_trace[depth])
+            self.click_event_by_edge(new_edge)
+            self.event_history.append(new_edge)
 
             dom_list, url, is_same = self.is_same_state_dom(prev_state)
             if not is_same: 
                 logging.info(' change dom to: %s', url)
             # check if this is a new state
             temp_state = State(dom_list, url)
-            new_state, is_newly_added = self.automata.add_state_edge(temp_state, edge)
+            new_state, is_newly_added = self.automata.add_state(temp_state)
+            self.automata.add_edge(new_edge, new_state.get_id())
             # save this click edge
-            prev_state.add_clickable(edge.get_clickable(), edge.get_iframe_list())
+            prev_state.add_clickable(edge.get_clickable(), new_edge.get_iframe_list())
             if is_newly_added:
                 logging.info(' add new state %s of: %s', new_state.get_id(), url)
                 self.save_state(new_state, depth+1)
                 self.automata.change_state(new_state)
-
             # save the state, edge
             state_trace.append( new_state )
-            new_edge = edge.get_copy()
-            new_edge.set_state_from( prev_state.get_id() )
-            new_edge.set_state_to( new_state.get_id() )
             edge_trace.append( new_edge )
             cluster_value += prev_state.get_id() + new_state.get_id()
             # prepare for next edge
@@ -230,7 +230,7 @@ class SeleniumCrawler(Crawler):
         cluster_value = ''
         for edge in self.configuration.get_mutant_trace():
             cluster_value += edge.get_state_from() + edge.get_state_to()
-        self.mutation_cluster[cluster_value] = '0'
+        self.mutation_cluster[cluster_value] = []
         #then cluster other mutation traces
         for edge_trace, state_trace, cluster_value in self.mutation_history:
             if cluster_value in self.mutation_cluster:
@@ -254,7 +254,7 @@ class SeleniumCrawler(Crawler):
                     trace_data['edges'].append(edge.get_edge_json())
                 traces_data['traces'].append(trace_data)
                 for state in state_trace:
-                    trace_data['states'].append(state.get_state_json(self.configuration))
+                    trace_data['states'].append(state.get_simple_state_json(self.configuration))
 
         with codecs.open(os.path.join(self.configuration.get_abs_path('root'), 'mutation_traces.json'), 'w', encoding='utf-8' ) as f:
             json.dump(traces_data, f, indent=2, sort_keys=True, ensure_ascii=False)
@@ -266,11 +266,11 @@ class SeleniumCrawler(Crawler):
         logging.info(' get initial state')
         dom_list, url = self.get_dom_list()
         initial_state = State( dom_list, url )
-        is_new, state_id = self.automata.set_initial_state(initial_state)
+        is_new, state = self.automata.set_initial_state(initial_state)
         if is_new:
             self.save_state(initial_state, 0)
         time.sleep(self.configuration.get_sleep_time())
-        return initial_state
+        return state
 
     def run_script_before_crawl(self, prev_state):
         for edge in self.configuration.get_before_script():
@@ -283,7 +283,8 @@ class SeleniumCrawler(Crawler):
             logging.info(' change dom to: ', self.executor.get_url())
             # check if this is a new state
             temp_state = State(dom_list, url)
-            new_state, is_newly_added = self.automata.add_state_edge(temp_state, edge)
+            new_state, is_newly_added = self.automata.add_state(temp_state)
+            self.automata.add_edge(edge, new_state.get_id())
             # save this click edge
             prev_state.add_clickable(edge.get_clickable(), edge.get_iframe_list())
             if is_newly_added:

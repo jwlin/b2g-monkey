@@ -57,13 +57,13 @@ class InputField:
     def get_type(self):
         return self._type
 
-    def get_data_set(self, databank):
+    def get_data_set(self, databank, mutation=False ):
         if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data(self._type, self._id)
+            data_set = databank.get_data(self._type, self._id, mutation)
         elif not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data(self._type, self._name)
+            data_set = databank.get_data(self._type, self._name, mutation)
         else:
-            data_set = databank.get_data(self._type, None)
+            data_set = databank.get_data(self._type, None, mutation)
         return data_set
 
     def get_copy(self):
@@ -101,13 +101,13 @@ class SelectField:
     def get_selected(self):
         return self._selected
 
-    def get_data_set(self, databank):
+    def get_data_set(self, databank, mutation=False):
         if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('select', self._id)
+            data_set = databank.get_data('select', self._id, mutation)
         elif not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('select', self._name)
+            data_set = databank.get_data('select', self._name, mutation)
         else:
-            data_set = databank.get_data('select', None)
+            data_set = databank.get_data('select', None, mutation)
         return data_set
 
     def get_copy(self):
@@ -166,13 +166,13 @@ class CheckboxField:
     def get_checkbox_name(self):
         return self._checkbox_name
 
-    def get_data_set(self, databank):
+    def get_data_set(self, databank, mutation=False):
         if not self._checkbox_name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('checkbox', self._checkbox_name)
+            data_set = databank.get_data('checkbox', self._checkbox_name, mutation)
         elif not self._checkbox_list[0].get_id().startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('checkbox', self._checkbox_list[0].get_id())
+            data_set = databank.get_data('checkbox', self._checkbox_list[0].get_id(), mutation)
         else:
-            data_set = databank.get_data('checkbox', None)
+            data_set = databank.get_data('checkbox', None, mutation)
         return data_set
 
     def get_copy(self):
@@ -228,13 +228,13 @@ class RadioField:
     def get_radio_name(self):
         return self._radio_name
 
-    def get_data_set(self, databank):
+    def get_data_set(self, databank, mutation=False):
         if not self._radio_name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('radio', self._radio_name)
+            data_set = databank.get_data('radio', self._radio_name, mutation)
         elif not self._radio_list[0].get_id().startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('radio', self._radio_list[0].get_id())
+            data_set = databank.get_data('radio', self._radio_list[0].get_id(), mutation)
         else:
-            data_set = databank.get_data('radio', None)
+            data_set = databank.get_data('radio', None, mutation)
         return data_set
 
     def get_copy(self):

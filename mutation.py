@@ -45,7 +45,7 @@ class Mutation:
 
     def make_data_set(self):
         for edge in self.trace:
-            mutation_edge = MutationEdge(edge, self.databank)
+            mutation_edge = MutationDataSetEdge(edge, self.databank)
             self.data_set_trace.append( mutation_edge )
 
     def set_method(self, method):
@@ -209,21 +209,21 @@ class Mutation:
             note.append(trace_data)
         return note
 
-class MutationEdge:
+class MutationDataSetEdge:
     def __init__(self, edge, databank):
         self.databank = databank
         self._inputs = {}
         for i in edge.get_inputs():
-            self._inputs[i.get_id()] = [ i.get_value(), i.get_data_set(databank) ]
+            self._inputs[i.get_id()] = [ i.get_value(), i.get_data_set(databank, mutation=True) ]
         self._selects = {}
         for s in edge.get_selects():
-            self._selects[s.get_id()] = [ s.get_selected(), s.get_data_set(databank) ]
+            self._selects[s.get_id()] = [ s.get_selected(), s.get_data_set(databank, mutation=True) ]
         self._checkboxes = {}
         for c in edge.get_checkboxes():
-            self._checkboxes[c.get_checkbox_name()] = [ c.get_selected_list(), c.get_data_set(databank) ]
+            self._checkboxes[c.get_checkbox_name()] = [ c.get_selected_list(), c.get_data_set(databank, mutation=True) ]
         self._radios = {}
         for r in edge.get_radios():
-            self._radios[r.get_radio_name()] = [ r.get_selected(), r.get_data_set(databank) ]
+            self._radios[r.get_radio_name()] = [ r.get_selected(), r.get_data_set(databank, mutation=True) ]
 
     def find_max_len(self):
         i_len = [ len(data_set) for v,data_set in self._inputs.values() ]
