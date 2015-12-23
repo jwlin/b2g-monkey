@@ -47,9 +47,11 @@ class SeleniumCrawler(Crawler):
         return self.automata
 
     def run_mutant(self):
-        self.mutation_history_traces = []
+        self.mutation_history = []
+        self.mutation_cluster = {}
         self.mutation = Mutation(self.configuration.get_mutant_trace(), self.databank)
         self.mutation_traces = self.make_mutation_traces()
+        # use a int to select sample of mutation traces
         self.mutation_traces = random.sample(self.mutation_traces, min(8, len(self.mutation_traces)))
         logging.info(' total %d mutation traces ', len(self.mutation_traces))
         for n in xrange(len(self.mutation_traces)):
@@ -59,7 +61,7 @@ class SeleniumCrawler(Crawler):
             initial_state = self.get_initail_state()
             self.run_mutant_script(initial_state, self.mutation_traces[n])
             self.close()
-        self.save_mutation_history_traces()
+        self.save_mutation_history()
 
     #=============================================================================================
     # DEFAULT CRAWL
@@ -102,7 +104,7 @@ class SeleniumCrawler(Crawler):
                         self.event_history.pop()
                     self.automata.change_state(current_state)
                 else:
-                    logging.info('out of domain: %s', url)
+                    logging.info(' out of domain: %s', url)
                 logging.info('==========< BACKTRACK START >==========')
                 logging.info('==<BACKTRACK> depth %s -> backtrack to state %s',depth ,current_state.get_id() )
                 self.backtrack(current_state)
@@ -189,7 +191,9 @@ class SeleniumCrawler(Crawler):
 
     def run_mutant_script(self, prev_state, mutation_trace):
         depth = 0
-        trace = []
+        edge_trace = []
+        state_trace = []
+        cluster_value = ''
         for edge in self.configuration.get_mutant_trace():
             self.make_mutant_value(edge, mutation_trace[depth])
             self.click_event_by_edge(edge)
@@ -208,24 +212,49 @@ class SeleniumCrawler(Crawler):
                 self.save_state(new_state, depth+1)
                 self.automata.change_state(new_state)
 
-            trace.append( Edge( copy.copy(prev_state.get_id()), copy.copy(new_state.get_id()), 
-                copy.copy(edge.get_clickable()), copy.copy(edge.get_inputs()), copy.copy(edge.get_selects()), 
-                copy.copy(edge.get_checkboxes()), copy.copy(edge.get_radios()), copy.copy(edge.get_iframe_list()) ) )
+            # save the state, edge
+            state_trace.append( new_state )
+            new_edge = edge.get_copy()
+            new_edge.set_state_from( prev_state.get_id() )
+            new_edge.set_state_to( new_state.get_id() )
+            edge_trace.append( new_edge )
+            cluster_value += prev_state.get_id() + new_state.get_id()
+            # prepare for next edge
             prev_state = new_state
             depth += 1
-        self.mutation_history_traces.append(trace)
 
-    def save_mutation_history_traces(self):        
+        self.mutation_history.append( (edge_trace, state_trace, cluster_value ) )
+
+    def cluster_mutation_trace(self):
+        # first cluster default trace as 0
+        cluster_value = ''
+        for edge in self.configuration.get_mutant_trace():
+            cluster_value += edge.get_state_from() + edge.get_state_to()
+        self.mutation_cluster[cluster_value] = '0'
+        #then cluster other mutation traces
+        for edge_trace, state_trace, cluster_value in self.mutation_history:
+            if cluster_value in self.mutation_cluster:
+                self.mutation_cluster[cluster_value].append( (edge_trace, state_trace, cluster_value) )
+            else:
+                self.mutation_cluster[cluster_value] = [ (edge_trace, state_trace, cluster_value) ]
+
+    def save_mutation_history(self):
+        self.cluster_mutation_trace()
         traces_data = {
             'traces': []
         }
-        for edge_trace in self.mutation_history_traces:
-            trace_data = {
-                'edges':[]
-            }
-            for edge in edge_trace:                
-                trace_data['edges'].append(edge.get_edge_json())
-            traces_data['traces'].append(trace_data)
+        for cluster_key, mutation_traces in self.mutation_cluster.items():
+            for edge_trace, state_trace, cluster_value in mutation_traces:
+                trace_data = {
+                    'edges':[],
+                    'states':[],
+                    'cluster_value': cluster_key
+                }
+                for edge in edge_trace:                
+                    trace_data['edges'].append(edge.get_edge_json())
+                traces_data['traces'].append(trace_data)
+                for state in state_trace:
+                    trace_data['states'].append(state.get_state_json(self.configuration))
 
         with codecs.open(os.path.join(self.configuration.get_abs_path('root'), 'mutation_traces.json'), 'w', encoding='utf-8' ) as f:
             json.dump(traces_data, f, indent=2, sort_keys=True, ensure_ascii=False)
@@ -234,11 +263,12 @@ class SeleniumCrawler(Crawler):
 # BASIC CRAWL
 #=========================================================================================
     def get_initail_state(self):
-        logging.info('get initial state')
+        logging.info(' get initial state')
         dom_list, url = self.get_dom_list()
         initial_state = State( dom_list, url )
-        self.automata.set_initial_state(initial_state)
-        self.save_state(initial_state, 0)
+        is_new, state_id = self.automata.set_initial_state(initial_state)
+        if is_new:
+            self.save_state(initial_state, 0)
         time.sleep(self.configuration.get_sleep_time())
         return initial_state
 

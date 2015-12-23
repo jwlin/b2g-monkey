@@ -8,6 +8,7 @@ The automata (finite state machine) referenced by the monkey.
 
 import os, sys, json, posixpath, time, codecs, random
 from os.path import relpath
+import networkx
 from dom_analyzer import DomAnalyzer
 from hashUtil import Hash
 
@@ -15,11 +16,13 @@ class Automata:
     def __init__(self):
         self._states = []
         self._edges = []
-        self._edges_dict = {}
         self._initial_state = None
         self._current_state = None
-        self._hash = Hash(19, self)
         self._automata_fname = 'automata.json'
+        # make a hashmap with 19 blocks for states
+        self._hash = Hash(19, self)
+        # make a graph for counting paths
+        self._graph = networkx.DiGraph()
 
     def get_current_state(self):
         return self._current_state
@@ -41,6 +44,8 @@ class Automata:
             self._states.append(state)
             self._initial_state = state
             self._current_state = state
+            self._graph.add_node(state)
+        return is_new, state_id
 
     def add_state_edge(self, state, edge):
         if not state.get_id():
@@ -49,6 +54,7 @@ class Automata:
         #change state if not new
         if is_new:
             self._states.append(state)
+            self._graph.add_node(state)
         else:
             state = self.get_state_by_id(state_id)
         #add edge
@@ -62,10 +68,8 @@ class Automata:
 
     def add_edge(self, edge):
         self._edges.append(edge)
-        if not edge.get_state_from() in self._edges_dict.keys():
-            self._edges_dict[edge.get_state_from()] = [edge.get_state_to()]
-        else:
-            self._edges_dict[edge.get_state_from()].append(edge.get_state_to())
+        self._graph.add_edge( self.get_state_by_id(edge.get_state_from()),
+                              self.get_state_by_id(edge.get_state_to()) )
 
     def get_state_by_id(self, sid):
         for s in self._states:
@@ -80,64 +84,31 @@ class Automata:
         return None
 
     def get_shortest_path(self, target):
-        # Breath First Search
-        explored = []
-        frontier = [self._initial_state]
-        unexplored = [s for s in self._states if s != self._initial_state]
-        incoming_edges = {}
-        current_state = None
-
-        while (current_state != target) and frontier:
-            current_state = frontier.pop(0)
-            explored.append(current_state)
-            for edge in self._edges:  
-                if edge.get_state_from() == current_state and edge.get_state_to() in unexplored:
-                    frontier.append(edge.get_state_to())
-                    unexplored.remove(edge.get_state_to())
-                    incoming_edges[edge.get_state_to()] = e
+        shortest_paths = list( networkx.shortest_simple_paths(G, self._initial_state, target) )
+        shortest_path = shortest_paths[0]
         edges = []
-        if current_state == target:
-            while current_state != self._initial_state:
-                edges.insert(0, incoming_edges[current_state])
-                current_state = incoming_edges[current_state][0]
-        else:
-            raise ValueError('Automata.get_shortest_path(): No path found when trying to reach state: %s' % target)
-
+        for i in xrange(len(shortest_path)-1):
+            edges.append( self.get_edge_by_from_to( shortest_path[i].get_id(),
+                                                    shortest_path[i+1].get_id() ) )
         return edges
 
-    def make_explored_history(self):
-        ready = ['0']
-        explored = []
-        explored_history = {}
-        while len(ready) > 0:
-            current = ready.pop(0)
-            explored.append(current)
-            if current in self._edges_dict.keys():
-                for to in self._edges_dict[current]:
-                    if not to in explored:
-                        ready.append(to)
-                        explored_history[to] = current
-        return explored_history
-
-    def make_state_and_edge_traces(self, configuration):
-        explored_history = self.make_explored_history()
-        traces = []
-        for s in self._states:
-            if not s.get_clickables():
-                state_trace = [s]
+    def get_all_simple_states_and_traces(self):
+        traces=[]
+        for end_state in self._states:
+            if end_state.get_clickables():
+                # has clickable => not end
+                continue
+            for state_trace in networkx.all_simple_paths(self._graph,
+                            source=self._initial_state, target=end_state ):
                 edge_trace = []
-                while s.get_id() in explored_history.keys():
-                    parent = self.get_state_by_id( explored_history[s.get_id()] )
-                    state_trace.insert(0, parent)
-                    edge = self.get_edge_by_from_to(parent.get_id(), s.get_id())
-                    if edge:
-                        edge_trace.insert(0, edge)
-                    s = parent
+                for i in xrange(len(state_trace)-1):
+                    edge_trace.append( self.get_edge_by_from_to( state_trace[i].get_id(),
+                                                                 state_trace[i+1].get_id() ) )
                 traces.append( (state_trace, edge_trace) )
         return traces
 
     def save_traces(self, configuration):
-        traces = self.make_state_and_edge_traces(configuration)
+        traces = self.get_all_simple_states_and_traces()
         traces_data = {
             'traces': []
         }
@@ -147,19 +118,7 @@ class Automata:
                 'edges':[],
             }
             for s in state_trace:
-                state_data = {
-                    'id': s.get_id(),
-                    'url': s.get_url(),
-                    'img_path': posixpath.join(
-                        posixpath.join(
-                            *(relpath(
-                                configuration.get_path('state'),
-                                configuration.get_path('root')
-                                ).split(os.sep))
-                        ),
-                        s.get_id() + '.png'
-                    ),
-                }
+                trace_data['states'].append(state.get_state_json(configuration))
                 trace_data['states'].append(state_data)
             for edge in edge_trace:                
                 trace_data['edges'].append(edge.get_edge_json())
@@ -177,37 +136,7 @@ class Automata:
             'id_prefix': DomAnalyzer.serial_prefix
         }
         for state in self._states:
-            state_data = {
-                'id': state.get_id(),
-                'url': state.get_url(),
-                'depth': state.get_depth(),
-                # output unix style path for website: first unpack dirs in get_path('dom'),
-                # and then posixpath.join them with the filename
-                'dom_path': posixpath.join(
-                    posixpath.join(
-                        *(relpath(
-                            configuration.get_path('dom'),
-                            configuration.get_path('root')
-                            ).split(os.sep))
-                    ),
-                    state.get_id() + '.txt'
-                ),
-                'img_path': posixpath.join(
-                    posixpath.join(
-                        *(relpath(
-                            configuration.get_path('state'),
-                            configuration.get_path('root')
-                            ).split(os.sep))
-                    ),
-                    state.get_id() + '.png'
-                ),
-                'clickable': state.get_all_clickables_json(),
-                'inputs': state.get_all_inputs_json(),
-                'selects': state.get_all_selects_json(),
-                'radios': state.get_all_radios_json(),
-                'checkboxes': state.get_all_checkboxes_json()
-            }
-            data['state'].append(state_data)
+            data['state'].append(state.get_state_json(configuration))
         for edge in self._edges:
             data['edge'].append(edge.get_edge_json())
 
@@ -472,6 +401,47 @@ class State:
 
     def get_depth(self):
         return self._depth
+
+    def get_state_json(self, configuration):
+        state_data = {
+            'id': self._id,
+            'url': self._url,
+            'depth': self._depth,
+            # output unix style path for website: first unpack dirs in get_path('dom'),
+            # and then posixpath.join them with the filename
+            'dom_path': posixpath.join(
+                            posixpath.join(
+                                *(relpath(
+                                    configuration.get_path('dom'),
+                                    configuration.get_path('root')
+                                    ).split(os.sep) ) ), self._id + '.txt' ),
+            'img_path': posixpath.join(
+                            posixpath.join(
+                                *(relpath(
+                                    configuration.get_path('state'),
+                                    configuration.get_path('root')
+                                    ).split(os.sep) ) ), self._id  + '.png' ),
+            'clickable': self.get_all_clickables_json(),
+            'inputs': self.get_all_inputs_json(),
+            'selects': self.get_all_selects_json(),
+            'radios': self.get_all_radios_json(),
+            'checkboxes': self.get_all_checkboxes_json()
+        }
+        return state_data
+
+    def get_simple_state_json(self, configuration):
+        state_data = {
+            'id': self._id,
+            'url': self._url,
+            'img_path': posixpath.join(
+                            posixpath.join(
+                                *(relpath(
+                                    configuration.get_path('state'),
+                                    configuration.get_path('root')
+                                    ).split(os.sep) ) ), self._id  + '.png' ),
+            'depth': self._depth
+        }
+        return state_data
     #============================================================================
 
 class StateDom:
@@ -521,8 +491,14 @@ class Edge:
     def get_state_from(self):
         return self._state_from
 
+    def set_state_from(self, state_from):
+        self._state_from = state_from
+
     def get_state_to(self):
         return self._state_to
+
+    def set_state_to(self, state_to):
+        self._state_to = state_to
 
     def set_state_to(self, state):
         self._state_to = state
@@ -545,54 +521,13 @@ class Edge:
     def get_iframe_list(self):
         return self._iframe_list
 
-    def make_value(self, databank, mode=None, id=None):
-        for input_field in self._inputs:
-            if not input_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                data_set = databank.get_data(input_field.get_type(), input_field.get_id())
-            elif not input_field.get_name().startswith(DomAnalyzer.serial_prefix):
-                data_set = databank.get_data(input_field.get_type(), input_field.get_name())
-            else:
-                data_set = databank.get_data(input_field.get_type(), None)
-            #check data set
-            value = random.choice(data_set) if data_set \
-                else ''.join( [random.choice(string.lowercase) for i in xrange(8)] )
-            input_field.set_value(value)
-
-        for select_field in self._selects:
-            if not select_field.get_id().startswith(DomAnalyzer.serial_prefix):
-                data_set = databank.get_data('select', select_field.get_id())
-            elif not select_field.get_name().startswith(DomAnalyzer.serial_prefix):
-                data_set = databank.get_data('select', select_field.get_name())
-            else:
-                data_set = databank.get_data('select', None)
-            #check data set
-            selected = random.choice(data_set) if data_set \
-                else min(max(3, option_num/2), option_num)
-            select_field.set_selected(selected)
-
-        for checkbox_field in self._checkboxes:
-            if not checkbox_field.get_checkbox_name().startswith(DomAnalyzer.serial_prefix):
-                data_set = databank.get_data('checkbox', checkbox_field.get_checkbox_name())
-            elif not checkbox_field.get_checkbox_by_id(0).get_id().startswith(DomAnalyzer.serial_prefix):
-                data_set = databank.get_data('checkbox', checkbox_field.get_checkbox_by_id(0).get_id())
-            else:
-                data_set = databank.get_data('checkbox', None)
-            #check data set
-            selected_list = random.choice(data_set).split('/') if data_set \
-                else random.sample( xrange(len(checkbox_field.get_checkbox_list())), random.randint(0, len(checkbox_field.get_checkbox_list())) )
-            checkbox_field.set_selected_list(selected_list)
-
-        for radio_field in self._radios:
-            if not radio_field.get_radio_name().startswith(DomAnalyzer.serial_prefix):
-                data_set = databank.get_data('radio', radio_field.get_radio_name())
-            elif not radio_field.get_radio_by_id(0).get_id().startswith(DomAnalyzer.serial_prefix):
-                data_set = databank.get_data('radio', radio_field.get_radio_by_id(0).get_id())
-            else:
-                data_set = databank.get_data('radio', None)
-            #check data set
-            selected = random.choice(data_set) if data_set \
-                else andom.randint(0, len(radio_field.get_radio_list()))
-            radio_field.set_selected(selected)
+    def get_copy(self):
+        copy_edge = Edge( self._state_from, self._state_to, self._clickable.get_copy(),
+                        [ i.get_copy() for i in self._inputs ], [ s.get_copy() for s in self._selects ],
+                        [ c.get_copy() for c in self._checkboxes ], [ r.get_copy() for r in self._radios ],
+                        self._iframe_list )
+        copy_edge.set_id( self._id )
+        return copy_edge       
 
     def get_edge_json(self):
         edge_data = {

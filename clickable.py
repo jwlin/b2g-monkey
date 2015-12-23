@@ -24,6 +24,10 @@ class Clickable:
 
     def get_tag(self):
         return self._tag
+
+    def get_copy(self):
+        return Clickable(self._id, self._name, self._xpath, self._tag)
+
     def __str__(self):
         return 'clickable id: %s (xpath: %s) ' % (self._id, self._xpath )
         
@@ -60,7 +64,10 @@ class InputField:
             data_set = databank.get_data(self._type, self._name)
         else:
             data_set = databank.get_data(self._type, None)
-        return data_set        
+        return data_set
+
+    def get_copy(self):
+        return InputField(self._id, self._name, self._xpath, self._type, self._value)
 
     def __str__(self):
         return 'input id: %s (xpath: %s), type: %s, value: %s' % (self._id, self._xpath, self._type, self._value)
@@ -103,6 +110,10 @@ class SelectField:
             data_set = databank.get_data('select', None)
         return data_set
 
+    def get_copy(self):
+        return SelectField(self._id, self._name, self._xpath,
+                    [ v for v in self._value ], self._selected)
+
     def __str__(self):
         return 'select id: %s (xpath: %s), value: %s' % (self._id, self._xpath, self._value)
 
@@ -127,6 +138,9 @@ class Checkbox:
 
     def get_value(self):
         return self._value
+
+    def get_copy(self):
+        return Checkbox(self._id, self._name, self._xpath, self._value)
 
     def __str__(self):
         return 'checkbox id: %s, name: %s, (xpath: %s), value: %s' % (self._id, self._name, self._xpath, self._value)
@@ -161,6 +175,10 @@ class CheckboxField:
             data_set = databank.get_data('checkbox', None)
         return data_set
 
+    def get_copy(self):
+        return CheckboxField([ c.get_copy() for c in self._checkbox_list ],
+                            self._checkbox_name, self._checkbox_selected_list)
+
 class Radio:
     def __init__(self, radio_id=None, radio_name=None, xpath=None, value=None):
         self._id = radio_id
@@ -182,6 +200,9 @@ class Radio:
 
     def get_value(self):
         return self._value
+
+    def get_copy(self):
+        return Radio(self._id, self._name, self._xpath, self._value)
 
     def __str__(self):
         return 'radio id: %s, name: %s, (xpath: %s), value: %s' % (self._id, self._name, self._xpath, self._value)
@@ -215,4 +236,8 @@ class RadioField:
         else:
             data_set = databank.get_data('radio', None)
         return data_set
+
+    def get_copy(self):
+        return RadioField([ r.get_copy() for r in self._radio_list ],
+                            self._radio_name, self._radio_selected)
 #=============================================================================================

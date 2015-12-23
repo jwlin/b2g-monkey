@@ -64,9 +64,7 @@ class Mutation:
             pass
 
     def get_mutation_traces(self):
-        print self.data_set_trace
         logging.info( '\n%s\n'%( self.get_data_set_trace_json() ) )
-        print self.mutation_traces
         logging.info( '\n%s\n'%( self.get_mutation_traces_json() ) )
         return self.mutation_traces
 
@@ -82,7 +80,7 @@ class Mutation:
                 e.set_edge_default_value(edge)
                 trace.append(e)
             self.mutation_traces.append(trace)
-            
+
         for i in xrange(max_len):
             trace = []
             for edge in self.data_set_trace:
