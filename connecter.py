@@ -57,6 +57,18 @@ class mysqlConnect:
 		#type = tuple of tuple
 		return [ data[0] if type(data)==type(tuple()) else str(data) for data in self.cursor.fetchall() ]
 
+	def get_mutation_by_column(self, table, column):
+		sql = "SELECT info, %s FROM %s " % ( column, table )
+		logging.info(str(self))
+		logging.info(sql)
+
+		self.connect = MySQLdb.connect(self.host, self.user, self.password, self.databank)
+		self.cursor = self.connect.cursor()
+		self.cursor.execute(sql)
+		self.connect.close()
+		#type = tuple of tuple
+		return [ [data[0], data[1]] if type(data)==type(tuple()) else str(data) for data in self.cursor.fetchall() ]
+
 	def __str__(self):
 		return "connect to Mysql: host(%s) user(%s) password(%s) databank(%s)" % ( self.host, self.user, self.password, self.databank )
 

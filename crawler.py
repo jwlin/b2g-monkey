@@ -52,7 +52,8 @@ class SeleniumCrawler(Crawler):
         self.mutation = Mutation(self.configuration.get_mutant_trace(), self.databank)
         self.mutation_traces = self.make_mutation_traces()
         # use a int to select sample of mutation traces
-        self.mutation_traces = random.sample(self.mutation_traces, min(2, len(self.mutation_traces)))
+        self.mutation_traces = random.sample( self.mutation_traces, 
+            min( int(self.configuration.get_max_mutation_traces()), len(self.mutation_traces) ) )
         logging.info(' total %d mutation traces ', len(self.mutation_traces))
         for n in xrange(len(self.mutation_traces)):
             logging.info(" start run number %d mutant trace", n)
@@ -194,7 +195,7 @@ class SeleniumCrawler(Crawler):
         depth = 0
         edge_trace = []
         state_trace = [prev_state]
-        cluster_value = ''
+        cluster_value = prev_state.get_id()
         for edge in self.configuration.get_mutant_trace():
             new_edge = edge.get_copy()
             new_edge.set_state_from( prev_state.get_id() )
@@ -218,7 +219,7 @@ class SeleniumCrawler(Crawler):
             # save the state, edge
             state_trace.append( new_state )
             edge_trace.append( new_edge )
-            cluster_value += prev_state.get_id() + new_state.get_id()
+            cluster_value += new_state.get_id()
             # prepare for next edge
             prev_state = new_state
             depth += 1
@@ -227,9 +228,9 @@ class SeleniumCrawler(Crawler):
 
     def cluster_mutation_trace(self):
         # first cluster default trace as 0
-        cluster_value = ''
+        cluster_value = self.configuration.get_mutant_trace()[0].get_state_from()
         for edge in self.configuration.get_mutant_trace():
-            cluster_value += edge.get_state_from() + edge.get_state_to()
+            cluster_value += edge.get_state_to()
         self.mutation_cluster[cluster_value] = []
         #then cluster other mutation traces
         for edge_trace, state_trace, cluster_value in self.mutation_history:
@@ -339,7 +340,12 @@ class SeleniumCrawler(Crawler):
 
     def make_mutant_value(self, edge, edge_value):
         for input_field in edge.get_inputs():
-            input_field.set_value(edge_value.get_inputs()[input_field.get_id()])
+            mutation_value = edge_value.get_inputs()[input_field.get_id()]
+            if type(mutation_value) == type(""):
+                input_field.set_value(mutation_value)
+            elif type(mutation_value) == type([]) and len(mutation_value) == 2:
+                input_field.set_value(mutation_value[1])
+                input_field.set_mutation_info(mutation_value[0])
 
         for select_field in edge.get_selects():
             select_field.set_selected(edge_value.get_selects()[select_field.get_id()])

@@ -551,7 +551,8 @@ class Edge:
                 'name': my_input.get_name(),
                 'xpath': my_input.get_xpath(),
                 'type': my_input.get_type(),
-                'value': my_input.get_value()
+                'value': my_input.get_value(),
+                'info': my_input.get_mutation_info()
             }
             edge_data['inputs'].append(input_data)
         for select in self._selects:

@@ -39,12 +39,12 @@ class Mutation:
     def __init__(self, trace, databank):
         self.data_set_trace = []
         self.mutation_traces = []
-        self.trace = trace
+        self.basic_edge_trace = trace
         self.method = MutationMethod.Simple
         self.databank = databank
 
     def make_data_set(self):
-        for edge in self.trace:
+        for edge in self.basic_edge_trace:
             mutation_edge = MutationDataSetEdge(edge, self.databank)
             self.data_set_trace.append( mutation_edge )
 
@@ -64,8 +64,8 @@ class Mutation:
             pass
 
     def get_mutation_traces(self):
-        logging.info( '\n%s\n'%( self.get_data_set_trace_json() ) )
-        logging.info( '\n%s\n'%( self.get_mutation_traces_json() ) )
+        logging.info( '\n data_set_trace:\n%s\n'%( self.get_data_set_trace_json() ) )
+        logging.info( '\n all mutation_traces:\n%s\n'%( self.get_mutation_traces_json() ) )
         return self.mutation_traces
 
     def make_simple_method(self):
@@ -81,34 +81,22 @@ class Mutation:
                 trace.append(e)
             self.mutation_traces.append(trace)
 
+        def set_mutation_value_at_i( dataset_dicts, edge_dicts, i ):
+            for k,v in dataset_dicts.items():
+                if not v[1] or len(v[1]) == 0:
+                    edge_dicts[k] = ''
+                else:
+                    i_in_list = i if i < len(v[1]) else i%(len(v[1]))
+                    edge_dicts[k] = v[1][i_in_list]
+
         for i in xrange(max_len):
             trace = []
             for edge in self.data_set_trace:
                 e = ValueEdge()
-                for k,v in edge.get_inputs().items():
-                    if not v[1] or len(v[1]) == 0:
-                        e.get_inputs()[k] = ''
-                    else:
-                        i_in_list = i if i < len(v[1]) else i%len(v[1])
-                        e.get_inputs()[k] = v[1][i_in_list]
-                for k,v in edge.get_selects().items():
-                    if not v[1] or len(v[1]) == 0:
-                        e.get_selects()[k] = ''
-                    else:
-                        i_in_list = i if i < len(v[1]) else i%len(v[1])
-                        e.get_selects()[k] = v[1][i_in_list]
-                for k,v in edge.get_checkboxes().items():
-                    if not v[1] or len(v[1]) == 0:
-                        e.get_checkboxes()[k] = ''
-                    else:
-                        i_in_list = i if i < len(v[1]) else i%len(v[1])
-                        e.get_checkboxes()[k] = v[1][i_in_list]
-                for k,v in edge.get_radios().items():
-                    if not v[1] or len(v[1]) == 0:
-                        e.get_radios()[k] = ''
-                    else:
-                        i_in_list = i if i < len(v[1]) else i%len(v[1])
-                        e.get_radios()[k] = v[1][i_in_list]
+                set_mutation_value_at_i(edge.get_inputs(), e.get_inputs(), i)
+                set_mutation_value_at_i(edge.get_selects(), e.get_selects(), i)
+                set_mutation_value_at_i(edge.get_checkboxes(), e.get_checkboxes(), i)
+                set_mutation_value_at_i(edge.get_radios(), e.get_radios(), i)
                 trace.append(e)
             self.mutation_traces.append(trace)
 
@@ -120,9 +108,12 @@ class Mutation:
             e = ValueEdge()
             e.set_edge_default_value(edge)
             edge_table.append(e)
+
             for k, v in edge.get_inputs().items():
                 for data in v[1]:
                     if data == v[0]:
+                        continue
+                    if type(data) == type([]) and len(data) == 2 and data[1] == v[0]:
                         continue
                     e = ValueEdge()
                     e.set_edge_default_value(edge)
@@ -214,7 +205,13 @@ class MutationDataSetEdge:
         self.databank = databank
         self._inputs = {}
         for i in edge.get_inputs():
-            self._inputs[i.get_id()] = [ i.get_value(), i.get_data_set(databank, mutation=True) ]
+            #================================================================================================
+            # IMPORTANT ! change the inputs value with mutation table, not value table
+            # data_set => a list of [(info, mutant_value),...]
+            #================================================================================================
+            dataset = i.get_mutation_data_set(databank)
+            self._inputs[i.get_id()] = [ i.get_value(), dataset  ]
+            logging.info(dataset )
         self._selects = {}
         for s in edge.get_selects():
             self._selects[s.get_id()] = [ s.get_selected(), s.get_data_set(databank, mutation=True) ]

@@ -38,6 +38,7 @@ class InputField:
         self._xpath = xpath
         self._value = value
         self._type = input_type
+        self._mutation_info = None
 
     def set_value(self, text):
         self._value = text
@@ -57,6 +58,12 @@ class InputField:
     def get_type(self):
         return self._type
 
+    def set_mutation_info(self, info):
+        self._mutation_info = info
+
+    def get_mutation_info(self):
+        return self._mutation_info
+
     def get_data_set(self, databank, mutation=False ):
         if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
             data_set = databank.get_data(self._type, self._id, mutation)
@@ -64,6 +71,13 @@ class InputField:
             data_set = databank.get_data(self._type, self._name, mutation)
         else:
             data_set = databank.get_data(self._type, None, mutation)
+        return data_set
+
+    def get_mutation_data_set(self, databank):
+        if not self._type:
+            data_set = databank.get_mutation_data_set('text')
+        else:
+            data_set = databank.get_mutation_data_set(self._type)
         return data_set
 
     def get_copy(self):

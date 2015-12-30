@@ -83,7 +83,8 @@ class SeleniumConfiguration(Configuration):
         }
         self._before_trace_fname = ''
         self._mutant_scripts = []
-        self._max_mutation = 0
+        self._max_mutation_traces = 0
+        self._mutation_method = MutationMethod.Simple
 
     def set_folderpath(self, folderpath):
         self._folderpath = folderpath
@@ -212,11 +213,11 @@ class SeleniumConfiguration(Configuration):
     def get_mutant_trace(self):
         return self._mutant_scripts
 
-    def set_max_mutation(self, mutation):
-        self._max_mutation = mutation
+    def set_max_mutation_traces(self, max_traces):
+        self._max_mutation_traces = max_traces
 
-    def get_max_mutation(self):
-        return self._max_mutation
+    def get_max_mutation_traces(self):
+        return self._max_mutation_traces
 
     def set_mutation_method(self, method):
         if type(method) == type(MutationMethod):
@@ -307,7 +308,9 @@ class SeleniumConfiguration(Configuration):
         config_data['traces_fname'] = self._traces_fname
         config_data['analyzer'] = self._analyzer
         config_data['before_trace_fname'] = self._before_trace_fname
-        config_data['max_mutation'] = self._max_mutation
+
+        config_data['max_mutation_traces'] = self._max_mutation_traces
+        config_data['mutation_method'] = self._mutation_method
         #=============================================================================================
         with codecs.open(os.path.join(self.get_abs_path('root'), fname), 'w', encoding='utf-8') as f:
             json.dump(config_data, f, indent=2, sort_keys=True, ensure_ascii=False)
