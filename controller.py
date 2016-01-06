@@ -51,13 +51,14 @@ def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
 
-def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace_id, method_id, max_traces):
+def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace_id, method_id, mode_id, max_traces):
     logging.info(" loading config...")
     config = load_config(config_fname)
     config.set_folderpath(folderpath)
     config.set_dirname(dirname)
-    config.set_mutant_trace(traces_fname, trace_id)
+    config.set_mutation_trace(traces_fname, trace_id)
     config.set_mutation_method(method_id)
+    config.set_mutation_mode(mode_id)
     config.set_max_mutation_traces(max_traces)
 
     logging.info(" setting executor...")
@@ -76,16 +77,18 @@ def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace
     automata.save_automata(config)    
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
 
-def debugTestMain():
+def debugTestMain(folderpath, dirname):
     #config = SeleniumConfiguration(2, "http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php")
     #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
     #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
     #config.set_max_depth(1)
     logging.info(" setting config...")
-    config = SeleniumConfiguration(Browser.FireFox, "http://140.112.42.143/nothing/main.html")
+    config = SeleniumConfiguration(Browser.FireFox, "https://member.cht.com.tw/CHTRegi/register.jsp")
     config.set_max_depth(3)
     config.set_max_states(100)
+    config.set_folderpath(folderpath)
+    config.set_dirname(dirname)
     config.set_automata_fname('automata.json')
     config.set_traces_fname('traces.json')
     config.set_frame_tags(['iframe'])
@@ -244,7 +247,8 @@ if __name__ == '__main__':
                     raise ValueError('not found traces file')
                 make_dir(sys.argv[2], sys.argv[3])
                 try:
-                    SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
+                    SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], 
+                        sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
                     end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'), True, 'done')
                 except Exception as e:
                     end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'),False, str(e)+traceback.format_exc())
@@ -252,8 +256,10 @@ if __name__ == '__main__':
                 with open("mutant_log.txt","a") as main_log:
                     main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
         else:
-            make_dir()
-            debugTestMain()
+            make_dir(sys.argv[2], sys.argv[3])
+            debugTestMain(sys.argv[2], sys.argv[3])
     else:
+        print "[WARNIING] needed argv: <Mode=0> <FolderPath> <Dirname> debug mode "
         print "[WARNIING] needed argv: <Mode=1> <WebSubmitID> <FolderPath> <Dirname> default crawling "
-        print "                        <Mode=2> <FolderPath> <Dirname> <ConfigFile> <TracesFile> <TraceID> <MutationMethodID> <MaxTraces> mutant crawling "
+        print "                        <Mode=2> <FolderPath> <Dirname> <ConfigFile> <TracesFile>"
+        print "                                 <TraceID> <MutationMethodID> <MutationModeID> <MaxTraces> mutant crawling "

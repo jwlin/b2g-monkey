@@ -5,7 +5,7 @@
 Module docstring
 """
 
-import os, sys, json, posixpath, time, datetime, codecs, logging, random, copy
+import os, sys, json, posixpath, time, datetime, codecs, logging, random, copy, string
 from abc import ABCMeta, abstractmethod
 from automata import Automata, State, StateDom, Edge
 from visualizer import Visualizer
@@ -49,11 +49,16 @@ class SeleniumCrawler(Crawler):
     def run_mutant(self):
         self.mutation_history = []
         self.mutation_cluster = {}
-        self.mutation = Mutation(self.configuration.get_mutant_trace(), self.databank)
+        self.mutation = Mutation(self.configuration.get_mutation_trace(), self.databank)
         self.mutation_traces = self.make_mutation_traces()
-        # use a int to select sample of mutation traces
-        self.mutation_traces = random.sample( self.mutation_traces, 
-            min( int(self.configuration.get_max_mutation_traces()), len(self.mutation_traces) ) )
+        
+        logging.info(" start run default trace")
+        self.executor.start()
+        self.executor.goto_url() 
+        initial_state = self.get_initail_state()
+        self.run_mutant_script(initial_state)
+        self.close()
+
         logging.info(' total %d mutation traces ', len(self.mutation_traces))
         for n in xrange(len(self.mutation_traces)):
             logging.info(" start run number %d mutant trace", n)
@@ -155,7 +160,7 @@ class SeleniumCrawler(Crawler):
             return True
 
         #if can't, restart and try go again
-        logging,info('==<BACKTRACK> : retart driver')
+        logging.info('==<BACKTRACK> : retart driver')
         edges = self.automata.get_shortest_path(state)
         self.executor.restart_app()
         self.executor.goto_url()
@@ -186,20 +191,27 @@ class SeleniumCrawler(Crawler):
 # TODO FOR MUTATION
 #=========================================================================================
     def make_mutation_traces(self):
-        self.mutation.make_data_set()
+        self.mutation.set_mode(self.configuration.get_mutation_mode())
         self.mutation.set_method(self.configuration.get_mutation_method())
+        self.mutation.make_data_set()
         self.mutation.make_mutation_traces()
-        return self.mutation.get_mutation_traces()
+        # use a int to select sample of mutation traces
+        mutation_traces = self.mutation.get_mutation_traces()
+        mutation_traces = random.sample( mutation_traces, 
+            min( self.configuration.get_max_mutation_traces(), len(mutation_traces) ) )
+        return mutation_traces
 
-    def run_mutant_script(self, prev_state, mutation_trace):
+    def run_mutant_script(self, prev_state, mutation_trace=None):
         depth = 0
         edge_trace = []
         state_trace = [prev_state]
-        cluster_value = prev_state.get_id()
-        for edge in self.configuration.get_mutant_trace():
+        # use -1 to mark
+        cluster_value = prev_state.get_id() if mutation_trace else "-1"+prev_state.get_id()
+        for edge in self.configuration.get_mutation_trace():
             new_edge = edge.get_copy()
             new_edge.set_state_from( prev_state.get_id() )
-            self.make_mutant_value(new_edge, mutation_trace[depth])
+            if mutation_trace:
+                self.make_mutant_value(new_edge, mutation_trace[depth])
             self.click_event_by_edge(new_edge)
             self.event_history.append(new_edge)
 
@@ -227,11 +239,6 @@ class SeleniumCrawler(Crawler):
         self.mutation_history.append( (edge_trace, state_trace, cluster_value ) )
 
     def cluster_mutation_trace(self):
-        # first cluster default trace as 0
-        cluster_value = self.configuration.get_mutant_trace()[0].get_state_from()
-        for edge in self.configuration.get_mutant_trace():
-            cluster_value += edge.get_state_to()
-        self.mutation_cluster[cluster_value] = []
         #then cluster other mutation traces
         for edge_trace, state_trace, cluster_value in self.mutation_history:
             if cluster_value in self.mutation_cluster:
@@ -242,6 +249,8 @@ class SeleniumCrawler(Crawler):
     def save_mutation_history(self):
         self.cluster_mutation_trace()
         traces_data = {
+            'mode': self.configuration.get_mutation_mode(),
+            'method': self.configuration.get_mutation_method(),
             'traces': []
         }
         for cluster_key, mutation_traces in self.mutation_cluster.items():
@@ -310,32 +319,35 @@ class SeleniumCrawler(Crawler):
         self.executor.close()
 
     def make_value(self, edge):
+        rand = random.randint(0,1000)
+
         for input_field in edge.get_inputs():
             data_set = input_field.get_data_set(self.databank)
             #check data set
-            value = random.choice(data_set) if data_set \
+            value = data_set[ rand % len(data_set) ] if data_set \
                 else ''.join( [random.choice(string.lowercase) for i in xrange(8)] )
             input_field.set_value(value)
 
         for select_field in edge.get_selects():
             data_set = select_field.get_data_set(self.databank)
             #check data set
-            selected = random.choice(data_set) if data_set \
-                else min(max(3, option_num/2), option_num)
+            selected = data_set[ rand % len(data_set) ] if data_set \
+                else random.randint(0, len(select_field.get_value()))
             select_field.set_selected(selected)
 
         for checkbox_field in edge.get_checkboxes():
             data_set = checkbox_field.get_data_set(self.databank)
             #check data set
-            selected_list = random.choice(data_set).split('/') if data_set \
-                else random.sample( xrange(len(checkbox_field.get_checkbox_list())), random.randint(0, len(checkbox_field.get_checkbox_list())) )
+            selected_list = data_set[ rand % len(data_set) ].split('/') if data_set \
+                else random.sample( xrange(len(checkbox_field.get_checkbox_list())),
+                                    random.randint(0, len(checkbox_field.get_checkbox_list())) )
             checkbox_field.set_selected_list(selected_list)
 
         for radio_field in edge.get_radios():
             data_set = radio_field.get_data_set(self.databank)
             #check data set
-            selected = random.choice(data_set) if data_set \
-                else andom.randint(0, len(radio_field.get_radio_list()))
+            selected = data_set[ rand % len(data_set) ] if data_set \
+                else random.randint(0, len(radio_field.get_radio_list()))
             radio_field.set_selected(selected)
 
     def make_mutant_value(self, edge, edge_value):

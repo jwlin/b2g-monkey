@@ -162,9 +162,10 @@ class MysqlDataBank(DataBank):
     def get_data(cls, data_type, data_id, mutation):
         data_name = ''
         columns = cls._connect.get_all_column_names('databank_'+data_type)
+        # col[0], col[1] are uni, mode
+        columns = columns[2:]
         for method in [cls.find_similar_equal_name, cls.find_similar_contain_name, cls.find_similar_belong_name]:
-            # col[0], col[1] are uni, mode
-            data_name = method( columns[2:], data_id )
+            data_name = method( columns, data_id )
             if data_name:
                 datas = cls._connect.get_databank_by_column('databank_'+data_type, data_name)
                 if mutation:
@@ -175,32 +176,32 @@ class MysqlDataBank(DataBank):
     @classmethod
     def find_similar_equal_name(cls, columns, data_id):
         for column in columns:
-            if ''.join(data_id.lower().split()) == ''.join(column.lower().split()):
+            if column and u''.join(data_id.lower().split()) == u''.join(column.lower().split()):
                 return column
         return ''
 
     @classmethod
     def find_similar_contain_name(cls, columns, data_id):
         for column in columns:
-            if ''.join(data_id.lower().split()) in ''.join(column.lower().split()):
+            if column and u''.join(data_id.lower().split()) in u''.join(column.lower().split()):
                 return column
         return ''
 
     @classmethod
     def find_similar_belong_name(cls, columns, data_id):
         for column in columns:
-            if ''.join(column.lower().split()) in ''.join(data_id.lower().split()):
+            if column and u''.join(column.lower().split()) in u''.join(data_id.lower().split()):
                 return column
         return ''
 
     @classmethod
-    def get_mutation_data_set(cls, data_type):
+    def get_mutation_data_set(cls, data_type, mode):
         for table in ['value_mutation', 'number_mutation']:
             columns = cls._connect.get_all_column_names(table)
             type_column = cls.find_similar_equal_name(columns, data_type)
             if type_column:
                 #list of (info, value)
-                datas = cls._connect.get_mutation_by_column(table, data_type)
+                datas = cls._connect.get_mutation_by_column(table, data_type, mode)
                 return datas
         return None
 

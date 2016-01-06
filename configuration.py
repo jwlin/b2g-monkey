@@ -66,6 +66,7 @@ class SeleniumConfiguration(Configuration):
         self._automata_fname = 'automata.json'
         self._traces_fname = 'traces.json'
         self._dom_inside_iframe = True
+        self._before_trace_fname = ''
         self._frame_tags = []
         self._domains = []
         self._scripts = []
@@ -81,10 +82,13 @@ class SeleniumConfiguration(Configuration):
             'attributes_normalizer': [],
             'tag_with_attribute_normalizers': []
         }
-        self._before_trace_fname = ''
-        self._mutant_scripts = []
-        self._max_mutation_traces = 0
-        self._mutation_method = MutationMethod.Simple
+        self._mutation = {
+            'mutation_method': MutationMethod.Simple,
+            'mutation_mode': MutationMode.Empty,
+            'max_mutation_traces': 0,
+            'mutant_scripts': []
+        }
+
 
     def set_folderpath(self, folderpath):
         self._folderpath = folderpath
@@ -116,6 +120,9 @@ class SeleniumConfiguration(Configuration):
     def get_browserID(self):
         return self._browserID
 
+#==============================================================================================================
+# crawler configuration
+#==============================================================================================================
     def set_url(self, app_id):
         self._url = _url
 
@@ -128,6 +135,24 @@ class SeleniumConfiguration(Configuration):
     def get_domains(self):
         return self._domains
 
+#==============================================================================================================
+# Dom analysis configuration
+#==============================================================================================================
+    def set_dom_inside_iframe(self, is_inside):
+        self._dom_inside_iframe = is_inside
+
+    def is_dom_inside_iframe(self):
+        return self._dom_inside_iframe
+
+    def set_frame_tags(self, tags):
+        self._frame_tags += tags
+
+    def get_frame_tags(self):
+        return self._frame_tags
+
+#==============================================================================================================
+# Dom normalize configuration
+#==============================================================================================================
     def set_clickable_tag(self, tag_name, attr=None, value=None):
         self._analyzer['clickable_tags'].append({'tag':tag_name, 'attr':attr, 'value':value})
         DomAnalyzer.add_clickable_tag(tag_name, attr, value)
@@ -172,18 +197,9 @@ class SeleniumConfiguration(Configuration):
         self._analyzer['simple_path_ignore_tags'] = True
         DomAnalyzer.set_simple_path_ignore_tags()
 
-    def set_dom_inside_iframe(self, is_inside):
-        self._dom_inside_iframe = is_inside
-
-    def is_dom_inside_iframe(self):
-        return self._dom_inside_iframe
-
-    def set_frame_tags(self, tags):
-        self._frame_tags += tags
-
-    def get_frame_tags(self):
-        return self._frame_tags
-
+#==============================================================================================================
+# filename configuration
+#==============================================================================================================
     def set_automata_fname(self, automata_fname):
         self._automata_fname = automata_fname
 
@@ -206,33 +222,53 @@ class SeleniumConfiguration(Configuration):
     def get_before_script(self):
         return self._scripts
 
-    def set_mutant_trace(self, traces_fname, trace_id):
+#==============================================================================================================
+# mutation configuration
+#==============================================================================================================
+    def set_mutation_trace(self, traces_fname, trace_id):
         data = self.load_json(traces_fname)
-        self._mutant_scripts = self.build_trace(data['traces'][int(trace_id)])
+        self._mutation['mutant_scripts'] = self.build_trace(data['traces'][int(trace_id)])
 
-    def get_mutant_trace(self):
-        return self._mutant_scripts
+    def get_mutation_trace(self):
+        return self._mutation['mutant_scripts']
 
     def set_max_mutation_traces(self, max_traces):
-        self._max_mutation_traces = max_traces
+        self._mutation['max_mutation_traces'] = int(max_traces)
 
     def get_max_mutation_traces(self):
-        return self._max_mutation_traces
+        return self._mutation['max_mutation_traces']
 
     def set_mutation_method(self, method):
         if type(method) == type(MutationMethod):
-            self._mutation_method = method
+            self._mutation['mutation_method'] = method
         elif method == '1':
-            self._mutation_method = MutationMethod.Simple
+            self._mutation['mutation_method'] = MutationMethod.Simple
         elif method == '2':
-            self._mutation_method = MutationMethod.AllInputsOneState
+            self._mutation['mutation_method'] = MutationMethod.AllInputsOneState
         elif method == '3':
-            self._mutation_method = MutationMethod.OneInputsAllState
+            self._mutation['mutation_method'] = MutationMethod.OneInputsAllState
         elif method == '4':
-            self._mutation_method = MutationMethod.OneInputsOneState
+            self._mutation['mutation_method'] = MutationMethod.OneInputsOneState
 
     def get_mutation_method(self):
-        return self._mutation_method
+        return self._mutation['mutation_method']
+
+    def set_mutation_mode(self, mode):
+        if type(mode) == type(MutationMode):
+            self._mutation['mutation_mode'] = mode
+        elif mode == '1':
+            self._mutation['mutation_mode'] = MutationMode.Empty
+        elif mode == '2':
+            self._mutation['mutation_mode'] = MutationMode.MaxLength
+        elif mode == '3':
+            self._mutation['mutation_mode'] = MutationMode.RandomString
+        elif mode == '4':
+            self._mutation['mutation_mode'] = MutationMode.MalformedSymbol
+        elif mode == '5':
+            self._mutation['mutation_mode'] = MutationMode.SQLInjection
+
+    def get_mutation_mode(self):
+        return self._mutation['mutation_mode']
 
     def load_json(self, json_file):
         try:
@@ -306,11 +342,14 @@ class SeleniumConfiguration(Configuration):
         config_data['domains'] = self._domains
         config_data['dom_inside_iframe'] = self._dom_inside_iframe
         config_data['traces_fname'] = self._traces_fname
-        config_data['analyzer'] = self._analyzer
         config_data['before_trace_fname'] = self._before_trace_fname
 
-        config_data['max_mutation_traces'] = self._max_mutation_traces
-        config_data['mutation_method'] = self._mutation_method
+        config_data['analyzer'] = self._analyzer
+        config_data['mutation'] = {
+            "max_mutation_traces": self._mutation['max_mutation_traces'],
+            "mutation_method": self._mutation['mutation_method'],
+            "mutation_mode": self._mutation['mutation_mode']
+        }
         #=============================================================================================
         with codecs.open(os.path.join(self.get_abs_path('root'), fname), 'w', encoding='utf-8') as f:
             json.dump(config_data, f, indent=2, sort_keys=True, ensure_ascii=False)
@@ -330,3 +369,10 @@ class MutationMethod(Enum):
     OneInputsAllState = 3
     OneInputsOneState = 4
     EachInputsOneState = 5
+
+class MutationMode(Enum):
+    Empty               = 1
+    MaxLength           = 2
+    RandomString        = 3
+    MalformedSymbol     = 4
+    SQLInjection        = 5

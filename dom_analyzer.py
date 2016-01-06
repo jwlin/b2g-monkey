@@ -281,6 +281,7 @@ class DomAnalyzer:
     @classmethod
     def set_simple_clickable_tags(cls):
         cls._clickable_tags.append( Tag('a') )
+        cls._clickable_tags.append( Tag('li') )
         cls._clickable_tags.append( Tag('button') )
         cls._clickable_tags.append( Tag('input', {'type': 'submit'}) )
         cls._clickable_tags.append( Tag('input', {'type': 'button'}) )

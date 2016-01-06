@@ -4,6 +4,7 @@
 Definition of HTML elements: clickables, form and input field
 """
 import dom_analyzer
+import logging
 
 class Clickable:
     def __init__(self, clickable_id=None, clickable_name=None, xpath=None, tag=None):
@@ -70,14 +71,15 @@ class InputField:
         elif not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
             data_set = databank.get_data(self._type, self._name, mutation)
         else:
-            data_set = databank.get_data(self._type, None, mutation)
+            data_set = databank.get_data(self._type, 'None', mutation)
+
         return data_set
 
-    def get_mutation_data_set(self, databank):
+    def get_mutation_data_set(self, databank, mode):
         if not self._type:
-            data_set = databank.get_mutation_data_set('text')
+            data_set = databank.get_mutation_data_set('text', mode)
         else:
-            data_set = databank.get_mutation_data_set(self._type)
+            data_set = databank.get_mutation_data_set(self._type, mode)
         return data_set
 
     def get_copy(self):
@@ -121,7 +123,7 @@ class SelectField:
         elif not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
             data_set = databank.get_data('select', self._name, mutation)
         else:
-            data_set = databank.get_data('select', None, mutation)
+            data_set = databank.get_data('select', 'None', mutation)
         return data_set
 
     def get_copy(self):
@@ -186,7 +188,7 @@ class CheckboxField:
         elif not self._checkbox_list[0].get_id().startswith(dom_analyzer.DomAnalyzer.serial_prefix):
             data_set = databank.get_data('checkbox', self._checkbox_list[0].get_id(), mutation)
         else:
-            data_set = databank.get_data('checkbox', None, mutation)
+            data_set = databank.get_data('checkbox', 'None', mutation)
         return data_set
 
     def get_copy(self):
@@ -248,7 +250,7 @@ class RadioField:
         elif not self._radio_list[0].get_id().startswith(dom_analyzer.DomAnalyzer.serial_prefix):
             data_set = databank.get_data('radio', self._radio_list[0].get_id(), mutation)
         else:
-            data_set = databank.get_data('radio', None, mutation)
+            data_set = databank.get_data('radio', 'None', mutation)
         return data_set
 
     def get_copy(self):

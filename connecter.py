@@ -30,7 +30,7 @@ class mysqlConnect:
 		self.cursor = self.connect.cursor()
 		self.cursor.execute(sql)
 		self.connect.close()
-		return self.cursor.fetchall()
+		return [ data[0] if type(data)==type(tuple()) else str(data) for data in self.cursor.fetchall() ]
 
 	def get_all_column_names(self, table):
 		sql = "SELECT COLUMN_NAME FROM information_schema.columns WHERE table_name = \'%s\'" % (table)
@@ -57,8 +57,8 @@ class mysqlConnect:
 		#type = tuple of tuple
 		return [ data[0] if type(data)==type(tuple()) else str(data) for data in self.cursor.fetchall() ]
 
-	def get_mutation_by_column(self, table, column):
-		sql = "SELECT info, %s FROM %s " % ( column, table )
+	def get_mutation_by_column(self, table, column, mode):
+		sql = "SELECT info, %s FROM %s WHERE MODE = %d " % ( column, table , mode )
 		logging.info(str(self))
 		logging.info(sql)
 

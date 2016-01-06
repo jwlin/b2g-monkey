@@ -84,7 +84,7 @@ class Automata:
         return None
 
     def get_shortest_path(self, target):
-        shortest_paths = list( networkx.shortest_simple_paths(G, self._initial_state, target) )
+        shortest_paths = list( networkx.shortest_simple_paths(self._graph, self._initial_state, target) )
         shortest_path = shortest_paths[0]
         edges = []
         for i in xrange(len(shortest_path)-1):
