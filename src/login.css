@@ -1,0 +1,13 @@
+#container
+{
+	text-align: center;
+}
+#img 
+{
+	max-width:600px;
+/* 所有瀏覽器中圖片的大小為 500px */
+	width:600;
+/* 當圖片大小大於 500px，自動縮小為 500px */
+	width:expression(document.body.clientWidth>600?"600px":"auto");
+	overflow:hidden;
+}

@@ -1,0 +1,93 @@
+#button_container
+{
+	position:relative;
+	/*width: 700px;*/
+	/*left:40%;*/
+	text-align: center;
+}
+#download_container
+{
+	position:relative;
+	/*width:1325;*/
+	top:5%;
+	border-style:ridge;
+	text-align: center;
+}
+
+#btn_new_task
+{
+	width:180px;
+	height: 30px;
+	position:relative;
+	left:0%;
+}
+#div_dirname
+{
+	position:relative;
+	left:87%;	
+}
+#old_result
+{
+	width:180px;
+	height: 30px;
+}
+#old_dirname
+{
+	width:180px;
+	height: 30px;
+}
+.session_text
+{
+	width:300px;
+	height:30px 
+}
+
+#marquee
+{
+    font-size: 40;
+	position: relative;
+	top:50%;
+	
+}
+#marquee_string
+{
+
+	font-style: oblique;
+}
+.disable
+{
+	display: none;
+}
+.download_disable
+{
+	visibility: hidden;
+}
+.download_class
+{
+	position: relative;
+	top:7;
+}
+.detail
+{
+	position: relative;
+	text-align:center;
+	background-color: #FFFFCC;
+	
+}
+.detail_disable
+{
+	visibility: hidden;
+}
+.detail_none
+{
+	display: none;
+}
+.img
+{
+	width:100px;
+	height:100px;
+}
+.link
+{
+}
+

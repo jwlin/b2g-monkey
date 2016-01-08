@@ -1,0 +1,16 @@
+#text_container
+{
+	position:relative;
+	text-align: center;
+}
+#mutation_result_container
+{
+	position:relative;
+	top:5%;
+	border-style:ridge;
+	text-align: center;
+}
+.disable
+{
+	display: none;
+}
