@@ -7,8 +7,6 @@ Module docstring
 
 from abc import ABCMeta, abstractmethod
 from connecter import mysqlConnect
-import logging
-
 
 class DataBank():
     __metaclass__ = ABCMeta

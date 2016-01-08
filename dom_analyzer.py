@@ -294,7 +294,7 @@ class DomAnalyzer:
 
     @classmethod
     def set_simple_normalizers(cls):
-        cls._normalizers.append( TagNormalizer(['head', 'canvas', 'li']) )
+        cls._normalizers.append( TagNormalizer(['head', 'canvas']) )
         cls._normalizers.append( TagWithAttributeNormalizer(None, "style", "display:none;", 'contains') )
         cls._normalizers.append( TagWithAttributeNormalizer("input", "type", "hidden") )
         cls._attribute_normalizers.append( AttributeNormalizer(['class']) )

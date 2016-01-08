@@ -7,6 +7,7 @@ class mysqlConnect:
 		self.user = user
 		self.password = password
 		self.databank = databank
+		#logging.info(str(self))
 
 	def get_submit_by_id(self, submit_id):
 		sql = "SELECT * FROM webtesting WHERE id = %s" % ( submit_id )
@@ -23,8 +24,8 @@ class mysqlConnect:
 
 	def get_all_inputs_by_id(self, submit_id):
 		sql = "SELECT * FROM inputtable WHERE id = %s" % ( submit_id )
-		logging.info(str(self))
-		logging.info(sql)
+		#logging.info(str(self))
+		#logging.info(sql)
 
 		self.connect = MySQLdb.connect(self.host, self.user, self.password, self.databank)
 		self.cursor = self.connect.cursor()
@@ -34,8 +35,8 @@ class mysqlConnect:
 
 	def get_all_column_names(self, table):
 		sql = "SELECT COLUMN_NAME FROM information_schema.columns WHERE table_name = \'%s\'" % (table)
-		logging.info(str(self))
-		logging.info(sql)
+		#logging.info(str(self))
+		#logging.info(sql)
 
 		self.connect = MySQLdb.connect(self.host, self.user, self.password, self.databank)
 		self.cursor = self.connect.cursor()
@@ -47,8 +48,8 @@ class mysqlConnect:
 
 	def get_databank_by_column(self, table, column, mode=0):
 		sql = "SELECT %s FROM %s WHERE MODE = %d" % ( column, table , mode)
-		logging.info(str(self))
-		logging.info(sql)
+		#logging.info(str(self))
+		#logging.info(sql)
 
 		self.connect = MySQLdb.connect(self.host, self.user, self.password, self.databank)
 		self.cursor = self.connect.cursor()

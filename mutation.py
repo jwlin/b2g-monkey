@@ -119,7 +119,11 @@ class Mutation:
                 edge_table.append(e)
             edge_table_list.append(edge_table)
         #find max_len of edge_table
-        max_len = max( *[ len(edge_table) for edge_table in edge_table_list ] )
+        lens = []
+        for edge_table in edge_table_list :
+            if edge_table:
+                lens.appned(len(edge_table))
+        max_len = max( *lens ) if lens else 0
         #bigO=max_len(edge)=len(inputs)
         for i in xrange(max_len):
             trace = []

@@ -39,6 +39,9 @@ class SeleniumCrawler(Crawler):
         self.databank = databank
     
     def run(self):
+        #start time
+        self.time_start = time.time()
+
         self.executor.start()
         self.executor.goto_url()
         initial_state = self.get_initail_state()
@@ -52,6 +55,7 @@ class SeleniumCrawler(Crawler):
         self.mutation = Mutation(self.configuration.get_mutation_trace(), self.databank)
         self.mutation_traces = self.make_mutation_traces()
         
+        # run a default trace for compare
         logging.info(" start run default trace")
         self.executor.start()
         self.executor.goto_url() 
@@ -59,6 +63,7 @@ class SeleniumCrawler(Crawler):
         self.run_mutant_script(initial_state)
         self.close()
 
+        # run all mutation traces
         logging.info(' total %d mutation traces ', len(self.mutation_traces))
         for n in xrange(len(self.mutation_traces)):
             logging.info(" start run number %d mutant trace", n)
@@ -73,8 +78,13 @@ class SeleniumCrawler(Crawler):
     # DEFAULT CRAWL
     #=============================================================================================
     def crawl(self, depth, prev_state=None):
+        # check if depth over max depth , time over max time
         if depth > self.configuration.get_max_depth():
             return
+        if (time.time() - self.time_start) > self.configuration.get_max_time():
+            logging.info("|||| TIMO OUT |||| end crawl ")
+            return
+
         current_state = self.automata.get_current_state()
         logging.info(' now depth(%s) - max_depth(%s); current state: %s', depth, self.configuration.get_max_depth(), current_state.get_id() )
         for clickables, iframe_key in DomAnalyzer.get_clickables(current_state, prev_state if prev_state else None):
@@ -84,16 +94,30 @@ class SeleniumCrawler(Crawler):
             radios = current_state.get_radios(iframe_key)
 
             for clickable in clickables:
+                # check if time over max time
+                if (time.time() - self.time_start) > self.configuration.get_max_time():
+                    logging.info("|||| TIMO OUT |||| depth:%s state:%s break crawl ", depth, current_state.get_id() )
+                    break
+
                 new_edge = Edge(current_state.get_id(), None, clickable, inputs, selects, checkboxes, radios, iframe_key)
                 self.make_value(new_edge)
-                logging.info('state %s fire element in iframe(%s)',current_state.get_id(), iframe_key)
+                logging.info(' |depth:%s state:%s| fire element in iframe(%s)', depth, current_state.get_id(), iframe_key)
                 self.click_event_by_edge(new_edge)
 
                 dom_list, url, is_same = self.is_same_state_dom(current_state)
                 if is_same:
                     continue
+                    '''
+                    self.make_value(new_edge)
+                    logging.info(' nothing happen, state %s fire element in iframe(%s) again ',current_state.get_id(), iframe_key)
+                    self.click_event_by_edge(new_edge)
+                    dom_list, url, is_same = self.is_same_state_dom(current_state)
+                    if is_same:
+                        logging.info(' nothing happen')
+                        continue
+                    '''
                 if self.is_same_domain(url):
-                    logging.info(' change dom to: %s', self.executor.get_url())
+                    logging.info(' |depth:%s state:%s| change dom to: %s', depth, current_state.get_id(), self.executor.get_url())
                     # check if this is a new state
                     temp_state = State(dom_list, url)
                     new_state, is_newly_added = self.automata.add_state(temp_state)
@@ -102,7 +126,7 @@ class SeleniumCrawler(Crawler):
                     current_state.add_clickable(clickable, iframe_key)
                     '''TODO: value of inputs should connect with edges '''
                     if is_newly_added:
-                        logging.info('add new state %s of : %s', new_state.get_id(), url )
+                        logging.info(' |depth:%s state:%s| add new state %s of : %s', depth, current_state.get_id(), new_state.get_id(), url )
                         self.save_state(new_state, depth)
                         self.event_history.append( new_edge )
                         if depth < self.configuration.get_max_depth():
@@ -111,7 +135,13 @@ class SeleniumCrawler(Crawler):
                         self.event_history.pop()
                     self.automata.change_state(current_state)
                 else:
-                    logging.info(' out of domain: %s', url)
+                    logging.info(' |depth:%s state:%s| out of domain: %s', depth, current_state.get_id(), url)
+
+                # check if time over max time
+                if (time.time() - self.time_start) > self.configuration.get_max_time():
+                    logging.info("|||| TIMO OUT |||| depth:%s state:%s break crawl ", depth, current_state.get_id() )
+                    break
+
                 logging.info('==========< BACKTRACK START >==========')
                 logging.info('==<BACKTRACK> depth %s -> backtrack to state %s',depth ,current_state.get_id() )
                 self.backtrack(current_state)
@@ -125,6 +155,11 @@ class SeleniumCrawler(Crawler):
     # BACKTRACK
     #=============================================================================================
     def backtrack(self, state):
+        # check if depth over max depth , time over max time
+        if (time.time() - self.time_start) > self.configuration.get_max_time():
+            logging.info("|||| TIMO OUT |||| end backtrack ")
+            return
+
         #if url are same, guess they are just javascipt edges
         if self.executor.get_url() == state.get_url():
             #first, just refresh for javascript button
@@ -327,6 +362,7 @@ class SeleniumCrawler(Crawler):
             value = data_set[ rand % len(data_set) ] if data_set \
                 else ''.join( [random.choice(string.lowercase) for i in xrange(8)] )
             input_field.set_value(value)
+            logging.info(" set input:%s value:%s "%(input_field.get_id(), value))
 
         for select_field in edge.get_selects():
             data_set = select_field.get_data_set(self.databank)
@@ -334,6 +370,7 @@ class SeleniumCrawler(Crawler):
             selected = data_set[ rand % len(data_set) ] if data_set \
                 else random.randint(0, len(select_field.get_value()))
             select_field.set_selected(selected)
+            logging.info(" set select:%s value:%s "%(select_field.get_id(), selected))
 
         for checkbox_field in edge.get_checkboxes():
             data_set = checkbox_field.get_data_set(self.databank)
@@ -342,6 +379,7 @@ class SeleniumCrawler(Crawler):
                 else random.sample( xrange(len(checkbox_field.get_checkbox_list())),
                                     random.randint(0, len(checkbox_field.get_checkbox_list())) )
             checkbox_field.set_selected_list(selected_list)
+            logging.info(" set checkbox:%s value:%s "%(checkbox_field.get_checkbox_name(), str(selected_list)))
 
         for radio_field in edge.get_radios():
             data_set = radio_field.get_data_set(self.databank)
@@ -349,6 +387,7 @@ class SeleniumCrawler(Crawler):
             selected = data_set[ rand % len(data_set) ] if data_set \
                 else random.randint(0, len(radio_field.get_radio_list()))
             radio_field.set_selected(selected)
+            logging.info(" set radio:%s value:%s "%(radio_field.get_radio_name(), selected))
 
     def make_mutant_value(self, edge, edge_value):
         for input_field in edge.get_inputs():

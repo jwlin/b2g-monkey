@@ -29,9 +29,13 @@ def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
     logging.info(" setting config...")
     config = SeleniumConfiguration(Browser.PhantomJS, _url, folderpath, dirname)
     config.set_max_depth(_deep)
+    config.set_max_time(int(_time)*60)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
+    config.set_simple_path_ignore_tags()
+    config.set_frame_tags(['iframe'])
+    config.set_tags_normalizer( ['iframe','script','style'] )
     
     logging.info(" setting executor...")
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
@@ -82,10 +86,12 @@ def debugTestMain(folderpath, dirname):
     #config.set_domains(["http://sso.cloud.edu.tw/SSO/SSOLogin.do?returnUrl=https://ups.moe.edu.tw/index.php", "https://ups.moe.edu.tw/index.php"])
     #config = SeleniumConfiguration(2, "https://www.cloudopenlab.org.tw/index.do")
     #config = SeleniumConfiguration(2, "http://140.112.42.143/nothing/main.html")
-    #config.set_max_depth(1)
+    #config = SeleniumConfiguration(2, "https://member.cht.com.tw/CHTRegi/register.jsp")
+    #config = SeleniumConfiguration(Browser.FireFox, "https://apps.grad.uci.edu/ogsa/index.cfm?action=new_user")
+
     logging.info(" setting config...")
-    config = SeleniumConfiguration(Browser.FireFox, "https://member.cht.com.tw/CHTRegi/register.jsp")
-    config.set_max_depth(3)
+    config = SeleniumConfiguration(Browser.FireFox, "https://apply.grad.ucsd.edu/home")
+    config.set_max_depth(2)
     config.set_max_states(100)
     config.set_folderpath(folderpath)
     config.set_dirname(dirname)
@@ -116,7 +122,7 @@ def debugTestMain(folderpath, dirname):
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
     logging.info(" setting crawler...")
     automata = Automata()
-    databank = InlineDataBank() 
+    databank = MysqlDataBank() 
     crawler = SeleniumCrawler(config, executor, automata, databank)
     logging.info(" crawler start run...")
     crawler.run()
@@ -207,8 +213,8 @@ def make_dir(folderpath=None, dirname=None):
 def make_log(folderpath, dirname):
     filename = os.path.join( os.path.dirname(os.path.realpath(__file__)), os.path.join(folderpath, dirname, 'log.txt') )
     level = logging.INFO
-    format = '[%(asctime)s]<%(levelname)s>: %(message)s'
-    logging.basicConfig(filename=filename, level=level, format=format)
+    form = '[%(asctime)s]<%(levelname)s>: %(message)s'
+    logging.basicConfig(filename=filename, level=level, format=form)
 
 def end_log(filename, complete, note):
     with open(filename, 'w') as end_file:

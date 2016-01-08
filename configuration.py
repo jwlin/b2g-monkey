@@ -316,12 +316,6 @@ class SeleniumConfiguration(Configuration):
         config_data['max_states'] = self._max_states
         config_data['max_time'] = self._max_time
         config_data['sleep_time'] = self._sleep_time
-        #=============================================================================================
-        #Diff: browser use url & browserID not app
-        '''
-        config_data['app_name'] = self.get_app_name()
-        config_data['app_id'] = self.get_app_id()
-        '''
         config_data['url'] = self._url
         config_data['browser_id'] = self._browserID
         config_data['dirname'] = self._dirname

@@ -190,10 +190,15 @@ class SeleniumExecutor():
             elif self.browserID == Browser.Chrome:
                 self.driver = webdriver.Chrome(executable_path='/usr/local/share/chromedriver')
             elif self.browserID == Browser.PhantomJS:
-                self.driver = webdriver.PhantomJS()
+                dcaps = {'acceptSslCerts':True, 'phantomjs.page.settings.resourceTimeout': '5000'}
+                self.driver = webdriver.PhantomJS(desired_capabilities=dcaps,
+                    service_args=['--ignore-ssl-errors=true','--ssl-protocol=any'] )
             else: #default in firefox
                 self.driver = webdriver.Firefox(); 
             self.driver.set_window_size(1280,960)
+            self.driver.implicitly_wait(30)
+            self.driver.set_page_load_timeout(30)
+
             self.main_window = self.driver.current_window_handle
         except Exception as e:
             logging.error(' start driver : %s \t\t__from executor.py start()', str(e))
@@ -245,6 +250,7 @@ class SeleniumExecutor():
         self.check_alert()
         self.check_window()
         self.check_tab()
+        self.driver.find_element_by_xpath("html/body").click()
         time.sleep(0.1)
 
     def check_alert(self):
