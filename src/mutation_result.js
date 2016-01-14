@@ -46,38 +46,34 @@ function show_mutation(msg)
 	var trace_number = msg['traces'].length;
 	// default trace cluster
 	var default_cluster = msg['traces'][0]['cluster_value'].substring(2);
-	for(var n = 0; n < trace_number; n++ )
+	var n = 0, trace_number = msg['traces'].length;
+	for(; n < trace_number; n++ )
 	{
-		var cluster = msg['traces'][n]['cluster_value'];
 		if( n==0 ){
-			cluster = cluster.substring(2);
 			var trace_name = "測試路徑基準\t\t";
+			var same_result = "";
 		}else{			
 			var trace_name = "第"+n+"條數值變異路徑\t\t";
+			var same_result = (msg['traces'][n]['cluster_value'] == default_cluster) ? 
+				"<font size=\"7\" >\t通過\t</font>" : "<font size=\"6\" color=\"red\">\t不通過\t</font>";
 		}
-		if( cluster == default_cluster ){
-			var same_result = "<font size=\"7\" >\t通過\t</font>";
-		}else{
-			var same_result = "<font size=\"6\" color=\"red\">\t不通過\t</font>";
-		}
-		var cluster_path = cluster[0];
-		for(var c = 1; c < cluster.length; c++ ){
-			cluster_path += '->'+cluster[c];
-		}
-		var input = "<font size=\"6\">"+trace_name+cluster_path+"</font>"+same_result+
+		var input = "<font size=\"6\">"+trace_name+"</font>"+same_result+
 				"<input id=\""+n+"_toggle_button\" type=\"button\" value=\"顯示\" onclick=\"toggle_trace("+n+")\">"+
-				"<div id=\""+n+"_mutation_trace\" style=\"display: none;\">";
-		var edge_number = msg['traces'][n]['edges'].length;
-		for(var i=0;i<edge_number;i++)
+				"<div id=\""+n+"_mutation_trace\" style=\"display: none;\">"+
+				"<table align=\"center\" border=\"1\" >";
+		var i=0, edge_number = msg['traces'][n]['edges'].length;
+		for( ;i < edge_number; i++)
 		{
-			input += "<hr style=\"width:50%\"><font size=\"5\">第"+i+"步 : "+
-					"從頁面 ID:"+msg['traces'][n]['edges'][i]['from']+
-					"\t\t"+msg['traces'][n]['states'][i]['url']+
-					"<br>到頁面 ID:"+msg['traces'][n]['edges'][i]['to']+					
-					"\t\t"+msg['traces'][n]['states'][i+1]['url']+"<br></font>";
-			input += "<font size=\"5\">點擊物件<br><table align=\"center\" border=\"1\"><tr><td>id</td><td>name</td></tr>"+
+			input += "<tr><td>";
+			input += "<font size=\"5\">第"+(i+1)+"步 :<br>"+
+					"網頁編號:"+msg['traces'][n]['states'][i]['id']+"<br>"+
+					"網址:"+msg['traces'][n]['states'][i]['url']+"<br></font>";
+			input += "<font size=\"5\">點擊物件 : <br></font>"+
+					"<table align=\"center\" border=\"1\">"+
+					"<tr><td>id</td><td>name</td></tr>"+
 					"<tr><td>"+msg['traces'][n]['edges'][i]['clickable']['id']+"</td>"+
-					"<td>"+msg['traces'][n]['edges'][i]['clickable']['name']+"</td></tr></table><br></font>";
+					"<td>"+msg['traces'][n]['edges'][i]['clickable']['name']+"</td></tr></table><br>";
+
 			var inputs_number = msg['traces'][n]['edges'][i]['inputs'].length;
 			input += "<font size=\"5\">輸入欄位 : </font>";
 			if(inputs_number<=0){	input += "<font size=\"5\">無</font><br>"; }
@@ -92,6 +88,7 @@ function show_mutation(msg)
 				}
 				input += "</table>";
 			}
+
 			var selects_number = msg['traces'][n]['edges'][i]['selects'].length;
 			input += "<font size=\"5\">下拉選單 : </font>";
 			if(selects_number<=0){	input += "<font size=\"5\">無</font><br>"; }
@@ -109,6 +106,7 @@ function show_mutation(msg)
 				}
 				input += "</table>";
 			}
+
 			var radios_number = msg['traces'][n]['edges'][i]['radios'].length;
 			input += "<font size=\"5\">單選按鈕: </font>";
 			if(radios_number<=0){	input += "<font size=\"5\">無</font><br>"; }
@@ -124,6 +122,7 @@ function show_mutation(msg)
 				}
 				input += "</table>";
 			}
+
 			var checkboxes_number = msg['traces'][n]['edges'][i]['checkboxes'].length;
 			input += "<font size=\"5\">複選按鈕 : </font>";
 			if(checkboxes_number<=0){	input += "<font size=\"5\">無</font>"; }
@@ -147,9 +146,22 @@ function show_mutation(msg)
 				}
 				input += "</table>";
 			}
-			
+			input += "</td>";
+			src = "../python/trace/"+$('#hidden_dirname').val()+"/mutant/mutant"+$("#hidden_trace_number").val()+"/"+
+				msg["traces"][n]["states"][i]["img_path"];
+			input += "<td><a href=\""+src+"\" target=\"_blank\"><img class=\"img\" src=\""+src+"\"/></a><br/></font>"+
+					"</td></tr>";		
 		}
-		input += "</div><hr/>";
+		input += "<tr><td>";
+		input += "<font size=\"5\">第"+(i+1)+"步 :<br>"+
+				"網頁編號:"+msg['traces'][n]['states'][i]['id']+"<br>"+
+				"網址:"+msg['traces'][n]['states'][i]['url']+"<br></font>";
+		input += "</td>";
+		src = "../python/trace/"+$('#hidden_dirname').val()+"/mutant/mutant"+$("#hidden_trace_number").val()+"/"+
+			msg["traces"][n]["states"][i]["img_path"];
+		input += "<td><a href=\""+src+"\" target=\"_blank\"><img class=\"img\" src=\""+src+"\"/></a><br/></font>"+
+				"</td></tr>";
+		input += "</table></div><hr>";
 		$("#mutation_result_container").append(input);
 	}
 }

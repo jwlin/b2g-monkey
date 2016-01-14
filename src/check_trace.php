@@ -6,6 +6,7 @@
 	$end_location= "/var/www/python/trace/".$_POST['dirname']."/end.json";
 	$location= "/var/www/python/trace/".$_POST['dirname']."/traces.json";
 	$return['location'] = $location;
+	$mutant_location="/var/www/python/trace/".$_POST['dirname']."/mutant/*";
 	if (file_exists($end_location)) {
 
 		$end = json_decode(file_get_contents($end_location), true);
@@ -27,7 +28,8 @@
     			$return['complete'] = TRUE;
 				$trace = json_decode(file_get_contents($location));
 				$return['json'] = $trace;
-		
+				$file = glob($mutant_location);
+				$return['mutant'] = $file;
     		}else{
     			$return['complete'] = FALSE;
 				$return['json'] = $end['note'];

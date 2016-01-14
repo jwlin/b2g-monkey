@@ -84,10 +84,12 @@
 }
 .img
 {
-	width:100px;
-	height:100px;
+	width:480px;
+	height:320px;
 }
-.link
+.hide
 {
+	display:none;
 }
+
 

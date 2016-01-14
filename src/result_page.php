@@ -24,8 +24,8 @@
 <?php
 	$str = $_SESSION['url'];
 	$dirName = $_SESSION['dirname'];
-	echo "資料夾名稱:<input type=\"text\" class=\"session_text\" id=\"hidden_dirname\" name=\"hidden_dirname\" value=\"".$dirName."\" readonly>";
-	echo "待測網址:<input type=\"text\" class=\"session_text\" id=\"url\" name=\"url\" value=\"".$str."\" readonly> ";
+	echo "<input type=\"hidden\" class=\"session_text\" id=\"hidden_dirname\" name=\"hidden_dirname\" value=\"".$dirName."\" readonly>";
+	echo "測試目標網址:<input type=\"text\" class=\"session_text\" id=\"url\" name=\"url\" value=\"".$str."\" readonly> ";
 
 	#use for logout
 	#session_destroy();

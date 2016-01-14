@@ -24,7 +24,7 @@ session_start();
 echo "<input type=\"hidden\"  class=\"\" id=\"hidden_select_id\" name=\"\" value=\"".$_POST['send_select_id']."\" readonly>";
 echo "<input type=\"hidden\"  class=\"\" id=\"hidden_trace_number\" name=\"\" value=\"".$_POST['send_trace_number']."\" readonly>";
 echo "<input type=\"hidden\"  class=\"\" id=\"hidden_dirname\" name=\"\" value=\"".$_POST['send_dirname']."\" readonly>";
-echo "<h2 >資料夾 : ".$_POST['send_dirname']."  ，第".$_POST['send_trace_number']."個路徑 </h2>";
+echo "<h2 > 第".$_POST['send_trace_number']."個路徑 </h2>";
 echo "<h2 >數值變異方式 : <span id=\"method\">".$_POST['send_select_id_text']."</span></h2>";
 echo "<h2 >數值變異種類 : <span id=\"mode\">".$_POST['send_select_mode_text']."</span></h2>";
 ?>

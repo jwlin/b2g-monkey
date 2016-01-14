@@ -3,34 +3,6 @@ $(document).ready(function(){
 	timer = setInterval("check_trace_exist()", 10000);
 })
 
-function new_task()
-{
-	window.open("start.php");
-}
-function old_result(){
-	$('h1').append('.');
-	$.ajax({
-		url:"redirect_result_page.php",
-		data:{
-			dirname: $('#old_dirname').val()
-		},
-		type:"POST",
-		datatype:"json",
-		success: function(ms){
-          	var msg = jQuery.parseJSON(ms);
-			if(msg['exist'] && msg['complete']){	
-				window.location.href = "result_page.php";
-			}
-			else{
-				alert(ms+'this dir not exist or complete!')
-			}
-		},
-        error: function(check_value){
-          	alert('err redirect');
-        }
-	});
-}
-
 function check_trace_exist(){
 	$.ajax({
 		url:"check_trace.php",
@@ -39,14 +11,13 @@ function check_trace_exist(){
 		datatype:"json",
 		success: function(check_value){
           	var msg = jQuery.parseJSON(check_value);
-			//console.log(JSON.stringify(msg));
 			if(msg['end'])
 			{				
 				clearInterval(timer);
           		if(msg['complete'])
           		{
 					$("#marquee").addClass("disable");
-					read_trace(msg["json"]);
+					read_trace(msg["json"], msg["mutant"]);
           		}
           		else
           		{
@@ -61,7 +32,7 @@ function check_trace_exist(){
 	});
 
 }
-function read_trace(msg)
+function read_trace(msg, msg_mutant)
 {
 			$("#state_information").removeClass("disable");
 			$("#iframe").removeClass("disable");
@@ -90,13 +61,105 @@ function read_trace(msg)
 				write_detail(i,msg);
 
 				var td = tr.insertCell(tr.cells.length);
-				td.innerHTML = "<input type=\"button\" value=\"數值變異測試\" id=\""+i+"\" onclick=\"check_mutation_status("+i+")\">"+
-					"<input type=\"button\" value=\"清空\" id=\"clean"+i+"\" onclick=\"clean_mutation("+i+")\" >";
+				var mutant = "/var/www/python/trace/"+$("#hidden_dirname").val()+"/mutant/mutant"+i;
+				
+				if( jQuery.inArray(mutant, msg_mutant) >= 0 ){
+					td.innerHTML = "<input type=\"button\" class=\"hide\" value=\"開始變異測試\" id=\"new"+i+"\" onclick=\"run_mutation("+i+")\">"+
+						"<input type=\"button\" value=\"重新變異測試\" id=\"replay"+i+"\" onclick=\"replay_mutation("+i+")\">"+
+						"<input type=\"button\" value=\"檢視測試結果\" id=\"look"+i+"\" onclick=\"look_mutation("+i+")\" >";
+				}
+				else{
+					td.innerHTML = "<input type=\"button\" value=\"開始變異測試\" id=\"new"+i+"\" onclick=\"run_mutation("+i+")\">"+
+						"<input type=\"button\" class=\"hide\" value=\"重新變異測試\" id=\"replay"+i+"\" onclick=\"replay_mutation("+i+")\">"+
+						"<input type=\"button\" value=\"檢視測試結果\" class=\"hide\" id=\"look"+i+"\" onclick=\"look_mutation("+i+")\" >";
+				}
 			}
+}
+
+function see_detail(id,number){	
+	var n;
+	for(n=0;n<number;n++){
+		var j = "#detail_"+n+"";
+		$(j).addClass("detail_none");
+	}
+	var i = "#detail_"+id+"";
+	$(i).removeClass("detail_none");
+}
+function write_detail(number,msg){
+	var i = "#detail_"+number+"";
+	var state_number = msg["traces"][number]["states"].length;
+	var n=0;
+	input="<table align=\"center\" border=\"1\" >";
+	for(;n<state_number-1;n++)
+	{
+		input += "<tr><td>"+
+				"<font size=\"5\">第"+(n+1)+"個頁面<br>"+
+				"網頁編號:"+msg["traces"][number]["states"][n]["id"]+"<br>"+
+				"網址:"+msg["traces"][number]["states"][n]["url"]+"<br></font>"+
+				"<font size=\"5\">點擊物件<br></font>";
+		input += "<table align=\"center\" border=\"1\" ><tr><td> id </td><td> name </td><td> xpath </td></tr>"+
+				"<tr><td>"+msg["traces"][number]["edges"][n]["clickable"]["id"]+"</td>"+
+				"<td>"+msg["traces"][number]["edges"][n]["clickable"]["name"]+"</td>"+
+				"<td>"+msg["traces"][number]["edges"][n]["clickable"]["xpath"]+"</td></tr></table><br>"+
+				"</td>";
+		src = "../python/trace/"+$('#hidden_dirname').val()+"/"+msg["traces"][number]["states"][n]["img_path"];
+		input += "<td><a href=\""+src+"\" target=\"_blank\"><img class=\"img\" src=\""+src+"\"/></a><br/></font>"+
+				"</td></tr>";
+	}
+	input += "<tr><td>"+
+			"<font size=\"5\">第"+(n+1)+"個頁面\n"+
+			"網頁編號:"+msg["traces"][number]["states"][n]["id"]+"<br>"+
+			"網址:"+msg["traces"][number]["states"][n]["url"]+"<br></font>"+
+			"</td><td>";
+		
+	src = "../python/trace/"+$('#hidden_dirname').val()+"/"+msg["traces"][number]["states"][n]["img_path"];
+	input += "<a href=\""+src+"\" target=\"_blank\"><img class=\"img\" src=\""+src+"\"/></a><br/></font>"+
+			"</td></tr>";
+
+	input +="</table>";
+	$(i).append(input);
+
+	input = "<input type=\"button\" value=\"關閉\" onclick=\"remove_all("+number+")\">";
+	$(i).append(input);
+}
+function remove_all(number){
+	var i = "#detail_"+number+"";
+	$(i).addClass("detail_none");
+}
+function create_jmeter(id){
+	var i = "#"+id+"_download";
+	$.ajax({
+		url:"create_jmeter.php",
+		data:{dirname:$("#hidden_dirname").val(),
+			  trace_number:id},								
+		type:"POST",
+		datatype:"json",
+		success: function(js){
+			var msg = jQuery.parseJSON(js); 
+			alert('OUT:'+msg['out']+'\nERROR:'+msg['er']);
+			$(i).removeClass("download_disable");
+		},
+        error: function(js){
+		  	var msg = jQuery.parseJSON(js); 
+        }
+
+	});
+
 }
 
 function run_mutation(id)
 {
+	$("#send_select_id").val($("#mutaton_select option:selected").val());
+	$("#send_select_mode").val($("#mutaton_mode option:selected").val());
+	$("#send_select_id_text").val($("#mutaton_select option:selected").text());
+	$("#send_select_mode_text").val($("#mutaton_mode option:selected").text());
+	$("#send_trace_number").val(id);
+	$("#send_dirname").val($("#hidden_dirname").val());
+
+	$("#new"+id).addClass("hide");
+	$("#replay"+id).removeClass("hide");
+	$("#look"+id).removeClass("hide");
+
 	$.ajax({
 		url:"runAjax_mutation.php",
 		data:{
@@ -123,8 +186,7 @@ function run_mutation(id)
 
 	});
 }
-
-function check_mutation_status(id){
+function replay_mutation(id){
 	$("#send_select_id").val($("#mutaton_select option:selected").val());
 	$("#send_select_mode").val($("#mutaton_mode option:selected").val());
 	$("#send_select_id_text").val($("#mutaton_select option:selected").text());
@@ -133,33 +195,6 @@ function check_mutation_status(id){
 	$("#send_dirname").val($("#hidden_dirname").val());
 
 	$.ajax({
-		url:"check_mutation_trace.php",
-		data:{
-			dirname:$("#hidden_dirname").val(),
-			trace_number:id
-		},
-		type:"POST",
-		datatype:"json",
-		success: function(js)
-		{
-          	var msg = jQuery.parseJSON(js);
-          	alert(js);
-          	if( !msg['exist'] ){
-          		run_mutation(id);
-          	}else{
-				setTimeout(function(){
-					$("#send_id_to_mutation").submit();
-				}, 1000);
-          	}
-		},
-        error: function(js){
-          	alert(js);
-        }
-	});
-}
-
-function clean_mutation(id){
-	$.ajax({
 		url:"delete.php",
 		data:{
 			dirname:"/var/www/python/trace/"+$("#hidden_dirname").val()+"/mutant/mutant"+id,
@@ -167,81 +202,20 @@ function clean_mutation(id){
 		type:"POST",
 		datatype:"txt",
 		success: function(js){
-			alert(js);
+			console.log(js);
+          	run_mutation(id);
 		},
         error: function(js){
           	alert('err');
         }
 	});
 }
-
-function see_detail(id,number)
-{	
-	var n;
-	for(n=0;n<number;n++)
-	{
-		var j = "#detail_"+n+"";
-		$(j).addClass("detail_none");
-	}
-	var i = "#detail_"+id+"";
-	$(i).removeClass("detail_none");
-
-
-}
-function write_detail(number,msg)
-{
-	var i = "#detail_"+number+"";
-	var state_number = msg["traces"][number]["states"].length;
-	var n;
-	for(n=0;n<state_number-1;n++)
-	{
-		input = "<font size=\"5\">第"+n+"個頁面  網頁編號:"+msg["traces"][number]["states"][n]["id"]+"  網址:"+msg["traces"][number]["states"][n]["url"]+"<br></font>";
-		$(i).append(input);
-		src = "../python/trace/"+$('#hidden_dirname').val()+"/"+msg["traces"][number]["states"][n]["img_path"];
-		input = "<a href=\""+src+"\" target=\"_blank\"><img class=\"img\" src=\""+src+"\"/></a><br/></font>";
-		$(i).append(input);
-		input = "<hr/><font size=\"5\">點擊物件<br>"+
-				"<table align=\"center\" border=\"1\" ><tr><td> id </td><td> name </td><td> xpath </td></tr>"+
-				"<tr><td>"+msg["traces"][number]["edges"][n]["clickable"]["id"]+"</td>"+
-				"<td>"+msg["traces"][number]["edges"][n]["clickable"]["name"]+"</td>"+
-				"<td>"+msg["traces"][number]["edges"][n]["clickable"]["xpath"]+"</td></tr></table><br><hr/></font>";
-		$(i).append(input);
-
-	}
-	input = "<font size=\"5\">第"+n+"個頁面  網頁編號:"+msg["traces"][number]["states"][n]["id"]+"  網址:"+msg["traces"][number]["states"][n]["url"]+" <br></font>";
-	$(i).append(input);
-	src = "../python/trace/"+$('#hidden_dirname').val()+"/"+msg["traces"][number]["states"][n]["img_path"];
-	input = "<a href=\""+src+"\" target=\"_blank\"><img class=\"img\" src=\""+src+"\"/></a><br/></font>";
-	$(i).append(input);
-
-	input = "<input type=\"button\" value=\"關閉\" onclick=\"remove_all("+number+")\">";
-	$(i).append(input);
-}
-function remove_all(number)
-{
-	var i = "#detail_"+number+"";
-	$(i).addClass("detail_none");
-}
-function create_jmeter(id)
-{
-	var i = "#"+id+"_download";
-	$.ajax({
-		url:"create_jmeter.php",
-		data:{dirname:$("#hidden_dirname").val(),
-			  trace_number:id},								
-		type:"POST",
-		datatype:"json",
-		success: function(js)
-		{
-			var msg = jQuery.parseJSON(js); 
-			alert('OUT:'+msg['out']+'\nERROR:'+msg['er']);
-			$(i).removeClass("download_disable");
-		},
-        error: function(js)
-        {
-		  	var msg = jQuery.parseJSON(js); 
-        }
-
-	});
-
+function look_mutation(id){
+	$("#send_select_id").val($("#mutaton_select option:selected").val());
+	$("#send_select_mode").val($("#mutaton_mode option:selected").val());
+	$("#send_select_id_text").val($("#mutaton_select option:selected").text());
+	$("#send_select_mode_text").val($("#mutaton_mode option:selected").text());
+	$("#send_trace_number").val(id);
+	$("#send_dirname").val($("#hidden_dirname").val());
+	$("#send_id_to_mutation").submit();
 }
