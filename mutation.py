@@ -122,8 +122,8 @@ class Mutation:
         lens = []
         for edge_table in edge_table_list :
             if edge_table:
-                lens.appned(len(edge_table))
-        max_len = max( *lens ) if lens else 0
+                lens.append(len(edge_table))
+        max_len = max( *lens ) if len(lens) > 1 else 1
         #bigO=max_len(edge)=len(inputs)
         for i in xrange(max_len):
             trace = []

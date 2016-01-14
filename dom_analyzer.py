@@ -29,7 +29,6 @@ class DomAnalyzer:
     _attribute_normalizers = []
     serial_prefix = 'b2g-monkey-'
     _serial_num = 1  # used to dispatch id to clickables without id
-    _path_ignore_tags = []
 
     #=============================================================================================
     @classmethod
@@ -76,7 +75,7 @@ class DomAnalyzer:
     def get_candidate_clickables_soup(cls, dom):
         clickables = []
         candidate_clickables = []
-        soup = BeautifulSoup(dom, 'html.parser')
+        soup = BeautifulSoup(dom, 'html5lib')
         soup = cls.soup_visible(soup)
         for tag in cls._clickable_tags:
             if tag.get_attr():
@@ -94,7 +93,7 @@ class DomAnalyzer:
 
     @classmethod
     def get_inputs(cls, dom):
-        soup = BeautifulSoup(dom, 'html.parser')
+        soup = BeautifulSoup(dom, 'html5lib')
         soup = cls.soup_visible(soup)
         inputs_list = []
         for input_type in cls._input_types:
@@ -107,7 +106,7 @@ class DomAnalyzer:
 
     @classmethod
     def get_selects(cls, dom):
-        soup = BeautifulSoup(dom, 'html.parser')
+        soup = BeautifulSoup(dom, 'html5lib')
         soup = cls.soup_visible(soup)
         selects_list = []
         for my_select in soup.find_all('select'):
@@ -121,7 +120,7 @@ class DomAnalyzer:
 
     @classmethod
     def get_radios(cls, dom):
-        soup = BeautifulSoup(dom, 'html.parser')
+        soup = BeautifulSoup(dom, 'html5lib')
         soup = cls.soup_visible(soup)
         #group radio by name
         radio_dict = {}
@@ -142,7 +141,7 @@ class DomAnalyzer:
 
     @classmethod
     def get_checkboxes(cls, dom):
-        soup = BeautifulSoup(dom, 'html.parser')
+        soup = BeautifulSoup(dom, 'html5lib')
         soup = cls.soup_visible(soup)
         #group radio by name
         checkbox_dict = {}
@@ -187,8 +186,6 @@ class DomAnalyzer:
         for parent in node.parents:            
             if parent.name == 'body':
                 break
-            elif  parent.name in cls._path_ignore_tags:
-                continue
             path.insert(0, cls._get_node(parent))
         return '//html/body/' + '/'.join(path)
 
@@ -237,9 +234,6 @@ class DomAnalyzer:
 
     #=============================================================================================
     #Diff: set config of clickable, inputs, normalizer, ignoreTages
-    @classmethod
-    def add_path_ignore_tag(cls, tag):
-        cls._path_ignore_tags.append(tag)
 
     @classmethod
     def add_tags_normalizer(cls, tags):
@@ -264,19 +258,6 @@ class DomAnalyzer:
     @classmethod
     def add_inputs_tag(cls, tag):
         cls._input_types.append(tag)
-
-    @classmethod
-    def set_simple_path_ignore_tags(cls):
-        cls._path_ignore_tags.append('h1')
-        cls._path_ignore_tags.append('h2')
-        cls._path_ignore_tags.append('h3')
-        cls._path_ignore_tags.append('h4')
-        cls._path_ignore_tags.append('h5')
-        cls._path_ignore_tags.append('h6')
-        cls._path_ignore_tags.append('br')
-        cls._path_ignore_tags.append('hr')
-        cls._path_ignore_tags.append('img')
-        cls._path_ignore_tags.append('input')
 
     @classmethod
     def set_simple_clickable_tags(cls):

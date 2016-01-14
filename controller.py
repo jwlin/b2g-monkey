@@ -22,27 +22,23 @@ from connecter import mysqlConnect
 #==============================================================================================================================
 def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
     logging.info(" connect to mysql")
-    connect  = mysqlConnect("localhost", "jeff", "zj4bj3jo37788", "test")
-    _url, _deep, _time = connect.get_submit_by_id(web_submit_id)
-    _web_inputs = connect.get_all_inputs_by_id(web_submit_id)
+    databank = MysqlDataBank()
+    url, deep, time = databank.get_websubmit(web_submit_id)
 
     logging.info(" setting config...")
-    config = SeleniumConfiguration(Browser.PhantomJS, _url, folderpath, dirname)
-    config.set_max_depth(_deep)
-    config.set_max_time(int(_time)*60)
+    config = SeleniumConfiguration(Browser.PhantomJS, url, folderpath, dirname)
+    config.set_max_depth(deep)
+    config.set_max_time(int(time)*60)
     config.set_simple_clickable_tags()
     config.set_simple_inputs_tags()
     config.set_simple_normalizers()
-    config.set_simple_path_ignore_tags()
     config.set_frame_tags(['iframe'])
-    config.set_tags_normalizer( ['iframe','script','style'] )
     
     logging.info(" setting executor...")
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
     
     logging.info(" setting crawler...")
     automata = Automata()
-    databank = MysqlDataBank()
     crawler = SeleniumCrawler(config, executor, automata, databank)
     
     logging.info(" crawler start run...")
@@ -184,7 +180,6 @@ def load_config(fname):
             config.set_clickable_tags(tag['tag'], tag['attr'], tag['value'])
         for tag in data['analyzer']['inputs_tags']:
             config.set_inputs_tags(tag)
-        config.set_path_ignore_tags(data['analyzer']['path_ignore_tags'])
         config.set_tags_normalizer(data['analyzer']['tag_normalizers'])
         config.set_attributes_normalizer(data['analyzer']['attributes_normalizer'])
         for tag in data['analyzer']['tag_with_attribute_normalizers']:

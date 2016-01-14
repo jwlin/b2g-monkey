@@ -486,7 +486,7 @@ class SeleniumCrawler(Crawler):
         dom_list = []
         new_dom = self.executor.switch_iframe_and_get_source()
         url = self.executor.get_url()
-        soup = BeautifulSoup(new_dom, 'html.parser')
+        soup = BeautifulSoup(new_dom, 'html5lib')
         for frame in self.configuration.get_frame_tags():
             for iframe_tag in soup.find_all(frame):
                 iframe_xpath = DomAnalyzer._get_xpath(iframe_tag)
@@ -502,7 +502,7 @@ class SeleniumCrawler(Crawler):
 
     def get_dom_of_iframe(self, dom_list, iframe_xpath_list, src):
         dom = self.executor.switch_iframe_and_get_source(iframe_xpath_list)
-        soup = BeautifulSoup(dom, 'html.parser')
+        soup = BeautifulSoup(dom, 'html5lib')
         for frame in self.configuration.get_frame_tags():
             for iframe_tag in soup.find_all(frame):
                 iframe_xpath = DomAnalyzer._get_xpath(iframe_tag)

@@ -74,10 +74,8 @@ class SeleniumConfiguration(Configuration):
             'simple_clickable_tags': False,
             'simple_inputs_tags': False,
             'simple_normalizers': False,
-            'simple_path_ignore_tags': False,
             'clickable_tags': [],
             'inputs_tags': [],
-            'path_ignore_tags': [],
             'tag_normalizers': [],
             'attributes_normalizer': [],
             'tag_with_attribute_normalizers': []
@@ -161,14 +159,6 @@ class SeleniumConfiguration(Configuration):
         self._analyzer['inputs_tags'].append(input_type)
         DomAnalyzer.add_inputs_tag(input_type)
 
-    def set_path_ignore_tag(self, tag):
-        self._analyzer['path_ignore_tags'].append(tag)
-        DomAnalyzer.add_path_ignore_tag(tag)
-
-    def set_path_ignore_tags(self, tags):
-        for tag in tags:
-            self.set_path_ignore_tag(tag)
-
     def set_tags_normalizer(self, tags):
         self._analyzer['tag_normalizers'] += tags
         DomAnalyzer.add_tags_normalizer(tags)
@@ -193,10 +183,6 @@ class SeleniumConfiguration(Configuration):
         self._analyzer['simple_normalizers'] = True
         DomAnalyzer.set_simple_normalizers()
         
-    def set_simple_path_ignore_tags(self):
-        self._analyzer['simple_path_ignore_tags'] = True
-        DomAnalyzer.set_simple_path_ignore_tags()
-
 #==============================================================================================================
 # filename configuration
 #==============================================================================================================
