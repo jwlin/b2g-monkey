@@ -10,6 +10,7 @@ function check_trace_exist(){
 		type:"POST",
 		datatype:"json",
 		success: function(check_value){
+			console.log(check_value);
           	var msg = jQuery.parseJSON(check_value);
 			if(msg['end'])
 			{				
@@ -54,9 +55,17 @@ function read_trace(msg, msg_mutant)
 				td.innerHTML = "<input type=\"button\" value=\"產生Jmeter檔案\" id=\""+i+"\" onclick=\"create_jmeter("+i+")\">";
 				
 				var td = tr.insertCell(tr.cells.length);
+				var filename = $("#hidden_dirname").val()+'/jmeter/jmeter'+i+".jmx";
+				var timedir = $("#hidden_dirname").val().replace(/:/g,"_");
+				var fname = "jmeter"+i+".jmx";
 				td.innerHTML = "<form action=\"download.php\" method=\"POST\">"+
-					"<input type=\"submit\" value=\"下載\" class=\"download_disable download_class\" id=\""+i+"_download\">"+
-					"<input name=\"filename\" type=\"hidden\" value=\""+$("#hidden_dirname").val()+"/jmeter/jmeter"+i+".jmx\"></form> ";
+					"<input type=\"submit\" value=\"下載\" class=\"download_disable download_class "+i+"_download\">"+
+					"<input name=\"filename\" type=\"hidden\" value=\""+filename+"\"></form> "+
+					"<form action=\"sendfile.php\" method=\"POST\">"+
+					"<input type=\"submit\" value=\"測試\" class=\"download_disable download_class "+i+"_download\">"+
+					"<input name=\"filename\" type=\"hidden\" value=\""+filename+"\">"+
+					"<input name=\"timedir\" type=\"hidden\" value=\""+timedir+"\">"+
+					"<input name=\"fname\" type=\"hidden\" value=\""+fname+"\"></form> ";
 				$("#download_container").append('<div id="detail_'+i+'" class="detail detail_none"> </div>');
 				write_detail(i,msg);
 
@@ -127,7 +136,7 @@ function remove_all(number){
 	$(i).addClass("detail_none");
 }
 function create_jmeter(id){
-	var i = "#"+id+"_download";
+	var i = "."+id+"_download";
 	$.ajax({
 		url:"create_jmeter.php",
 		data:{dirname:$("#hidden_dirname").val(),

@@ -38,10 +38,10 @@
     $return['run'] = $run;
     $return['cmd'] = $cmd;
 
-    echo json_encode($return, JSON_UNESCAPED_UNICODE);
+    echo json_encode($return);
   }else{
     $return['to_work'] = FALSE;
-    echo json_encode($return, JSON_UNESCAPED_UNICODE);
+    echo json_encode($return);
   }
 
   

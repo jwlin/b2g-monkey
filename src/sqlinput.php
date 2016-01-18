@@ -39,6 +39,6 @@ if(isset($_POST['url'])&&isset($_POST['depthRange'])&&isset($_POST['runTimeRange
 }
 
 $return['submit_sql_id'] = $id;
-echo json_encode($return, JSON_UNESCAPED_UNICODE);
+echo json_encode($return);
 
 ?>

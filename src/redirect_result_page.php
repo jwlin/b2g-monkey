@@ -3,6 +3,8 @@
   $return = array();
 
   $dirname = $_POST['dirname'];
+  $_SESSION['dirname'] = $dirname;
+  $_SESSION['url'] = "";
   $dir_location = '/var/www/python/trace/'.$dirname;
   $end_location = '/var/www/python/trace/'.$dirname.'/end.json';
   $config = '/var/www/python/trace/'.$dirname.'/config.json';
@@ -16,7 +18,6 @@
       if( $end['complete'] ){
 
         $return['complete'] = TRUE;
-        $_SESSION['dirname'] = $dirname;
         $config_json = json_decode(file_get_contents($config), true);
         $url = $config_json['url'];
         $_SESSION['url'] = $url;
@@ -33,5 +34,5 @@
     $return['exist'] = FALSE;
   }
 
-  echo json_encode($return, JSON_UNESCAPED_UNICODE);
+  echo json_encode($return);
 ?>

@@ -13,5 +13,5 @@ $run = exec($cmd,$out,$er);
 
 $return['out'] = $out;
 $return['er']= $er;
-echo json_encode($return,JSON_UNESCAPED_UNICODE);
+echo json_encode($return);
 ?>

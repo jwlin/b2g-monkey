@@ -33,7 +33,7 @@
 		else
         {
 			/*創建*/
-		    $sql = "INSERT INTO user (user_account, user_password, working) VALUES ('$user_account','$user_password', 0)";
+		    $sql = "INSERT INTO user (user_account, user_password, working) VALUES ('$user_account','$user_password', 'idle')";
 		    mysql_query($sql);
 			echo '<meta http-equiv=REFRESH CONTENT=0;url=login.php>';
 		}

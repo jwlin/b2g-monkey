@@ -70,9 +70,10 @@ function show_mutation(msg)
 					"網址:"+msg['traces'][n]['states'][i]['url']+"<br></font>";
 			input += "<font size=\"5\">點擊物件 : <br></font>"+
 					"<table align=\"center\" border=\"1\">"+
-					"<tr><td>id</td><td>name</td></tr>"+
+					"<tr><td>id</td><td>name</td><td>xpath</td></tr>"+
 					"<tr><td>"+msg['traces'][n]['edges'][i]['clickable']['id']+"</td>"+
-					"<td>"+msg['traces'][n]['edges'][i]['clickable']['name']+"</td></tr></table><br>";
+					"<td>"+msg['traces'][n]['edges'][i]['clickable']['name']+"</td>"+
+					"<td>"+msg['traces'][n]['edges'][i]['clickable']['xpath']+"</td></tr></table><br>";
 
 			var inputs_number = msg['traces'][n]['edges'][i]['inputs'].length;
 			input += "<font size=\"5\">輸入欄位 : </font>";
@@ -81,10 +82,12 @@ function show_mutation(msg)
 				input += "<br><table align=\"center\" border=\"1\">"+
 					"<tr><td>id</td><td>name</td><td>value</td><td>變異方式</td></tr>";
 				for(var input_number=0;input_number<inputs_number;input_number++){
+					var mutation_info = msg['traces'][n]['edges'][i]['inputs'][input_number]['info'] ?
+						msg['traces'][n]['edges'][i]['inputs'][input_number]['info'] : "無變異";
 					input += "<tr><td>"+msg['traces'][n]['edges'][i]['inputs'][input_number]['id']+"</td>"+
 							"<td>"+msg['traces'][n]['edges'][i]['inputs'][input_number]['name']+"</td>"+
 							"<td>"+msg['traces'][n]['edges'][i]['inputs'][input_number]['value']+"</td>"+
-							"<td>"+msg['traces'][n]['edges'][i]['inputs'][input_number]['info']+"</td></tr>";
+							"<td>"+mutation_info+"</td></tr>";
 				}
 				input += "</table>";
 			}

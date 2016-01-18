@@ -38,5 +38,5 @@
     	$return['complete'] = FALSE;
 		$return['json'] = '0';
 	}
-	echo json_encode($return, JSON_UNESCAPED_UNICODE);
+	echo json_encode($return);
 ?>

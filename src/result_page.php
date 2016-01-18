@@ -22,10 +22,9 @@
 	<a href="start.php"><img src="img/newtask-button.png"/></a>
 	<h1 >結果</h1>
 <?php
-	$str = $_SESSION['url'];
 	$dirName = $_SESSION['dirname'];
 	echo "<input type=\"hidden\" class=\"session_text\" id=\"hidden_dirname\" name=\"hidden_dirname\" value=\"".$dirName."\" readonly>";
-	echo "測試目標網址:<input type=\"text\" class=\"session_text\" id=\"url\" name=\"url\" value=\"".$str."\" readonly> ";
+	echo "測試目標網址:<input type=\"text\" class=\"session_text\" id=\"url\" name=\"url\" value=\"".$_SESSION['url']."\" readonly> ";
 
 	#use for logout
 	#session_destroy();
