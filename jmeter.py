@@ -5,6 +5,7 @@ class Create_jmeter:
 		self.trace = trace_list
 		self.dir_location = dir_location
 		self.trace_number = trace_number
+		self.serial_prefix = 'b2g-monkey-'
 
 	def write_jmeter(self):
 		jmeter_testplan_start = \
@@ -162,6 +163,8 @@ class Create_jmeter:
 		collection_arguments = ""
 		for each_input in self.trace["edges"][n]["inputs"]:
 			name = str(each_input["name"])
+			if name.startswith(self.serial_prefix) :
+				continue
 			collection_arguments += \
 				"<elementProp elementType=\"HTTPArgument\" name=\""+name+"\">\n" + \
 				"<boolProp name=\"HTTPArgument.always_encode\">true</boolProp>\n" + \
@@ -172,35 +175,44 @@ class Create_jmeter:
 				"</elementProp>\n"
 		for each_select in self.trace["edges"][n]["selects"]:
 			name = str(each_select["name"])
+			if name.startswith(self.serial_prefix) :
+				continue
 			selected = int(each_select["selected"])
+			value = str(each_select["value"][selected]) if len(each_select["value"]) > selected else ""
 			collection_arguments += \
 				"<elementProp elementType=\"HTTPArgument\" name=\""+name+"\">\n" + \
 				"<boolProp name=\"HTTPArgument.always_encode\">true</boolProp>\n" + \
-				"<stringProp name=\"Argument.value\">"+str(each_select["value"][selected])+"</stringProp>\n" + \
+				"<stringProp name=\"Argument.value\">"+value+"</stringProp>\n" + \
 				"<stringProp name=\"Argument.metadata\">=</stringProp>\n" + \
 				"<boolProp name=\"HTTPArgument.use_equals\">true</boolProp>\n" + \
 				"<stringProp name=\"Argument.name\">"+name+"</stringProp>\n" + \
 				"</elementProp>\n"
 		for each_radio in self.trace["edges"][n]["radios"]:
 			name = str(each_radio["radio_name"])
+			if name.startswith(self.serial_prefix) :
+				continue
 			selected = int(each_radio["radio_selected"])
+			value = str(each_radio["radio_list"][selected]["value"]) if len(each_radio["radio_list"]) > selected else ""
 			collection_arguments += \
 				"<elementProp elementType=\"HTTPArgument\" name=\""+name+"\">\n" + \
 				"<boolProp name=\"HTTPArgument.always_encode\">true</boolProp>\n" + \
-				"<stringProp name=\"Argument.value\">"+str(each_radio["radio_list"][selected]["value"])+"</stringProp>\n" + \
+				"<stringProp name=\"Argument.value\">"+value+"</stringProp>\n" + \
 				"<stringProp name=\"Argument.metadata\">=</stringProp>\n" + \
 				"<boolProp name=\"HTTPArgument.use_equals\">true</boolProp>\n" + \
 				"<stringProp name=\"Argument.name\">"+name+"</stringProp>\n" + \
 				"</elementProp>\n"
 		for each_checkbox in self.trace["edges"][n]["checkboxes"]:
 			name = str(each_checkbox["checkbox_name"])
+			if name.startswith(self.serial_prefix) :
+				continue
 			selected_list = each_checkbox["checkbox_selected_list"]
 			checkbox_list = each_checkbox["checkbox_list"]
-			for c in selected_list:				
+			for c in selected_list:
+				value = checkbox_list[int(c)]["value"] if len(checkbox_list) > int(c) else ""
 				collection_arguments += \
 					"<elementProp elementType=\"HTTPArgument\" name=\""+name+"\">\n" + \
 					"<boolProp name=\"HTTPArgument.always_encode\">true</boolProp>\n" + \
-					"<stringProp name=\"Argument.value\">"+checkbox_list[int(c)]["value"]+"</stringProp>\n" + \
+					"<stringProp name=\"Argument.value\">"+value+"</stringProp>\n" + \
 					"<stringProp name=\"Argument.metadata\">=</stringProp>\n" + \
 					"<boolProp name=\"HTTPArgument.use_equals\">true</boolProp>\n" + \
 					"<stringProp name=\"Argument.name\">"+name+"</stringProp>\n" + \

@@ -207,13 +207,13 @@ class SeleniumCrawler(Crawler):
             if not is_same:
                 try:
                     err = State(dom_list, url)
-                    with open('debug_origin_'+state_to.get_id()+'.txt', 'w') as f:
+                    with open('debug/debug_origin_'+state_to.get_id()+'.txt', 'w') as f:
                         f.write(state_to.get_all_dom())
-                    with open('debug_restart_'+state_to.get_id()+'.txt', 'w') as f:
+                    with open('debug/debug_restart_'+state_to.get_id()+'.txt', 'w') as f:
                         f.write(err.get_all_dom())
-                    with open('debug_origin_nor_'+state_to.get_id()+'.txt', 'w') as f:
+                    with open('debug/debug_origin_nor_'+state_to.get_id()+'.txt', 'w') as f:
                         f.write( state_to.get_all_normalize_dom() )
-                    with open('debug_restart_nor_'+state_to.get_id()+'.txt', 'w') as f:
+                    with open('debug/debug_restart_nor_'+state_to.get_id()+'.txt', 'w') as f:
                         f.write( err.get_all_normalize_dom() )
                     logging.error('==<BACKTRACK> cannot traceback to %s \t\t__from crawler.py backtrack()', state_to.get_id() )
                 except Exception as e:  
