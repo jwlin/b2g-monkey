@@ -226,7 +226,6 @@ class SeleniumCrawler(Crawler):
 # TODO FOR MUTATION
 #=========================================================================================
     def make_mutation_traces(self):
-        self.mutation.set_mode(self.configuration.get_mutation_mode())
         self.mutation.set_method(self.configuration.get_mutation_method())
         self.mutation.make_data_set()
         self.mutation.make_mutation_traces()
@@ -272,24 +271,24 @@ class SeleniumCrawler(Crawler):
             depth += 1
 
         self.mutation_history.append( (edge_trace, state_trace, cluster_value ) )
+        logging.warning( [ c for e,s,c in  self.mutation_history ] )
 
     def cluster_mutation_trace(self):
         #then cluster other mutation traces
         for edge_trace, state_trace, cluster_value in self.mutation_history:
             if cluster_value in self.mutation_cluster:
-                self.mutation_cluster[cluster_value].append( (edge_trace, state_trace, cluster_value) )
+                self.mutation_cluster[cluster_value].append( (edge_trace, state_trace) )
             else:
-                self.mutation_cluster[cluster_value] = [ (edge_trace, state_trace, cluster_value) ]
+                self.mutation_cluster[cluster_value] = [ (edge_trace, state_trace) ]
 
     def save_mutation_history(self):
         self.cluster_mutation_trace()
         traces_data = {
-            'mode': self.configuration.get_mutation_mode(),
             'method': self.configuration.get_mutation_method(),
             'traces': []
         }
         for cluster_key, mutation_traces in self.mutation_cluster.items():
-            for edge_trace, state_trace, cluster_value in mutation_traces:
+            for edge_trace, state_trace in mutation_traces:
                 trace_data = {
                     'edges':[],
                     'states':[],
@@ -297,9 +296,12 @@ class SeleniumCrawler(Crawler):
                 }
                 for edge in edge_trace:                
                     trace_data['edges'].append(edge.get_edge_json())
-                traces_data['traces'].append(trace_data)
                 for state in state_trace:
                     trace_data['states'].append(state.get_simple_state_json(self.configuration))
+                if cluster_key.startswith('-1'):
+                    traces_data['traces'].insert(0, trace_data)
+                else:
+                    traces_data['traces'].append(trace_data)
 
         with codecs.open(os.path.join(self.configuration.get_abs_path('root'), 'mutation_traces.json'), 'w', encoding='utf-8' ) as f:
             json.dump(traces_data, f, indent=2, sort_keys=True, ensure_ascii=False)

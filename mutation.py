@@ -46,14 +46,11 @@ class Mutation:
 
     def make_data_set(self):
         for edge in self.basic_edge_trace:
-            mutation_edge = MutationDataSetEdge(edge, self.databank, self.mode)
+            mutation_edge = MutationDataSetEdge(edge, self.databank)
             self.data_set_trace.append( mutation_edge )
 
     def set_method(self, method):
         self.method = method
-
-    def set_mode(self, mode):
-        self.mode = mode
 
     def make_mutation_traces(self):
         if self.method == MutationMethod.Simple:
@@ -68,8 +65,7 @@ class Mutation:
             pass
 
     def get_mutation_traces(self):
-        logging.info( '\n data_set_trace:\n%s\n'%( self.get_data_set_trace_json() ) )
-        logging.info( '\n all mutation_traces:\n%s\n'%( self.get_mutation_traces_json() ) )
+        self.log_mutation()
         return self.mutation_traces
 
     def make_simple_method(self):
@@ -118,12 +114,14 @@ class Mutation:
                 e.set_edge_default_value(edge)
                 edge_table.append(e)
             edge_table_list.append(edge_table)
+
         #find max_len of edge_table
-        lens = []
+        lens = [1]
         for edge_table in edge_table_list :
             if edge_table:
                 lens.append(len(edge_table))
-        max_len = max( *lens ) if len(lens) > 1 else 1
+        max_len = max( *lens )
+        
         #bigO=max_len(edge)=len(inputs)
         for i in xrange(max_len):
             trace = []
@@ -134,6 +132,13 @@ class Mutation:
                 trace.append( edge_table[i_in_list] )
             self.mutation_traces.append(trace)
 
+    def log_mutation(self):
+        logging.info(' data_set_trace: ------------------------------------------------')
+        logging.info( json.dumps( self.get_data_set_trace_json(), indent=4, sort_keys=True) )
+        logging.info(' all mutation_traces: %d ----------------------------------------' % ( len(self.mutation_traces) ) )
+        for trace in self.get_mutation_traces_json() :
+            logging.info(trace)
+            logging.info(' -------------------------- ')
 
     def get_data_set_trace_json(self):
         note = []
@@ -179,7 +184,7 @@ class Mutation:
         return note
 
 class MutationDataSetEdge:
-    def __init__(self, edge, databank, mode):
+    def __init__(self, edge, databank):
         self.databank = databank
         self._inputs = {}
         for i in edge.get_inputs():
@@ -187,7 +192,7 @@ class MutationDataSetEdge:
             # IMPORTANT ! change the inputs value with mutation table, not value table
             # data_set => a list of [(info, mutant_value),...]
             #================================================================================================
-            dataset = i.get_mutation_data_set(databank, mode)
+            dataset = i.get_mutation_data_set(databank)
             self._inputs[i.get_id()] = [ i.get_value(), dataset  ]
             logging.info(dataset )
         self._selects = {}

@@ -13,6 +13,10 @@
 	border-style:ridge;
 	text-align: center;
 }
+.information td{
+	text-align: left;
+    vertical-align: top;
+}
 
 #btn_new_task
 {
@@ -47,32 +51,20 @@
     font-size: 40;
 	position: relative;
 	top:50%;
-	
 }
 #marquee_string
 {
-
 	font-style: oblique;
 }
 .disable
 {
 	display: none;
 }
-.download_disable
-{
-	visibility: hidden;
-}
-.download_class
-{
-	position: relative;
-	top:7;
-}
 .detail
 {
 	position: relative;
 	text-align:center;
-	background-color: #FFFFCC;
-	
+	background-color: #FFFFCC;	
 }
 .detail_disable
 {
@@ -90,6 +82,11 @@
 .hide
 {
 	display:none;
+}
+.show_button{
+	height: 40px;
+	width: 300px;
+  	font-size: 1em;
 }
 
 

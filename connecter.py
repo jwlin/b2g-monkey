@@ -1,76 +1,101 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import MySQLdb
 import logging
+from abc import ABCMeta, abstractmethod
 
 class mysqlConnect:
-	def __init__(self, host, user, password, databank):
-		self.host = host
-		self.user = user
-		self.password = password
-		self.databank = databank
-		#logging.info(str(self))
+    @classmethod
+    def __init__(cls, host, user, password, databank):
+        cls.host = host
+        cls.user = user
+        cls.password = password
+        cls.databank = databank
+        #logging.info(str(cls))
 
-	def get_submit_by_id(self, submit_id):
-		sql = "SELECT * FROM webtesting WHERE id = %s" % ( submit_id )
-		logging.info(str(self))
-		logging.info(sql)
+    @classmethod
+    def exec_sql(cls, sql):
+        #logging.info(str(cls))
+        #logging.info(sql)
 
-		self.connect = MySQLdb.connect(self.host, self.user, self.password, self.databank)
-		self.cursor = self.connect.cursor()
-		self.cursor.execute(sql)
-		self.connect.close()
-		self.data = self.cursor.fetchone()
-		#data [0]id, [1]url, [2]deep, [3]time
-		return self.data[1], self.data[2], self.data[3]
+        cls.connect = MySQLdb.connect(cls.host, cls.user, cls.password, cls.databank)
+        cls.cursor = cls.connect.cursor()
+        cls.cursor.execute(sql)
+        cls.connect.close()
 
-	def get_all_inputs_by_id(self, submit_id):
-		sql = "SELECT * FROM inputtable WHERE id = %s" % ( submit_id )
-		#logging.info(str(self))
-		#logging.info(sql)
+    @classmethod
+    def get_submit_by_id(cls, submit_id):
+        sql = "SELECT * FROM webtesting WHERE id = %s" % ( submit_id )
+        logging.info(str(cls))
+        logging.info(sql)
 
-		self.connect = MySQLdb.connect(self.host, self.user, self.password, self.databank)
-		self.cursor = self.connect.cursor()
-		self.cursor.execute(sql)
-		self.connect.close()
-		return [ data[0] if type(data)==type(tuple()) else str(data) for data in self.cursor.fetchall() ]
+        cls.exec_sql(sql)
+        cls.data = cls.cursor.fetchone()
+        #data [0]id, [1]url, [2]deep, [3]time
+        return cls.data[1], cls.data[2], cls.data[3]
 
-	def get_all_column_names(self, table):
-		sql = "SELECT COLUMN_NAME FROM information_schema.columns WHERE table_name = \'%s\'" % (table)
-		#logging.info(str(self))
-		#logging.info(sql)
+    @classmethod
+    def get_all_inputs_by_id(cls, submit_id):
+        sql = "SELECT * FROM inputtable WHERE id = %s" % ( submit_id )
+        cls.exec_sql(sql)
+        return [ data[0] if type(data)==type(tuple()) else str(data) for data in cls.cursor.fetchall() ]
 
-		self.connect = MySQLdb.connect(self.host, self.user, self.password, self.databank)
-		self.cursor = self.connect.cursor()
-		self.cursor.execute(sql)
-		self.connect.close()
-		#type = tuple of tuple
-		return [ data[0] if type(data)==type(tuple()) else str(data) for data in self.cursor.fetchall() ]
+    @classmethod
+    def get_all_table_names(cls):
+    	sql = "SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA =  \'test\' "
+        cls.exec_sql(sql)
+        return [ data[0] if type(data)==type(tuple()) else str(data) for data in cls.cursor.fetchall() ]
 
+    @classmethod
+    def get_all_column_names(cls, table):
+        sql = "SELECT COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME = \'%s\'" % (table)
+        cls.exec_sql(sql)
+        #type = tuple of tuple
+        return [ data[0] if type(data)==type(tuple()) else str(data) for data in cls.cursor.fetchall() ]
 
-	def get_databank_by_column(self, table, column, mode=0):
-		sql = "SELECT %s FROM %s WHERE MODE = %d" % ( column, table , mode)
-		#logging.info(str(self))
-		#logging.info(sql)
+    @classmethod
+    def get_databank_by_column(cls, table, column):
+        sql = "SELECT %s FROM %s" % ( column, table )
+        cls.exec_sql(sql)
+        #type = tuple of tuple
+        return [ data[0] if type(data)==type(tuple()) else str(data) for data in cls.cursor.fetchall() ]
 
-		self.connect = MySQLdb.connect(self.host, self.user, self.password, self.databank)
-		self.cursor = self.connect.cursor()
-		self.cursor.execute(sql)
-		self.connect.close()
-		#type = tuple of tuple
-		return [ data[0] if type(data)==type(tuple()) else str(data) for data in self.cursor.fetchall() ]
+    @classmethod
+    def get_databank_by_row(cls, table, row_name, row_value ):
+        sql = "SELECT * FROM %s WHERE %s = \'%s\' " % ( table, row_name, row_value )
+        cls.exec_sql(sql)
+        #type = tuple of tuple
+        return list( cls.cursor.fetchall()[0] )
 
-	def get_mutation_by_column(self, table, column, mode):
-		sql = "SELECT info, %s FROM %s WHERE MODE = %d " % ( column, table , mode )
-		logging.info(str(self))
-		logging.info(sql)
+    #NOT USE
+    @classmethod
+    def get_mutation_by_column(cls, table, column, mode):
+        sql = "SELECT info, %s FROM %s WHERE MODE = %d " % ( column, table , mode )
+        cls.exec_sql(sql)
+        #type = tuple of tuple
+        return [ [data[0], data[1]] if type(data)==type(tuple()) else str(data) for data in cls.cursor.fetchall() ]
 
-		self.connect = MySQLdb.connect(self.host, self.user, self.password, self.databank)
-		self.cursor = self.connect.cursor()
-		self.cursor.execute(sql)
-		self.connect.close()
-		#type = tuple of tuple
-		return [ [data[0], data[1]] if type(data)==type(tuple()) else str(data) for data in self.cursor.fetchall() ]
+    @classmethod
+    def get_mutation_catalog(cls):
+        sql = "SELECT name, mutation_table FROM mutation_catalog "
+        logging.info(str(cls))
+        logging.info(sql)
 
-	def __str__(self):
-		return "connect to Mysql: host(%s) user(%s) password(%s) databank(%s)" % ( self.host, self.user, self.password, self.databank )
+        cls.exec_sql(sql)
+        return [ [data[0], data[1]] if type(data)==type(tuple()) else str(data) for data in cls.cursor.fetchall() ]
+
+    @classmethod
+    def get_mutation_values(cls, table):
+        sql = "SELECT info, value FROM %s " % ( table )
+        logging.info(str(cls))
+        logging.info(sql)
+
+        cls.exec_sql(sql)
+        return [ [data[0], data[1]] if type(data)==type(tuple()) else str(data) for data in cls.cursor.fetchall() ]
+
+    @classmethod
+    def __str__(cls):
+        return "connect to Mysql: host(%s) user(%s) password(%s) databank(%s)" % ( cls.host, cls.user, cls.password, cls.databank )
 
 

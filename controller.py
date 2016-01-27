@@ -13,7 +13,7 @@ from executor import SeleniumExecutor
 from crawler import SeleniumCrawler
 from visualizer import Visualizer
 from dom_analyzer import DomAnalyzer
-from data_bank import InlineDataBank, MysqlDataBank
+from data_bank import MysqlDataBank
 from normalizer import AttributeNormalizer, TagNormalizer, TagWithAttributeNormalizer
 from connecter import mysqlConnect
 
@@ -22,7 +22,7 @@ from connecter import mysqlConnect
 #==============================================================================================================================
 def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
     logging.info(" connect to mysql")
-    databank = MysqlDataBank()
+    databank = MysqlDataBank("localhost", "jeff", "zj4bj3jo37788", "test")
     url, deep, time = databank.get_websubmit(web_submit_id)
 
     logging.info(" setting config...")
@@ -51,14 +51,13 @@ def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
 
-def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace_id, method_id, mode_id, max_traces):
+def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace_id, method_id, max_traces):
     logging.info(" loading config...")
     config = load_config(config_fname)
     config.set_folderpath(folderpath)
     config.set_dirname(dirname)
     config.set_mutation_trace(traces_fname, trace_id)
     config.set_mutation_method(method_id)
-    config.set_mutation_mode(mode_id)
     config.set_max_mutation_traces(max_traces)
 
     logging.info(" setting executor...")
@@ -66,7 +65,7 @@ def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace
 
     logging.info(" setting crawler...")
     automata = Automata()
-    databank = MysqlDataBank()
+    databank = MysqlDataBank("localhost", "jeff", "zj4bj3jo37788", "test")
     crawler = SeleniumCrawler(config, executor, automata, databank)
 
     logging.info(" crawler start run...")
@@ -215,7 +214,7 @@ def end_log(filename, complete, note):
     with open(filename, 'w') as end_file:
         end = {
             'complete': complete,
-            'note': note
+            'note': str(type(note))+note
         }
         json.dump(end, end_file, indent=2, sort_keys=True, ensure_ascii=False)
 
@@ -249,10 +248,10 @@ if __name__ == '__main__':
                 make_dir(sys.argv[2], sys.argv[3])
                 try:
                     SeleniumMutationTrace(sys.argv[2], sys.argv[3], sys.argv[4], 
-                        sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
+                        sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
                     end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'), True, 'done')
                 except Exception as e:
-                    end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'),False, str(e)+traceback.format_exc())
+                    end_log( os.path.join(sys.argv[2], sys.argv[3], 'end.json'),False, traceback.format_exc())
             except Exception as e:
                 with open("mutant_log.txt","a") as main_log:
                     main_log.write( '[MAIN ERROR-%s]: %s' % (datetime.datetime.now().strftime('%Y%m%d%H%M%S'), traceback.format_exc()) )
@@ -263,4 +262,4 @@ if __name__ == '__main__':
         print "[WARNIING] needed argv: <Mode=0> <FolderPath> <Dirname> debug mode "
         print "[WARNIING] needed argv: <Mode=1> <WebSubmitID> <FolderPath> <Dirname> default crawling "
         print "                        <Mode=2> <FolderPath> <Dirname> <ConfigFile> <TracesFile>"
-        print "                                 <TraceID> <MutationMethodID> <MutationModeID> <MaxTraces> mutant crawling "
+        print "                                 <TraceID> <MutationMethodID> <MaxTraces> mutant crawling "

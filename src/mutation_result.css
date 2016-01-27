@@ -18,3 +18,9 @@
 	width:480px;
 	height:320px;
 }
+
+.show_button{
+	height: 40px;
+	width: 80px;
+  	font-size: 1em;
+}

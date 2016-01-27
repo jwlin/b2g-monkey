@@ -26,11 +26,12 @@ echo "<input type=\"hidden\"  class=\"\" id=\"hidden_trace_number\" name=\"\" va
 echo "<input type=\"hidden\"  class=\"\" id=\"hidden_dirname\" name=\"\" value=\"".$_POST['send_dirname']."\" readonly>";
 echo "<h2 > 第".$_POST['send_trace_number']."個路徑 </h2>";
 echo "<h2 >數值變異方式 : <span id=\"method\">".$_POST['send_select_id_text']."</span></h2>";
-echo "<h2 >數值變異種類 : <span id=\"mode\">".$_POST['send_select_mode_text']."</span></h2>";
 ?>
 </div>
 <div id="mutation_result_container">
+	<hr>
 	<marquee   scrollamount="5"  id="marquee"><font id="marquee_string">資料處理中,請耐心等候,感謝您!</font></marquee>
+	<hr>
 <div id="error_debug"> </div>
 </div>
 </body>

@@ -82,7 +82,6 @@ class SeleniumConfiguration(Configuration):
         }
         self._mutation = {
             'mutation_method': MutationMethod.Simple,
-            'mutation_mode': MutationMode.Empty,
             'max_mutation_traces': 0,
             'mutant_scripts': []
         }
@@ -238,23 +237,6 @@ class SeleniumConfiguration(Configuration):
 
     def get_mutation_method(self):
         return self._mutation['mutation_method']
-
-    def set_mutation_mode(self, mode):
-        if type(mode) == type(MutationMode):
-            self._mutation['mutation_mode'] = mode
-        elif mode == '1':
-            self._mutation['mutation_mode'] = MutationMode.Empty
-        elif mode == '2':
-            self._mutation['mutation_mode'] = MutationMode.MaxLength
-        elif mode == '3':
-            self._mutation['mutation_mode'] = MutationMode.RandomString
-        elif mode == '4':
-            self._mutation['mutation_mode'] = MutationMode.MalformedSymbol
-        elif mode == '5':
-            self._mutation['mutation_mode'] = MutationMode.SQLInjection
-
-    def get_mutation_mode(self):
-        return self._mutation['mutation_mode']
 
     def load_json(self, json_file):
         try:

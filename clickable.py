@@ -65,21 +65,23 @@ class InputField:
     def get_mutation_info(self):
         return self._mutation_info
 
-    def get_data_set(self, databank, mutation=False ):
+    def get_data_set(self, databank):
         if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data(self._type, self._id, mutation)
+            data_set = databank.get_data(self._type, self._id)
         elif not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data(self._type, self._name, mutation)
+            data_set = databank.get_data(self._type, self._name)
         else:
-            data_set = databank.get_data(self._type, 'None', mutation)
+            data_set = databank.get_data(self._type, 'None')
 
         return data_set
 
-    def get_mutation_data_set(self, databank, mode):
-        if not self._type:
-            data_set = databank.get_mutation_data_set('text', mode)
-        else:
-            data_set = databank.get_mutation_data_set(self._type, mode)
+    def get_mutation_data_set(self, databank):
+        _attr = self._id if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix) \
+            else self._name if not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix) \
+            else 'None'
+        _type = self._type if self._type else 'text'
+
+        data_set = databank.get_mutation_data_set(_type, _attr)
         return data_set
 
     def get_copy(self):
@@ -117,13 +119,13 @@ class SelectField:
     def get_selected(self):
         return self._selected
 
-    def get_data_set(self, databank, mutation=False):
+    def get_data_set(self, databank ):
         if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('select', self._id, mutation)
+            data_set = databank.get_data('select', self._id)
         elif not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('select', self._name, mutation)
+            data_set = databank.get_data('select', self._name)
         else:
-            data_set = databank.get_data('select', 'None', mutation)
+            data_set = databank.get_data('select', 'None')
         return data_set
 
     def get_copy(self):
@@ -182,13 +184,13 @@ class CheckboxField:
     def get_checkbox_name(self):
         return self._checkbox_name
 
-    def get_data_set(self, databank, mutation=False):
+    def get_data_set(self, databank):
         if not self._checkbox_name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('checkbox', self._checkbox_name, mutation)
+            data_set = databank.get_data('checkbox', self._checkbox_name)
         elif not self._checkbox_list[0].get_id().startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('checkbox', self._checkbox_list[0].get_id(), mutation)
+            data_set = databank.get_data('checkbox', self._checkbox_list[0].get_id())
         else:
-            data_set = databank.get_data('checkbox', 'None', mutation)
+            data_set = databank.get_data('checkbox', 'None')
         return data_set
 
     def get_copy(self):
@@ -244,13 +246,13 @@ class RadioField:
     def get_radio_name(self):
         return self._radio_name
 
-    def get_data_set(self, databank, mutation=False):
+    def get_data_set(self, databank):
         if not self._radio_name.startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('radio', self._radio_name, mutation)
+            data_set = databank.get_data('radio', self._radio_name)
         elif not self._radio_list[0].get_id().startswith(dom_analyzer.DomAnalyzer.serial_prefix):
-            data_set = databank.get_data('radio', self._radio_list[0].get_id(), mutation)
+            data_set = databank.get_data('radio', self._radio_list[0].get_id())
         else:
-            data_set = databank.get_data('radio', 'None', mutation)
+            data_set = databank.get_data('radio', 'None')
         return data_set
 
     def get_copy(self):
