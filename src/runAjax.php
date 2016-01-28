@@ -31,7 +31,7 @@
     // base folder path = python/trace 
     $folderpath = '/var/www/python/trace';
     $cmd = 'cd /var/www/python && python controller.py '.$mode.' '.$_POST['submit_sql_id'].' '.$folderpath.' '.$dirName.' > /dev/null 2>/dev/null &';
-    $run = shell_exec( $cmd );
+    $run = passthru( $cmd );
     
     $return['sql'] = mysql_error();
     $return['folderpath'] = $folderpath;

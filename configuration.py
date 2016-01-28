@@ -309,8 +309,7 @@ class SeleniumConfiguration(Configuration):
         config_data['analyzer'] = self._analyzer
         config_data['mutation'] = {
             "max_mutation_traces": self._mutation['max_mutation_traces'],
-            "mutation_method": self._mutation['mutation_method'],
-            "mutation_mode": self._mutation['mutation_mode']
+            "mutation_method": self._mutation['mutation_method']
         }
         #=============================================================================================
         with codecs.open(os.path.join(self.get_abs_path('root'), fname), 'w', encoding='utf-8') as f:

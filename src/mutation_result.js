@@ -86,9 +86,10 @@ function show_mutation(msg)
 				for(var input_number=0;input_number<inputs_number;input_number++){
 					var mutation_info = msg['traces'][n]['edges'][i]['inputs'][input_number]['info'] ?
 						msg['traces'][n]['edges'][i]['inputs'][input_number]['info'] : "無變異";
+					var value = replaceToLegal(msg['traces'][n]['edges'][i]['inputs'][input_number]['value']);
 					input += "<tr><td>"+msg['traces'][n]['edges'][i]['inputs'][input_number]['id']+"</td>"+
 							"<td>"+msg['traces'][n]['edges'][i]['inputs'][input_number]['name']+"</td>"+
-							"<td>"+msg['traces'][n]['edges'][i]['inputs'][input_number]['value']+"</td>"+
+							"<td>"+value+"</td>"+
 							"<td>"+mutation_info+"</td></tr>";
 				}
 				input += "</table><br>";
@@ -169,6 +170,10 @@ function show_mutation(msg)
 		input += "</table></div><hr>";
 		$("#mutation_result_container").append(input);
 	}
+}
+
+function replaceToLegal(str){
+	return str.replace(/&/g, "&amp;").replace(/</g, "&alt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/-/g, "&ndash;");
 }
 
 function toggle_trace(n){
