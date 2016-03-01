@@ -53,7 +53,6 @@ function read_trace(msg, msg_mutant)
 			inputs_num += msg["traces"][i]["edges"][n]["inputs"].length;
 		}
 		if( inputs_num == 0 ){
-			console.log(i+" 0 inputs");
 			tr.classList.add("noInput");
 		}
 		
@@ -195,11 +194,21 @@ function start_mutation(id, done_before){
 	$("#send_dirname").val($("#hidden_dirname").val());
 
 	if(done_before){ replay_mutation(id); }
-	else{	run_mutation(id); }
+	else{
+		run_mutation(id);
+		$("#new"+id).attr('onclick', 'start_mutation('+id+', true)');
+	}
 }
 function run_mutation(id){
 	$("#look"+id).prop('disabled', false);
-	console.log('max:'+$("#mutation_max").val());
+	var check_log = ['-1'];
+	$("#mutation_modes input").each(function(){
+		if( $(this).prop("checked") ){
+			check_log.push($(this).val());
+		}
+	});
+	check_log = check_log.join("#");
+	console.log(check_log);
 
 	$.ajax({
 		url:"runAjax_mutation.php",
@@ -207,7 +216,7 @@ function run_mutation(id){
 			dirname:$("#hidden_dirname").val(),
 			trace_number:id,
 			method:$("#mutaton_select option:selected").val(),
-			max:$("#mutation_max").val()
+			modes: check_log
 		},								
 		type:"POST",
 		datatype:"json",
@@ -221,7 +230,7 @@ function run_mutation(id){
 		},
         error: function(js){
 		  	var msg = jQuery.parseJSON(js); 
-			alert('ERROR\ncmd:'+msg['cmd']+"\nrun:"+msg['run']);
+			console.log('ERROR\ncmd:'+msg['cmd']+"\nrun:"+msg['run']);
         }
 
 	});

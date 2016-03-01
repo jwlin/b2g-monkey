@@ -82,7 +82,7 @@ class SeleniumConfiguration(Configuration):
         }
         self._mutation = {
             'mutation_method': MutationMethod.Simple,
-            'max_mutation_traces': 0,
+            'modes': 0,
             'mutant_scripts': []
         }
 
@@ -217,11 +217,13 @@ class SeleniumConfiguration(Configuration):
     def get_mutation_trace(self):
         return self._mutation['mutant_scripts']
 
-    def set_max_mutation_traces(self, max_traces):
-        self._mutation['max_mutation_traces'] = int(max_traces)
+    def set_mutation_modes(self, modes):
+        self._mutation['modes'] = []
+        for i in modes.split('#'):
+            self._mutation['modes'].append(int(i))
 
-    def get_max_mutation_traces(self):
-        return self._mutation['max_mutation_traces']
+    def get_mutation_modes(self):
+        return self._mutation['modes']
 
     def set_mutation_method(self, method):
         if type(method) == type(MutationMethod):
@@ -308,7 +310,7 @@ class SeleniumConfiguration(Configuration):
 
         config_data['analyzer'] = self._analyzer
         config_data['mutation'] = {
-            "max_mutation_traces": self._mutation['max_mutation_traces'],
+            "modess": self._mutation['modes'],
             "mutation_method": self._mutation['mutation_method']
         }
         #=============================================================================================

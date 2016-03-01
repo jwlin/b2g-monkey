@@ -51,14 +51,14 @@ def SeleniumMain(web_submit_id, folderpath=None, dirname=None):
     Visualizer.generate_html('web', os.path.join(config.get_path('root'), config.get_automata_fname()))
     config.save_config('config.json')
 
-def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace_id, method_id, max_traces):
+def SeleniumMutationTrace(folderpath, dirname, config_fname, traces_fname, trace_id, method_id, modes):
     logging.info(" loading config...")
     config = load_config(config_fname)
     config.set_folderpath(folderpath)
     config.set_dirname(dirname)
     config.set_mutation_trace(traces_fname, trace_id)
     config.set_mutation_method(method_id)
-    config.set_max_mutation_traces(max_traces)
+    config.set_mutation_modes(modes)
 
     logging.info(" setting executor...")
     executor = SeleniumExecutor(config.get_browserID(), config.get_url())
@@ -214,7 +214,7 @@ def end_log(filename, complete, note):
     with open(filename, 'w') as end_file:
         end = {
             'complete': complete,
-            'note': str(type(note))+note
+            'note': note
         }
         json.dump(end, end_file, indent=2, sort_keys=True, ensure_ascii=False)
 

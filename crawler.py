@@ -227,12 +227,13 @@ class SeleniumCrawler(Crawler):
 #=========================================================================================
     def make_mutation_traces(self):
         self.mutation.set_method(self.configuration.get_mutation_method())
+        self.mutation.set_modes(self.configuration.get_mutation_modes())
         self.mutation.make_data_set()
         self.mutation.make_mutation_traces()
         # use a int to select sample of mutation traces
         mutation_traces = self.mutation.get_mutation_traces()
-        mutation_traces = random.sample( mutation_traces, 
-            min( self.configuration.get_max_mutation_traces(), len(mutation_traces) ) )
+        #mutation_traces = random.sample( mutation_traces, 
+        #    min( self.configuration.get_max_mutation_traces(), len(mutation_traces) ) )
         return mutation_traces
 
     def run_mutant_script(self, prev_state, mutation_trace=None):

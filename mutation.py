@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
 import os, sys, json, posixpath, time, datetime, codecs, logging, random, logging
 from automata import Automata, State, StateDom, Edge
 from dom_analyzer import DomAnalyzer
@@ -41,16 +40,20 @@ class Mutation:
         self.mutation_traces = []
         self.basic_edge_trace = trace
         self.method = MutationMethod.Simple
-        self.mode = MutationMode.Empty
+        self.modes = []
         self.databank = databank
 
     def make_data_set(self):
         for edge in self.basic_edge_trace:
-            mutation_edge = MutationDataSetEdge(edge, self.databank)
+            mutation_edge = MutationDataSetEdge(edge, self.databank, self.modes)
             self.data_set_trace.append( mutation_edge )
 
     def set_method(self, method):
         self.method = method
+
+    def set_modes(self, modes):
+        logging.info(modes)
+        self.modes = modes
 
     def make_mutation_traces(self):
         if self.method == MutationMethod.Simple:
@@ -134,7 +137,7 @@ class Mutation:
 
     def log_mutation(self):
         logging.info(' data_set_trace: ------------------------------------------------')
-        logging.info( json.dumps( self.get_data_set_trace_json(), indent=4, sort_keys=True) )
+        logging.info( self.get_data_set_trace_json() )
         logging.info(' all mutation_traces: %d ----------------------------------------' % ( len(self.mutation_traces) ) )
         for trace in self.get_mutation_traces_json() :
             logging.info(trace)
@@ -184,7 +187,7 @@ class Mutation:
         return note
 
 class MutationDataSetEdge:
-    def __init__(self, edge, databank):
+    def __init__(self, edge, databank, modes):
         self.databank = databank
         self._inputs = {}
         for i in edge.get_inputs():
@@ -192,7 +195,7 @@ class MutationDataSetEdge:
             # IMPORTANT ! change the inputs value with mutation table, not value table
             # data_set => a list of [(info, mutant_value),...]
             #================================================================================================
-            dataset = i.get_mutation_data_set(databank)
+            dataset = i.get_mutation_data_set(databank, modes)
             self._inputs[i.get_id()] = [ i.get_value(), dataset  ]
             logging.info(dataset )
         self._selects = {}
@@ -207,8 +210,10 @@ class MutationDataSetEdge:
 
     def find_max_len(self):
         i_len = [ len(data_set) for v,data_set in self._inputs.values() ]
-        if i_len:
+        if len(i_len) > 1:
             return max( *(i_len) )
+        elif i_len:
+            1
         else:
             return 0
 

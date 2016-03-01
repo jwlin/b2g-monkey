@@ -75,13 +75,13 @@ class InputField:
 
         return data_set
 
-    def get_mutation_data_set(self, databank):
-        _attr = self._id if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix) \
+    def get_mutation_data_set(self, databank, modes):
+        mutation_type = self._type if self._type else 'text'
+        mutation_attr = self._id if not self._id.startswith(dom_analyzer.DomAnalyzer.serial_prefix) \
             else self._name if not self._name.startswith(dom_analyzer.DomAnalyzer.serial_prefix) \
             else 'None'
-        _type = self._type if self._type else 'text'
 
-        data_set = databank.get_mutation_data_set(_type, _attr)
+        data_set = databank.get_mutation_data_set(mutation_type, mutation_attr, modes)
         return data_set
 
     def get_copy(self):

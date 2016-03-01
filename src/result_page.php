@@ -98,18 +98,29 @@
 							按下檢視測試結果鈕，可直接觀看以前做過的<br>
 							變異數值測試結果
 						</li>
+						<li>
+							細節選項：<br><br>
+							數值變異方式 : 
+							<select id="mutaton_select" name="mutaton_select" >
+								<option value="1" selected="selected">全部欄位變異</option>
+								<option value="3">個別欄位變異</option>
+							</select>
+							<br>
+							變異測試種類 : 
+							<table id="mutation_modes">
+								<tr>
+									<td><input type="checkbox" id="mutation_mode0" value="0" >Empty</td>
+									<td><input type="checkbox" id="mutation_mode1" value="1" >SQL</td>
+									<td><input type="checkbox" id="mutation_mode2" value="2" >Malformed</td>
+								<tr>
+								</tr>
+									<td><input type="checkbox" id="mutation_mode3" value="3" >Random</td>
+									<td><input type="checkbox" id="mutation_mode4" value="4" >Fail Form</td>
+									<td><input type="checkbox" id="mutation_mode5" value="5" >Large String</td>
+								</tr>
+							</table>
+						</li>
 					</ul>
-   					<div style="text-align: center;" >
-						數值變異方式 : 
-						<select id="mutaton_select" name="mutaton_select" >
-							<option value="1" selected="selected">全部欄位變異</option>
-							<option value="3">個別欄位變異</option>
-						</select>
-						<br>
-						變異測試數量上限 : 最多
-						<input type="number" value="5"  min="1" max="100" id="mutation_max" name="mutation_max" style="width: 40px;">
-						條
-					</div>
    				</td>
    			</tr>
    		</table>

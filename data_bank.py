@@ -85,7 +85,7 @@ class MysqlDataBank(DataBank):
         return datas[1:]
 
     @classmethod
-    def get_mutation_data_set(cls, data_type, data_id):
+    def get_mutation_data_set(cls, data_type, data_id, modes):
         columns = cls._connect.get_mutation_catalog()
 
         table_name = ''
@@ -111,6 +111,6 @@ class MysqlDataBank(DataBank):
                     else:
                         table_name = "mutation_text"
 
-        mutation_values = cls._connect.get_mutation_values(table_name)
+        mutation_values = cls._connect.get_mutation_values(table_name, modes)
         return mutation_values
 

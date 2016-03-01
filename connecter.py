@@ -19,7 +19,7 @@ class mysqlConnect:
         #logging.info(str(cls))
         #logging.info(sql)
 
-        cls.connect = MySQLdb.connect(cls.host, cls.user, cls.password, cls.databank)
+        cls.connect = MySQLdb.connect(cls.host, cls.user, cls.password, cls.databank, charset="utf8")
         cls.cursor = cls.connect.cursor()
         cls.cursor.execute(sql)
         cls.connect.close()
@@ -86,8 +86,12 @@ class mysqlConnect:
         return [ [data[0], data[1]] if type(data)==type(tuple()) else str(data) for data in cls.cursor.fetchall() ]
 
     @classmethod
-    def get_mutation_values(cls, table):
-        sql = "SELECT info, value FROM %s " % ( table )
+    def get_mutation_values(cls, table, modes):
+        logging.info("modes: "+str(modes) )
+        mode_equation = [ "mode = "+str(m) for m in modes ]
+        mode_equation = "WHERE "+" OR ".join(mode_equation)
+        logging.info("mode_equation: "+mode_equation)
+        sql = "SELECT info, value FROM %s %s" % ( table , mode_equation )
         logging.info(str(cls))
         logging.info(sql)
 
