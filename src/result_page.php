@@ -102,9 +102,33 @@
 							細節選項：<br><br>
 							數值變異方式 : 
 							<select id="mutaton_select" name="mutaton_select" >
-								<option value="1" selected="selected">全部欄位變異</option>
-								<option value="3">個別欄位變異</option>
+								<option value="1" selected="selected">綜合欄位變異</option>
+								<option value="3">基本欄位變異</option>
 							</select>
+							<input type="button" value="說明" onclick="$('#mutation_info').toggle()">
+							<br>
+
+							<pre id="mutation_info" style="background-color: white; display: none;">
+綜合欄位變異: 所有input欄位同時變化一次
+ex: input欄位 | 原始數值 | 變異數值
+    A           a         x,y,z	
+    B           b         m,n
+
+=>  A(x),B(m)
+    A(y),B(n)
+    A(z),B(m)
+
+基本欄位變異: 各個input欄位分別變化一次
+ex: input欄位 | 原始數值 | 變異數值
+    A           a         x,y,z
+    B           b         m,n
+
+=>  A(x),B(b)
+    A(y),B(b)
+    A(z),B(b)
+    A(a),B(m)
+    A(a),B(n)
+							</pre>
 							<br>
 							變異測試種類 : 
 							<table id="mutation_modes">
