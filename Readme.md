@@ -15,7 +15,6 @@ b2g-monkey is a python-based crawler for Firefox OS (codename: Boot to Gecko, or
 Clone the project. Than install the prerequisite (Admin privilege may be needed):
 
 ```
-pip install -e path/to/b2g-monkey/gaiatest-0.33 
 pip install -r path/to/b2g-monkey/requirement.txt
 ```
 
