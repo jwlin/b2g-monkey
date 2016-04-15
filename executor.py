@@ -14,7 +14,7 @@ from subprocess import call
 from marionette import Marionette
 from marionette_driver.errors import ElementNotVisibleException, InvalidElementStateException, NoSuchElementException
 from marionette_driver import Wait, By
-from gaiatest.gaia_test import GaiaApps, GaiaData
+from gaiatest.gaia_test import GaiaApps, GaiaData, GaiaDevice
 from dom_analyzer import DomAnalyzer
 
 logger = logging.getLogger()
@@ -60,7 +60,10 @@ class B2gExecutor(Executor):
         self._app_id = app_id
         self._marionette = Marionette()
         self._marionette.start_session()
-
+        self._gaia_apps = GaiaApps(self._marionette)
+        self._gaia_data = GaiaData(self._marionette)
+        self._gaia_device = GaiaDevice(self._marionette)
+        ''' Deprecated
         # https://github.com/mozilla-b2g/gaia/blob/b568b7ae8adb6ee3651bd75acbaaedff86a08912/tests/python/gaia-ui-tests/gaiatest/gaia_test.py
         js = os.path.abspath(os.path.join(__file__, os.path.pardir, 'atoms', "gaia_apps.js"))
         self._marionette.import_script(js)
@@ -69,7 +72,6 @@ class B2gExecutor(Executor):
         self._marionette.import_script(js)
         self._marionette.set_context(self._marionette.CONTEXT_CONTENT)
 
-        '''
         # C:\Users\Jun-Wei\Desktop\b2g\battery\manifest.webapp
         #app = GaiaApps(self._marionette).launch(self._app_name)
         #app = GaiaApps(self._marionette).launch('Battery', manifest_url='C:/Users/Jun-Wei/Desktop/b2g/battery/manifest.webapp', entry_point='/index.html')
@@ -200,11 +202,14 @@ class B2gExecutor(Executor):
         self.touch_home_button()
 
         # launch the app
+        self._gaia_apps.launch(self._app_name)
+        ''' Deprecated
         if self.device:
             icon = self._marionette.find_element('xpath', "//li[contains(@aria-label, '" + self._app_name + "')]")
         else:
             icon = self._marionette.find_element('xpath', "//div[contains(@class, 'icon')]//span[contains(text(),'" + self._app_name + "')]")
         icon.tap()
+        '''
         time.sleep(5)  # wait for app screen
         self._marionette.switch_to_frame()
         # this wait seems not working, need to find another useful one
@@ -214,7 +219,7 @@ class B2gExecutor(Executor):
 
     def touch_home_button(self):
         # ref: https://github.com/mozilla-b2g/gaia/blob/master/tests/python/gaia-ui-tests/gaiatest/gaia_test.py#L751
-        apps = GaiaApps(self._marionette)
+        apps = self._gaia_apps
         if apps.displayed_app.name.lower() != 'homescreen':
             # touching home button will return to homescreen
             self._dispatch_home_button_event()
@@ -236,8 +241,11 @@ class B2gExecutor(Executor):
                     "return window.wrappedJSObject.scrollY") == 0)
 
     def _dispatch_home_button_event(self):
+        self._gaia_device._dispatch_home_button_event()
+        ''' Deprecated
         self._marionette.switch_to_frame()
         self._marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
+        '''
         time.sleep(0.5)
 
     def clear_data(self):

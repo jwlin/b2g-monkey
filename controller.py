@@ -70,8 +70,8 @@ def main():
 
     # Remember to activate b2g simulator before creating executor
     # For using connected, real device, pass device=True into the constructor
-    executor = B2gExecutor(config.get_app_name(), config.get_app_id())
-    #executor = B2gExecutor(config.get_app_name(), config.get_app_id(), device=True)
+    #executor = B2gExecutor(config.get_app_name(), config.get_app_id())
+    executor = B2gExecutor(config.get_app_name(), config.get_app_id(), device=True)
     crawler = B2gCrawler(config, executor)
 
     logger.info('Start crawling, depth %d', config.get_max_depth())
